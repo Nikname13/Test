@@ -26,7 +26,7 @@ public class Connect {
         return null;
     }
 
-    private static void getJSON(HttpURLConnection connect) {
+    private static String getJSON(HttpURLConnection connect) {
         try {
             int cod=connect.getResponseCode();
             ErrorLab.errorMessage(String.valueOf(cod));
@@ -41,19 +41,20 @@ public class Connect {
                 br.close();
                 ErrorLab.errorMessage(sb.toString());
                 connect.disconnect();
+                return sb.toString();
             }
         } catch (IOException ex) {
             ErrorLab.errorMessage(ex.toString());
         }
+        return "";
     }
 
-    public static void get(String uri) {
+    public static String get(String uri) {
         HttpURLConnection connect = connection(uri, "GET");
         if (connect != null) {
             ErrorLab.errorMessage(connect.toString());
-            getJSON(connect);
-
+            return getJSON(connect);
         }
-
+        return "";
     }
 }

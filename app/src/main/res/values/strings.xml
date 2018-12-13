@@ -11,6 +11,7 @@
     <string name="button_log_in">Вход</string>
     <string name="auth_error_message">Логин/пароль неверный</string>
     <string name="title_activity_login">Sign in</string>
+    <string name="success_false"></string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>

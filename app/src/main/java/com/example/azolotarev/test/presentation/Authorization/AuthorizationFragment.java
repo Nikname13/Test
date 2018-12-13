@@ -1,19 +1,23 @@
-package com.example.azolotarev.test;
+package com.example.azolotarev.test.presentation.Authorization;
 
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import com.example.azolotarev.test.R;
 import com.example.azolotarev.test.Service.PersistentStorage;
+import com.example.azolotarev.test.presentation.DepartmentsList.DepartmentListActivity;
 
 
-public class AuthorizationFragment extends Fragment {
+public class AuthorizationFragment extends Fragment implements AuthorizationContract.View {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -23,6 +27,7 @@ public class AuthorizationFragment extends Fragment {
 
 
     private Callback mListener;
+    private AuthorizationContract.Presenter mPresenter;
 
     private Button mLogInButton;
     private EditText mLoginField, mPasswordField;
@@ -33,14 +38,9 @@ public class AuthorizationFragment extends Fragment {
 
 
     // TODO: Rename and change types and number of parameters
-/*    public static AuthorizationFragment newInstance(String param1, String param2) {
-        AuthorizationFragment fragment = new AuthorizationFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }*/
+    public static AuthorizationFragment newInstance() {
+        return new AuthorizationFragment();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -87,6 +87,32 @@ public class AuthorizationFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void showProgress() {
+
+    }
+
+    @Override
+    public void hideProgress() {
+
+    }
+
+    @Override
+    public void showSuccess() {
+        //Snackbar snackbar=Snackbar.make()
+    }
+
+    @Override
+    public void showDepartmentsList() {
+        Intent intent = new Intent(getContext(), DepartmentListActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void setPresenter(@NonNull AuthorizationContract.Presenter presenter) {
+        mPresenter=presenter;
     }
 
     /**

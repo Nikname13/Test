@@ -1,6 +1,5 @@
-package com.example.azolotarev.test;
+package com.example.azolotarev.test.presentation.DepartmentsList;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
