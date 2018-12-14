@@ -1,4 +1,4 @@
-package com.example.azolotarev.test.presentation;
+package com.example.azolotarev.test.UI;
 
 public interface BaseView<T> {
 

@@ -1,8 +1,6 @@
-package com.example.azolotarev.test.presentation.Authorization;
+package com.example.azolotarev.test.UI.Authorization;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -12,9 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import com.example.azolotarev.test.R;
-import com.example.azolotarev.test.Service.PersistentStorage;
-import com.example.azolotarev.test.presentation.DepartmentsList.DepartmentListActivity;
+import com.example.azolotarev.test.UI.DepartmentsList.DepartmentListActivity;
 
 
 public class AuthorizationFragment extends Fragment implements AuthorizationContract.View {
@@ -26,11 +24,11 @@ public class AuthorizationFragment extends Fragment implements AuthorizationCont
     // TODO: Rename and change types of parameters
 
 
-    private Callback mListener;
     private AuthorizationContract.Presenter mPresenter;
 
     private Button mLogInButton;
     private EditText mLoginField, mPasswordField;
+    private FrameLayout mFrameLayout;
 
     public AuthorizationFragment() {
         // Required empty public constructor
@@ -55,6 +53,7 @@ public class AuthorizationFragment extends Fragment implements AuthorizationCont
 
         mLoginField=(EditText)v.findViewById(R.id.login_field);
         mPasswordField=(EditText)v.findViewById(R.id.password_field);
+        mFrameLayout=(FrameLayout)v.findViewById(R.id.frameLayout);
         initLogInButton(v);
         return v;
     }
@@ -65,28 +64,10 @@ public class AuthorizationFragment extends Fragment implements AuthorizationCont
             @Override
             public void onClick(View v) {
                if(!mLoginField.getText().toString().trim().isEmpty() && !mPasswordField.getText().toString().trim().isEmpty()){
-                   mListener.onAuthorization(mLoginField.getText().toString(), mPasswordField.getText().toString());
+                   mPresenter.logIn(mLoginField.getText().toString(), mPasswordField.getText().toString());
                }
             }
         });
-    }
-
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof Callback) {
-            mListener = (Callback) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
     }
 
     @Override
@@ -100,8 +81,14 @@ public class AuthorizationFragment extends Fragment implements AuthorizationCont
     }
 
     @Override
-    public void showSuccess() {
-        //Snackbar snackbar=Snackbar.make()
+    public void showConnectionError() {
+
+    }
+
+    @Override
+    public void showSuccessError(String errorMessage) {
+        Snackbar snackbar=Snackbar.make(mFrameLayout,errorMessage,Snackbar.LENGTH_LONG);
+        snackbar.show();
     }
 
     @Override

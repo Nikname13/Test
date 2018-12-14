@@ -16,7 +16,7 @@ public  class Repository {
 
     public boolean isAuth(String login, String password){
      new AsyncRequest().execute(new URLBuilder(URI_HELLO).withParam(PARAM_LOGIN, login).withParam(PARAM_PASSWORD, password).build());
-     return false;
+     return true;
     }
 
     public boolean isAuth(Context context){

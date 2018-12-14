@@ -1,4 +1,4 @@
-package com.example.azolotarev.test.presentation.DepartmentsList;
+package com.example.azolotarev.test.UI.DepartmentsList;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
