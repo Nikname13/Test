@@ -1,38 +1,45 @@
 package com.example.azolotarev.test.Repository;
 
 import android.content.Context;
-import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import com.example.azolotarev.test.Service.Connect;
 import com.example.azolotarev.test.Service.PersistentStorage;
 import com.example.azolotarev.test.Service.URLBuilder;
 
-public  class Repository {
-    public static final String URI_HELLO="Hello";
-    public static final String URI_GETALL="GetAll";
-    public static final String URI_PHOTO="GetWPhoto";
-    public static final String PARAM_LOGIN="login";
-    public static final String PARAM_PASSWORD="password";
-    public static final String PARAM_ID ="id";
+public  class Repository implements RepositoryContract {
 
-    public boolean isAuth(String login, String password){
-     new AsyncRequest().execute(new URLBuilder(URI_HELLO).withParam(PARAM_LOGIN, login).withParam(PARAM_PASSWORD, password).build());
-     return true;
+    private static final String URI_HELLO="Hello";
+    private static final String URI_GETALL="GetAll";
+    private static final String URI_PHOTO="GetWPhoto";
+    private static final String PARAM_LOGIN="login";
+    private static final String PARAM_PASSWORD="password";
+    private static final String PARAM_ID ="id";
+    private final Context mContext;
+    private boolean mSuccess;
+    private JParserContract mJParser;
+
+
+    public Repository(Context context) {
+        mJParser=new JParser();
+        mContext = context;
     }
 
-    public boolean isAuth(Context context){
-        PersistentStorage.init(context);
-        if(PersistentStorage.getLOGIN().isEmpty()) {
+    @Override
+    public boolean isAuth(@NonNull String login,@NonNull String password){
+        if(login.isEmpty() || password.isEmpty()){
+          mSuccess = isAuth();
+        }else {
+        mJParser.getSuccess(Connect.get(new URLBuilder(URI_HELLO).withParam(PARAM_LOGIN, login).withParam(PARAM_PASSWORD, password).build()));
+        }
+     return mSuccess;
+    }
+
+    private boolean isAuth(){
+        PersistentStorage.init(mContext);
+        if(PersistentStorage.getLOGIN().isEmpty() || PersistentStorage.getPASSWORD().isEmpty()) {
             return false;
         }else{
             return isAuth(PersistentStorage.getLOGIN(), PersistentStorage.getPASSWORD());
-        }
-    }
-
-    class AsyncRequest extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... strings) {
-           return Connect.get(strings[0]);
         }
     }
 }

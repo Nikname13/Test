@@ -1,9 +1,8 @@
 package com.example.azolotarev.test.UI.Authorization;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import com.example.azolotarev.test.Domain.Authorization.AuthorizationInteractorContract;
-import com.example.azolotarev.test.Repository.Repository;
-import com.example.azolotarev.test.Service.ErrorLab;
 
 public class AuthorizationPresenter implements AuthorizationContract.Presenter {
 
@@ -14,27 +13,9 @@ public class AuthorizationPresenter implements AuthorizationContract.Presenter {
         mAuthorizationView = authorizationView;
         mAuthorizationInteractor = authorizationInteractor;
         mAuthorizationView.setPresenter(this);
+        mAuthorizationInteractor.setProgressListener(this);
     }
 
-    @Override
-    public void showProgress() {
-
-    }
-
-    @Override
-    public void hideProgress() {
-
-    }
-
-    @Override
-    public void showSuccessError(String errorMessage) {
-
-    }
-
-    @Override
-    public void showDepartmentsList() {
-        mAuthorizationView.showDepartmentsList();
-    }
 
     @Override
     public void showConnectionError() {
@@ -49,6 +30,22 @@ public class AuthorizationPresenter implements AuthorizationContract.Presenter {
     @Override
     public void start() {
 
+    }
+
+
+    @Override
+    public void showProgress() {
+        mAuthorizationView.showProgress();
+    }
+
+    @Override
+    public void hideProgress() {
+        mAuthorizationView.hideProgress();
+        if(mAuthorizationInteractor.getSuccess()){
+            mAuthorizationView.showDepartmentsList();
+        }else {
+            mAuthorizationView.showSuccessError("Success error");
+        }
     }
 
 }

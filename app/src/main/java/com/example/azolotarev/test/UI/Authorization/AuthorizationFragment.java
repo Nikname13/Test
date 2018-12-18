@@ -94,25 +94,12 @@ public class AuthorizationFragment extends Fragment implements AuthorizationCont
     @Override
     public void showDepartmentsList() {
         Intent intent = new Intent(getContext(), DepartmentListActivity.class);
+        intent.putExtra(DepartmentListActivity.EXTRA_SUCCESS,true);
         startActivity(intent);
     }
 
     @Override
     public void setPresenter(@NonNull AuthorizationContract.Presenter presenter) {
         mPresenter=presenter;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface Callback {
-        void onAuthorization(String login, String password);
     }
 }
