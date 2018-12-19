@@ -1,6 +1,7 @@
 package com.example.azolotarev.test.Repository;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -12,7 +13,7 @@ public class JParser implements JParserContract {
             JSONObject json=new JSONObject(jsonString);
             return json.getBoolean("Success");
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("TAG",e.getMessage());
             return false;
         }
 

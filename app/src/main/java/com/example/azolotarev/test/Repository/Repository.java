@@ -17,6 +17,7 @@ public  class Repository implements RepositoryContract {
     private final Context mContext;
     private boolean mSuccess;
     private JParserContract mJParser;
+    private boolean mStorageFull;
 
 
     public Repository(Context context) {
@@ -26,20 +27,30 @@ public  class Repository implements RepositoryContract {
 
     @Override
     public boolean isAuth(@NonNull String login,@NonNull String password){
+        PersistentStorage.init(mContext);
         if(login.isEmpty() || password.isEmpty()){
           mSuccess = isAuth();
         }else {
-        mJParser.getSuccess(Connect.get(new URLBuilder(URI_HELLO).withParam(PARAM_LOGIN, login).withParam(PARAM_PASSWORD, password).build()));
+       mSuccess = mJParser.getSuccess(Connect.get(new URLBuilder(URI_HELLO).withParam(PARAM_LOGIN, login).withParam(PARAM_PASSWORD, password).build()));
+       checkStorage(mSuccess,login,password);
         }
      return mSuccess;
     }
 
     private boolean isAuth(){
-        PersistentStorage.init(mContext);
         if(PersistentStorage.getLOGIN().isEmpty() || PersistentStorage.getPASSWORD().isEmpty()) {
             return false;
         }else{
+            mStorageFull=true;
             return isAuth(PersistentStorage.getLOGIN(), PersistentStorage.getPASSWORD());
+        }
+    }
+
+    private void checkStorage(boolean success, String login, String password){
+        if(success){
+            if(!mStorageFull) PersistentStorage.addCredentials(login, password);
+        }else{
+            if(mStorageFull) PersistentStorage.clearCredentials();
         }
     }
 }

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ public class AuthorizationFragment extends Fragment implements AuthorizationCont
     private Button mLogInButton;
     private EditText mLoginField, mPasswordField;
     private FrameLayout mFrameLayout;
+    private CardView mProgress;
 
     public AuthorizationFragment() {
         // Required empty public constructor
@@ -54,6 +56,7 @@ public class AuthorizationFragment extends Fragment implements AuthorizationCont
         mLoginField=(EditText)v.findViewById(R.id.login_field);
         mPasswordField=(EditText)v.findViewById(R.id.password_field);
         mFrameLayout=(FrameLayout)v.findViewById(R.id.frameLayout);
+        mProgress=(CardView)v.findViewById(R.id.progress_card);
         initLogInButton(v);
         return v;
     }
@@ -72,12 +75,12 @@ public class AuthorizationFragment extends Fragment implements AuthorizationCont
 
     @Override
     public void showProgress() {
-
+        mProgress.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
-
+        mProgress.setVisibility(View.GONE);
     }
 
     @Override

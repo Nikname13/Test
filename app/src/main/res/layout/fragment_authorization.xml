@@ -5,7 +5,7 @@
              tools:context="com.example.azolotarev.test.UI.Authorization.AuthorizationFragment"
              android:id="@+id/frameLayout">
     <android.support.v7.widget.CardView
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:id="@+id/cardView_log_in"
             android:visibility="visible"
@@ -18,21 +18,47 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:inputType="textPersonName"
-                    android:hint="@string/text_login"
+                    android:hint="@string/auth_text_login"
                     android:ems="10"
                     android:id="@+id/login_field"/>
             <EditText
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
-                    android:hint="@string/text_password"
+                    android:hint="@string/auth_text_password"
                     android:ems="10"
                     android:id="@+id/password_field"/>
             <Button
-                    android:text="@string/button_log_in"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:text="@string/auth_button_log_in"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:id="@+id/button_log_in"/>
         </LinearLayout>
+
+        <android.support.v7.widget.CardView
+                android:layout_width="200dp"
+                android:layout_height="300dp"
+                android:layout_gravity="center"
+                android:id="@+id/progress_card"
+                android:visibility="gone">
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
+                <ProgressBar
+                        android:id="@+id/progress_bar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"/>
+                <TextView
+                        android:id="@+id/title_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorAccent"
+                        android:text="@string/load_auth_message" />
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
   </android.support.v7.widget.CardView>
 </FrameLayout>

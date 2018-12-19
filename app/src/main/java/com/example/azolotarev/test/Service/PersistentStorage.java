@@ -45,4 +45,10 @@ public class PersistentStorage {
         }
         return s;
     }
+
+    public static void clearCredentials(){
+        if(sSettings==null) init();
+        sEditor.clear();
+        sEditor.commit();
+    }
 }

@@ -5,11 +5,13 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import com.example.azolotarev.test.Domain.Authorization.AuthorizationInteractor;
 import com.example.azolotarev.test.R;
 import com.example.azolotarev.test.Repository.Repository;
@@ -20,6 +22,7 @@ public class StartFragment extends Fragment implements StartContract.View {
 
     private StartContract.Presenter mPresenter;
     private FrameLayout mFrameLayout;
+    private CardView mProgress;
 
     @Override
     public void onResume() {
@@ -32,6 +35,7 @@ public class StartFragment extends Fragment implements StartContract.View {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v= inflater.inflate(R.layout.fragment_main, container, false);
         mFrameLayout=(FrameLayout)v.findViewById(R.id.frameLayout);
+        mProgress=(CardView)v.findViewById(R.id.progress_card);
         return v;
     }
 
@@ -64,14 +68,12 @@ public class StartFragment extends Fragment implements StartContract.View {
 
     @Override
     public void showProgress() {
-        Snackbar snackbar=Snackbar.make(mFrameLayout,"Авторизация",Snackbar.LENGTH_SHORT);
-        snackbar.show();
+        mProgress.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
-        Snackbar snackbar=Snackbar.make(mFrameLayout,"end",Snackbar.LENGTH_LONG);
-        snackbar.show();
+        mProgress.setVisibility(View.GONE);
     }
 
     @Override
