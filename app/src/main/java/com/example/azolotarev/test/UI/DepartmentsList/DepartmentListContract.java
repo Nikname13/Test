@@ -8,12 +8,13 @@ import com.example.azolotarev.test.UI.Start.StartContract;
 public interface DepartmentListContract {
 
     interface View extends BaseView<Presenter>,ProgressContract {
-        void showConnectionError();
+        void showConnectionError(String errorMessage);
         void showSuccessError(String errorMessage);
         void showAuthorization();
     }
 
     interface Presenter extends BasePresenter,ProgressContract{
         void showConnectionError();
+        void loadDepartments(boolean freshUpdate);
     }
 }

@@ -30,7 +30,7 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     }
 
     @Override
-    public void showConnectionError() {
+    public void showConnectionError(String errorMessage) {
 
     }
 
