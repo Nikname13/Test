@@ -1,6 +1,8 @@
 package com.example.azolotarev.test.UI.DepartmentsList;
 
 import android.support.v4.app.Fragment;
+import com.example.azolotarev.test.Data.Net.Connect;
+import com.example.azolotarev.test.Data.Net.Net;
 import com.example.azolotarev.test.Domain.Authorization.AuthorizationInteractor;
 import com.example.azolotarev.test.Domain.DepartmentsList.DepartmentInteractor;
 import com.example.azolotarev.test.Repository.Repository;
@@ -20,11 +22,11 @@ public class DepartmentListActivity extends GenericFragmentActivity {
     private Fragment logIn() {
         if(getIntent().getBooleanExtra(EXTRA_SUCCESS, false)){
             DepartmentListFragment fragment=DepartmentListFragment.newInstance();
-            new DepartmentListPresenter(fragment, new DepartmentInteractor(new Repository(getApplicationContext())));
+            new DepartmentListPresenter(fragment, new DepartmentInteractor(new Repository(getApplicationContext(),new Net(new Connect()))));
             return fragment;
         }else{
             AuthorizationFragment fragment=AuthorizationFragment.newInstance();
-            new AuthorizationPresenter(fragment,new AuthorizationInteractor(new Repository(getApplicationContext())));
+            new AuthorizationPresenter(fragment,new AuthorizationInteractor(new Repository(getApplicationContext(),new Net(new Connect()))));
             return fragment;
         }
     }

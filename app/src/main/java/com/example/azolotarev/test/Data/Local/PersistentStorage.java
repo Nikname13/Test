@@ -1,7 +1,9 @@
-package com.example.azolotarev.test.Service;
+package com.example.azolotarev.test.Data.Local;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
+import com.example.azolotarev.test.Service.ErrorLab;
 
 public class PersistentStorage {
     public static final String CREDENTIALS="credentials";
@@ -40,7 +42,7 @@ public class PersistentStorage {
         if (sSettings == null) init();
         String s = sSettings.getString(key, "");
         if (s.isEmpty()) {
-            ErrorLab.errorMessage();
+            Log.e("TAG", "PersistentStorage getString is empty");
             return "";
         }
         return s;

@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import com.example.azolotarev.test.Data.Net.Connect;
+import com.example.azolotarev.test.Data.Net.Net;
 import com.example.azolotarev.test.Domain.Authorization.AuthorizationInteractor;
 import com.example.azolotarev.test.R;
 import com.example.azolotarev.test.Repository.Repository;
@@ -44,8 +46,9 @@ public class StartFragment extends Fragment implements StartContract.View {
     }
 
     @Override
-    public void showConnectionError() {
-
+    public void showConnectionError(String errorMessage) {
+        Snackbar snackbar=Snackbar.make(mFrameLayout,errorMessage,Snackbar.LENGTH_LONG);
+        snackbar.show();
     }
 
     @Override
@@ -62,7 +65,7 @@ public class StartFragment extends Fragment implements StartContract.View {
     @Override
     public void showAuthorization() {
         AuthorizationFragment fragment=AuthorizationFragment.newInstance();
-        new AuthorizationPresenter(fragment,new AuthorizationInteractor(new Repository(getContext())));
+        new AuthorizationPresenter(fragment,new AuthorizationInteractor(new Repository(getContext(),new Net(new Connect()))));
         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,fragment).commit();
     }
 

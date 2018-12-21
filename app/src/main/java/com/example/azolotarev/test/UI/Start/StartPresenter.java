@@ -1,6 +1,7 @@
 package com.example.azolotarev.test.UI.Start;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 import com.example.azolotarev.test.Domain.Authorization.AuthorizationInteractorContract;
 
 public class StartPresenter implements StartContract.Presenter {
@@ -19,7 +20,31 @@ public class StartPresenter implements StartContract.Presenter {
     }
 
     private void logIn() {
-        mAuthorizationInteractor.logIn(EMPTY_LOGIN, EMPTY_PASSWORD);
+        Log.e("TAG", "start login");
+        mAuthorizationInteractor.logIn(new AuthorizationInteractorContract.getSuccessCallback() {
+            @Override
+            public void onSuccess(boolean success) {
+                Log.e("TAG", "start login on success "+success);
+                if(success){
+                    mStartView.showDepartmentsList();
+                }else{
+                    mStartView.showAuthorization();
+                }
+            }
+
+            @Override
+            public void logOut(String errorMessage) {
+                Log.e("TAG", "start logOut");
+                mStartView.showSuccessError(errorMessage);
+            }
+
+            @Override
+            public void connectionError(String errorMessage) {
+                Log.e("TAG", "start connectionError");
+                mStartView.showConnectionError(errorMessage);
+            }
+        },
+                EMPTY_LOGIN, EMPTY_PASSWORD);
     }
 
     @Override
@@ -35,16 +60,11 @@ public class StartPresenter implements StartContract.Presenter {
     @Override
     public void hideProgress() {
         mStartView.hideProgress();
-        if(mAuthorizationInteractor.getSuccess()){
-            mStartView.showDepartmentsList();
-        }else {
-            mStartView.showSuccessError("Success error");
-            mStartView.showAuthorization();
-        }
     }
 
     @Override
     public void start() {
+        Log.e("TAG", "start");
         logIn();
     }
 }

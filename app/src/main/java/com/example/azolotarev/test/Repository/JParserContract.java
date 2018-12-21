@@ -7,10 +7,14 @@ import java.util.List;
 
 public  interface JParserContract {
 
-    interface ParsDepartmentsCallback {
+    interface ParsDepartmentsCallback{
         void onDepartmentsLoaded(List<DepartmentModel> departments);
     }
+    interface ParsSuccessCallback{
+        void onSuccess(boolean success);
+        void errorSuccess(String errorMessage);
+    }
     void getDepartments(@NonNull final ParsDepartmentsCallback callback, String jsonString);
-    boolean getSuccess(@NonNull String jsonString);
+    void getSuccess(@NonNull final ParsSuccessCallback callback, String jsonString);
 
 }

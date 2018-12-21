@@ -1,13 +1,17 @@
-package com.example.azolotarev.test.Service;
+package com.example.azolotarev.test.Data.Net;
+
+import android.support.annotation.NonNull;
+import android.util.Log;
+import com.example.azolotarev.test.Service.ErrorLab;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
-public class Connect {
+public class Connect implements ConnectContract {
 
-    private static HttpURLConnection connection(String uri, String method) {
+    private HttpURLConnection connection(String uri, String method) {
 
         try {
             URL url = new URL(uri);
@@ -21,12 +25,13 @@ public class Connect {
 
             return connect;
         } catch (IOException ex) {
+            Log.e("TAG", "Connect exception connection"+ex);
             ErrorLab.errorMessage();
         }
         return null;
     }
 
-    private static String getJSON(HttpURLConnection connect) {
+    private void getJSONString(@NonNull GETCallback callback, HttpURLConnection connect) {
         try {
             int cod=connect.getResponseCode();
             ErrorLab.errorMessage(String.valueOf(cod));
@@ -41,20 +46,22 @@ public class Connect {
                 br.close();
                 ErrorLab.errorMessage(sb.toString());
                 connect.disconnect();
-                return sb.toString();
+                callback.onResponse(sb.toString());
+            }else{
+                callback.connectionError("Ошибка подключения "+connect.getResponseCode());
             }
         } catch (IOException ex) {
             ErrorLab.errorMessage(ex.toString());
         }
-        return "";
     }
 
-    public static String get(String uri) {
-        HttpURLConnection connect = connection(uri, "GET");
+    @Override
+    public void GET(@NonNull GETCallback callback, @NonNull String url) {
+        HttpURLConnection connect = connection(url, "GET");
         if (connect != null) {
-            ErrorLab.errorMessage(connect.toString());
-            return getJSON(connect);
+            getJSONString(callback,connect);
+        }else {
+            callback.connectionError("Ошибка подключения");
         }
-        return "";
     }
 }

@@ -1,4 +1,4 @@
-package com.example.azolotarev.test.Service;
+package com.example.azolotarev.test.UI;
 
 public interface ProgressContract {
     void showProgress();

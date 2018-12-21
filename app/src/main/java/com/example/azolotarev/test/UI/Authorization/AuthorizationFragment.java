@@ -84,8 +84,9 @@ public class AuthorizationFragment extends Fragment implements AuthorizationCont
     }
 
     @Override
-    public void showConnectionError() {
-
+    public void showConnectionError(String errorMessage) {
+        Snackbar snackbar=Snackbar.make(mFrameLayout,errorMessage,Snackbar.LENGTH_LONG);
+        snackbar.show();
     }
 
     @Override

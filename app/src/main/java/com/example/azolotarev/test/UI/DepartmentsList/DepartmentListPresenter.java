@@ -38,14 +38,18 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
             }
 
             @Override
+            public void notAvailable(String errorMessage) {
+
+            }
+
+            @Override
             public void logOut(String errorMessage) {
-                mDepartmentView.showSuccessError(errorMessage);
-                mDepartmentView.showAuthorization();
+
             }
 
             @Override
             public void connectionError(String errorMessage) {
-                mDepartmentView.showConnectionError(errorMessage);
+
             }
         });
     }

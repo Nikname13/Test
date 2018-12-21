@@ -3,7 +3,7 @@ package com.example.azolotarev.test.Domain.DepartmentsList;
 import android.support.annotation.NonNull;
 import com.example.azolotarev.test.Model.DepartmentModel;
 import com.example.azolotarev.test.Repository.RepositoryContract;
-import com.example.azolotarev.test.Service.ProgressContract;
+import com.example.azolotarev.test.UI.ProgressContract;
 
 import java.util.List;
 

@@ -2,54 +2,54 @@ package com.example.azolotarev.test.Repository;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
+import com.example.azolotarev.test.Data.Net.NetContract;
 import com.example.azolotarev.test.Model.DepartmentModel;
-import com.example.azolotarev.test.Service.Connect;
-import com.example.azolotarev.test.Service.PersistentStorage;
-import com.example.azolotarev.test.Service.URLBuilder;
+import com.example.azolotarev.test.Data.Net.Connect;
+import com.example.azolotarev.test.Data.Local.PersistentStorage;
+import com.example.azolotarev.test.Data.Net.URLBuilder;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public  class Repository implements RepositoryContract {
 
-    private static final String URI_HELLO="Hello";
-    private static final String URI_GETALL="GetAll";
-    private static final String URI_PHOTO="GetWPhoto";
-    private static final String PARAM_LOGIN="login";
-    private static final String PARAM_PASSWORD="password";
-    private static final String PARAM_ID ="id";
+
     private final Context mContext;
-    private boolean mSuccess;
+    private boolean mSuccess =false;
     private JParserContract mJParser;
     private boolean mStorageFull;
+    private NetContract mNet;
     Map<String,DepartmentModel> mCachedDepartment;
 
 
-    public Repository(Context context) {
+    public Repository(@NonNull Context context, @NonNull NetContract net) {
+        mNet=net;
         mJParser=new JParser();
         mContext = context;
         PersistentStorage.init(mContext);
     }
 
     @Override
-    public boolean isAuth(@NonNull String login,@NonNull String password){
+    public void isAuth(@NonNull final LoadSuccessCallback callback ,@NonNull String login,@NonNull String password){
+        Log.e("TAG", "repository isAuth");
         if(login.isEmpty() || password.isEmpty()){
-          mSuccess = isAuth();
+            Log.e("TAG", "repository empty");
+          isAuth(callback);
         }else {
-       mSuccess = mJParser.getSuccess(Connect.get(new URLBuilder(URI_HELLO).withParam(PARAM_LOGIN, login).withParam(PARAM_PASSWORD, password).build()));
+            Log.e("TAG", "repository not Empty");
+            getSuccessFromNet(callback,login,password);
        checkStorage(mSuccess,login,password);
         }
-     return mSuccess;
     }
 
-    private boolean isAuth(){
+    private void isAuth(@NonNull final LoadSuccessCallback callback ){
         if(PersistentStorage.getLOGIN().isEmpty() || PersistentStorage.getPASSWORD().isEmpty()) {
-            return false;
+            callback.onSuccess(false);
         }else{
             mStorageFull=true;
-            return isAuth(PersistentStorage.getLOGIN(), PersistentStorage.getPASSWORD());
+             isAuth(callback,PersistentStorage.getLOGIN(), PersistentStorage.getPASSWORD());
         }
     }
 
@@ -59,6 +59,40 @@ public  class Repository implements RepositoryContract {
         }else{
             if(mStorageFull) PersistentStorage.clearCredentials();
         }
+    }
+
+
+    private void getSuccessFromNet(@NonNull final LoadSuccessCallback callback, String login, String password) {
+        Log.e("TAG", "repository getSuccessFromNet");
+        mNet.isAuth(new NetContract.LoadSuccessCallback() {
+            @Override
+            public void onResponse(String response) {
+                Log.e("TAG", "repository onResponse");
+                mJParser.getSuccess(new JParserContract.ParsSuccessCallback() {
+                    @Override
+                    public void onSuccess(boolean success) {
+                        Log.e("TAG", "repository mJParser onSuccess");
+                        mSuccess=success;
+                        callback.onSuccess(success);
+                    }
+
+                    @Override
+                    public void errorSuccess(String errorMessage) {
+                        Log.e("TAG", "repository mJParser errorSuccess");
+                        callback.logOut(errorMessage);
+                    }
+                },
+                response);
+            }
+            @Override
+            public void connectionError(String errorMessage) {
+                Log.e("TAG", "repository connectionError");
+                callback.connectionError(errorMessage);
+            }
+        },
+                login,
+                password
+        );
     }
 
     @Override
@@ -74,7 +108,7 @@ public  class Repository implements RepositoryContract {
     }
 
     private void getDepartmentsFromNet(@NonNull final LoadDepartmentsCallback callback){
-        if(isAuth()){
+        if(mSuccess){
         mJParser.getDepartments(new JParserContract.ParsDepartmentsCallback() {
             @Override
             public void onDepartmentsLoaded(List<DepartmentModel> departments) {

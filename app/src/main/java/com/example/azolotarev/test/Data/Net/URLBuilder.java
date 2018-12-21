@@ -1,4 +1,4 @@
-package com.example.azolotarev.test.Service;
+package com.example.azolotarev.test.Data.Net;
 
 import java.util.ArrayList;
 import java.util.List;
