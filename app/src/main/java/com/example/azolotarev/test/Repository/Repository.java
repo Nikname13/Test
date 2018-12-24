@@ -19,7 +19,7 @@ public  class Repository implements RepositoryContract {
     private final Context mContext;
     private boolean mSuccess =false;
     private JParserContract mJParser;
-    private boolean mStorageFull;
+    private boolean mStorageFull=false;
     private NetContract mNet;
     Map<String,DepartmentModel> mCachedDepartment;
 
@@ -32,90 +32,143 @@ public  class Repository implements RepositoryContract {
     }
 
     @Override
-    public void isAuth(@NonNull final LoadSuccessCallback callback ,@NonNull String login,@NonNull String password){
+    public void isAuth(@NonNull final LoadSuccessCallback callback ,@NonNull String login,@NonNull String password, @NonNull boolean firstLoad){
         Log.e("TAG", "repository isAuth");
         if(login.isEmpty() || password.isEmpty()){
             Log.e("TAG", "repository empty");
-          isAuth(callback);
+          isAuth(callback,firstLoad);
         }else {
             Log.e("TAG", "repository not Empty");
-            getSuccessFromNet(callback,login,password);
+            getSuccessFromNet(callback,login,password, firstLoad);
        checkStorage(mSuccess,login,password);
         }
     }
 
-    private void isAuth(@NonNull final LoadSuccessCallback callback ){
+    private void isAuth(@NonNull final LoadSuccessCallback callback,@NonNull boolean firstLoad ){
         if(PersistentStorage.getLOGIN().isEmpty() || PersistentStorage.getPASSWORD().isEmpty()) {
             callback.onSuccess(false);
         }else{
             mStorageFull=true;
-             isAuth(callback,PersistentStorage.getLOGIN(), PersistentStorage.getPASSWORD());
+             isAuth(callback,PersistentStorage.getLOGIN(), PersistentStorage.getPASSWORD(),firstLoad);
         }
     }
 
     private void checkStorage(boolean success, String login, String password){
+        Log.e("TAG", "repository checkStorage "+success);
         if(success){
             if(!mStorageFull) PersistentStorage.addCredentials(login, password);
         }else{
+            //удаляется из сторэджа т.к. локальная проверка авторизации
             if(mStorageFull) PersistentStorage.clearCredentials();
         }
     }
 
 
-    private void getSuccessFromNet(@NonNull final LoadSuccessCallback callback, String login, String password) {
+    private void getSuccessFromNet(@NonNull final LoadSuccessCallback callback, @NonNull String login,@NonNull String password, @NonNull boolean firstLoad) {
         Log.e("TAG", "repository getSuccessFromNet");
-        mNet.isAuth(new NetContract.LoadSuccessCallback() {
-            @Override
-            public void onResponse(String response) {
-                Log.e("TAG", "repository onResponse");
-                mJParser.getSuccess(new JParserContract.ParsSuccessCallback() {
-                    @Override
-                    public void onSuccess(boolean success) {
-                        Log.e("TAG", "repository mJParser onSuccess");
-                        mSuccess=success;
-                        callback.onSuccess(success);
-                    }
+        mNet.setCredentials(login,password);
+        if(firstLoad) {
+            mNet.isAuth(new NetContract.LoadSuccessCallback() {
+                            @Override
+                            public void onResponse(String response) {
+                                Log.e("TAG", "repository onResponse");
+                                mJParser.getSuccess(new JParserContract.ParsSuccessCallback() {
+                                                        @Override
+                                                        public void onSuccess(boolean success) {
+                                                            Log.e("TAG", "repository mJParser onSuccess");
+                                                            mSuccess=success;
+                                                            callback.onSuccess(success);
+                                                        }
 
-                    @Override
-                    public void errorSuccess(String errorMessage) {
-                        Log.e("TAG", "repository mJParser errorSuccess");
-                        callback.logOut(errorMessage);
-                    }
-                },
-                response);
-            }
-            @Override
-            public void connectionError(String errorMessage) {
-                Log.e("TAG", "repository connectionError");
-                callback.connectionError(errorMessage);
-            }
-        },
-                login,
-                password
-        );
+                                                        @Override
+                                                        public void errorSuccess(String errorMessage) {
+                                                            Log.e("TAG", "repository mJParser errorSuccess");
+                                                            callback.logOut(errorMessage);
+                                                        }
+                                                    },
+                                        response);
+                            }
+
+                            @Override
+                            public void connectionError(String errorMessage) {
+                                Log.e("TAG", "repository connectionError");
+                                if (mStorageFull) {
+                                    callback.onSuccess(true);
+                                    callback.connectionError(errorMessage + ". Данные загружены из кэша");
+                                } else {
+                                    callback.connectionError(errorMessage);
+                                }
+
+                            }
+                        }
+            );
+        }
     }
 
     @Override
-    public void getDepartments(@NonNull LoadDepartmentsCallback callback, boolean refreshCache) {
+    public void getDepartments(@NonNull LoadDepartmentsCallback callback,@NonNull boolean refreshCache,  @NonNull boolean firstLoad) {
+        Log.e("TAG", "repository getDepartments "+refreshCache);
         if(mCachedDepartment!=null && !refreshCache){
+            Log.e("TAG", "repository getDepartments cachedDepartment");
             //из кэша
             return;
         }
         if(refreshCache){
-            getDepartmentsFromNet(callback);
+            Log.e("TAG", "repository getDepartments refreshCache");
+            getDepartmentsFromNet(callback,firstLoad);
         }
         //добавить not available
     }
 
-    private void getDepartmentsFromNet(@NonNull final LoadDepartmentsCallback callback){
-        if(mSuccess){
-        mJParser.getDepartments(new JParserContract.ParsDepartmentsCallback() {
+    private void getDepartmentsFromNet(@NonNull final LoadDepartmentsCallback callback,@NonNull final boolean firstLoad){
+        isAuth(new LoadSuccessCallback() {
             @Override
-            public void onDepartmentsLoaded(List<DepartmentModel> departments) {
-                refreshCache(departments);
+            public void onSuccess(boolean success) {
+
+            }
+
+            @Override
+            public void logOut(String errorMessage) {
+
+            }
+
+            @Override
+            public void connectionError(String errorMessage) {
+
             }
         },
-                "");
+        firstLoad);
+        if(mStorageFull){
+            mNet.getDepartments(new NetContract.LoadDepartmentsCallback() {
+                @Override
+                public void onResponse(String response) {
+                    mJParser.getDepartments(new JParserContract.ParsDepartmentsCallback(){
+                                                @Override
+                                                public void onDepartmentsLoaded(List<DepartmentModel> departments) {
+                                                    Log.e("TAG", "repository mJParser pnDepartmentsLoaded");
+                                                   callback.onDepartmentsLoaded(departments);
+                                                }
+
+                                                @Override
+                                                public void errorSuccess(String errorMessage) {
+
+                                                }
+                                            },
+                    response);
+                }
+
+                @Override
+                public void connectionError(String errorMessage) {
+                    if(mCachedDepartment!=null){
+                        getDepartments(callback,true, firstLoad);
+                        callback.connectionError(errorMessage);
+                    }else {
+                        callback.notAvailable(errorMessage);
+                    }
+                }
+            },
+            true
+                );
         }else{
             callback.logOut("Ошибка авторизации");
         }

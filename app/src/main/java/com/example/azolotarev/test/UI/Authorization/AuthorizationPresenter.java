@@ -41,7 +41,7 @@ public class AuthorizationPresenter implements AuthorizationContract.Presenter {
                 mAuthorizationView.showConnectionError(errorMessage);
             }
         }
-        ,login, password);
+        ,login, password, true);
     }
 
     @Override

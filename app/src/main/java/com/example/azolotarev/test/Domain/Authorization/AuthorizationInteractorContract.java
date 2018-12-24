@@ -9,7 +9,7 @@ public interface AuthorizationInteractorContract {
     interface getSuccessCallback extends BaseCallback.BaseErrorCallback{
         void onSuccess(boolean success);
     }
-    void logIn(@NonNull final getSuccessCallback callback, @NonNull String login, @NonNull String password);
+    void logIn(@NonNull final getSuccessCallback callback, @NonNull String login, @NonNull String password, @NonNull boolean firstLoad);
     void setProgressListener(@NonNull ProgressContract listener);
 
 

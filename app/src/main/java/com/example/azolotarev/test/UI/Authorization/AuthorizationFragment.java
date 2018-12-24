@@ -1,14 +1,21 @@
 package com.example.azolotarev.test.UI.Authorization;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -64,10 +71,16 @@ public class AuthorizationFragment extends Fragment implements AuthorizationCont
     private void initLogInButton( View v) {
         mLogInButton=(Button)v.findViewById(R.id.button_log_in);
         mLogInButton.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("WrongConstant")
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
                if(!mLoginField.getText().toString().trim().isEmpty() && !mPasswordField.getText().toString().trim().isEmpty()){
                    mPresenter.logIn(mLoginField.getText().toString(), mPasswordField.getText().toString());
+                   mLoginField.clearFocus();
+                   mPasswordField.clearFocus();
+                   InputMethodManager inputMethodManager=(InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                   inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
                }
             }
         });
@@ -97,7 +110,7 @@ public class AuthorizationFragment extends Fragment implements AuthorizationCont
 
     @Override
     public void showDepartmentsList() {
-        Intent intent = new Intent(getContext(), DepartmentListActivity.class);
+        Intent intent = new Intent(getActivity().getApplicationContext(), DepartmentListActivity.class);
         intent.putExtra(DepartmentListActivity.EXTRA_SUCCESS,true);
         startActivity(intent);
     }

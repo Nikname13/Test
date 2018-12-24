@@ -6,10 +6,10 @@ import com.example.azolotarev.test.UI.ProgressContract;
 
 public interface DepartmentInteractorContract {
 
-    interface getDepartmentsCallback extends BaseCallback.BaseLoadDepartmentsCallback {
+    interface getDepartmentsCallback extends BaseCallback.BaseLoadDepartmentsCallback, BaseCallback.BaseErrorCallback {
     }
 
-    void getDepartments(@NonNull final getDepartmentsCallback callback);
+    void getDepartments(@NonNull final getDepartmentsCallback callback, @NonNull boolean firstLoad);
     void setProgressListener(@NonNull ProgressContract listener);
     void refreshDepartments();
 }

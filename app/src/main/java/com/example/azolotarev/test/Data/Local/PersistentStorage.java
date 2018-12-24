@@ -24,6 +24,7 @@ public class PersistentStorage {
     }
 
     public static void addCredentials(String login, String password){
+        Log.e("TAG", "PersistentStorage addCredentials "+login+" "+password);
         if(sSettings==null) init();
         sEditor.putString(LOGIN, login);
         sEditor.putString(PASSWORD, password);

@@ -1,5 +1,6 @@
 package com.example.azolotarev.test.UI.DepartmentsList;
 
+import android.util.Log;
 import com.example.azolotarev.test.Domain.DepartmentsList.DepartmentInteractorContract;
 import com.example.azolotarev.test.Model.DepartmentModel;
 
@@ -19,22 +20,18 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
     }
 
     @Override
-    public void showConnectionError() {
-
-    }
-
-    @Override
     public void start() {
-        loadDepartments(false);
+        Log.e("TAG", "start department");
+        loadDepartments(false, false);
     }
 
     @Override
-    public void loadDepartments(boolean freshUpdate) {
+    public void loadDepartments(boolean freshUpdate, boolean firstLoad) {
         if(freshUpdate) mInteractor.refreshDepartments();
         mInteractor.getDepartments(new DepartmentInteractorContract.getDepartmentsCallback() {
             @Override
             public void onDepartmentsLoaded(List<DepartmentModel> departments) {
-
+                mDepartmentView.showDepartmentsList(departments);
             }
 
             @Override
@@ -44,14 +41,15 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
 
             @Override
             public void logOut(String errorMessage) {
-
+                mDepartmentView.showSuccessError(errorMessage);
             }
 
             @Override
             public void connectionError(String errorMessage) {
-
+                mDepartmentView.showConnectionError(errorMessage);
             }
-        });
+        },
+        firstLoad);
     }
 
     @Override

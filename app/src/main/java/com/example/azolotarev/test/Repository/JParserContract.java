@@ -9,6 +9,7 @@ public  interface JParserContract {
 
     interface ParsDepartmentsCallback{
         void onDepartmentsLoaded(List<DepartmentModel> departments);
+        void errorSuccess(String errorMessage);
     }
     interface ParsSuccessCallback{
         void onSuccess(boolean success);

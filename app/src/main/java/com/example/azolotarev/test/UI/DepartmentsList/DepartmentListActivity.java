@@ -1,5 +1,7 @@
 package com.example.azolotarev.test.UI.DepartmentsList;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
 import android.support.v4.app.Fragment;
 import com.example.azolotarev.test.Data.Net.Connect;
 import com.example.azolotarev.test.Data.Net.Net;
@@ -22,11 +24,11 @@ public class DepartmentListActivity extends GenericFragmentActivity {
     private Fragment logIn() {
         if(getIntent().getBooleanExtra(EXTRA_SUCCESS, false)){
             DepartmentListFragment fragment=DepartmentListFragment.newInstance();
-            new DepartmentListPresenter(fragment, new DepartmentInteractor(new Repository(getApplicationContext(),new Net(new Connect()))));
+            new DepartmentListPresenter(fragment, new DepartmentInteractor(new Repository(getApplicationContext(),new Net(new Connect(),(ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE)))));
             return fragment;
         }else{
             AuthorizationFragment fragment=AuthorizationFragment.newInstance();
-            new AuthorizationPresenter(fragment,new AuthorizationInteractor(new Repository(getApplicationContext(),new Net(new Connect()))));
+            new AuthorizationPresenter(fragment,new AuthorizationInteractor(new Repository(getApplicationContext(),new Net(new Connect(),(ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE)))));
             return fragment;
         }
     }

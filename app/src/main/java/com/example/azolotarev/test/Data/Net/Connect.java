@@ -1,6 +1,9 @@
 package com.example.azolotarev.test.Data.Net;
 
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
+import android.support.v4.net.ConnectivityManagerCompat;
 import android.util.Log;
 import com.example.azolotarev.test.Service.ErrorLab;
 
@@ -32,9 +35,10 @@ public class Connect implements ConnectContract {
     }
 
     private void getJSONString(@NonNull GETCallback callback, HttpURLConnection connect) {
+        Log.e("TAG", "Connect getJSON");
         try {
             int cod=connect.getResponseCode();
-            ErrorLab.errorMessage(String.valueOf(cod));
+            Log.e("TAG", "connect response cod getJSON"+connect.getResponseCode());
             if(cod==HttpURLConnection.HTTP_OK){
                 //InputStream in=new BufferedInputStream(connect.getInputStream());
                 BufferedReader br = new BufferedReader(new InputStreamReader(connect.getInputStream(), StandardCharsets.UTF_8));
@@ -48,20 +52,23 @@ public class Connect implements ConnectContract {
                 connect.disconnect();
                 callback.onResponse(sb.toString());
             }else{
+                Log.e("TAG", "connect ошибка подключения getJSON"+connect.getResponseCode());
                 callback.connectionError("Ошибка подключения "+connect.getResponseCode());
             }
         } catch (IOException ex) {
+            Log.e("TAG", "Connect exception connection getJSON"+ex);
             ErrorLab.errorMessage(ex.toString());
         }
     }
 
     @Override
-    public void GET(@NonNull GETCallback callback, @NonNull String url) {
+    public void GET(@NonNull GETCallback callback, @NonNull String url, @NonNull NetworkInfo networkInfo) {
         HttpURLConnection connect = connection(url, "GET");
-        if (connect != null) {
+        if (networkInfo!=null && networkInfo.isConnected()) {
             getJSONString(callback,connect);
         }else {
-            callback.connectionError("Ошибка подключения");
+            Log.e("TAG", "Connect GET connect=null");
+            callback.connectionError("Отсутствует подключение к интернету");
         }
     }
 }

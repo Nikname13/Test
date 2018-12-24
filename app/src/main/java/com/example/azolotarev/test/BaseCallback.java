@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface BaseCallback {
 
-    interface BaseLoadDepartmentsCallback extends BaseErrorCallback{
+    interface BaseLoadDepartmentsCallback{
         void onDepartmentsLoaded(List<DepartmentModel> departments);
         void notAvailable(String errorMessage);
     }

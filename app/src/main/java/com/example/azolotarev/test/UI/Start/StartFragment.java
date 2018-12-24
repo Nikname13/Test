@@ -1,5 +1,8 @@
 package com.example.azolotarev.test.UI.Start;
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -19,6 +22,7 @@ import com.example.azolotarev.test.R;
 import com.example.azolotarev.test.Repository.Repository;
 import com.example.azolotarev.test.UI.Authorization.AuthorizationFragment;
 import com.example.azolotarev.test.UI.Authorization.AuthorizationPresenter;
+import com.example.azolotarev.test.UI.DepartmentsList.DepartmentListActivity;
 
 public class StartFragment extends Fragment implements StartContract.View {
 
@@ -59,13 +63,16 @@ public class StartFragment extends Fragment implements StartContract.View {
 
     @Override
     public void showDepartmentsList() {
+        Intent intent=new Intent(getContext(),DepartmentListActivity.class);
+        intent.putExtra(DepartmentListActivity.EXTRA_SUCCESS, true);
+        startActivity(intent);
 
     }
 
     @Override
     public void showAuthorization() {
         AuthorizationFragment fragment=AuthorizationFragment.newInstance();
-        new AuthorizationPresenter(fragment,new AuthorizationInteractor(new Repository(getContext(),new Net(new Connect()))));
+        new AuthorizationPresenter(fragment,new AuthorizationInteractor(new Repository(getContext(),new Net(new Connect(),(ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE)))));
         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,fragment).commit();
     }
 

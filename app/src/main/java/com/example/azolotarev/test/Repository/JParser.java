@@ -13,7 +13,19 @@ public class JParser implements JParserContract {
 
     @Override
     public void getDepartments(@NonNull ParsDepartmentsCallback callback, String jsonString) {
-        callback.onDepartmentsLoaded(parsJson(jsonString));
+        Log.e("TAG", "jparser getDepartments");
+        if(jsonString==null)
+        Log.e("TAG", "jparser getDepartments jsonString = null");
+        try {
+            JSONObject json=new JSONObject(jsonString);
+            if(json.length()!=0)
+            callback.onDepartmentsLoaded(parsJson(json));
+            else callback.errorSuccess("Ошибка данных либо пустой список");
+        } catch (JSONException e) {
+            Log.e("TAG",e.getMessage());
+            e.printStackTrace();
+            callback.errorSuccess(e.getMessage());
+        }
     }
 
     @Override
@@ -29,7 +41,7 @@ public class JParser implements JParserContract {
         }
     }
 
-    private List<DepartmentModel> parsJson(String jsonString) {
+    private List<DepartmentModel> parsJson(JSONObject json) {
         List<DepartmentModel> list=new ArrayList<>();
         for(int i=0;i<10;i++){
             list.add(new DepartmentModel(i,"Отдел "+i));

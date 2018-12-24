@@ -10,8 +10,7 @@ import com.example.azolotarev.test.UI.ProgressContract;
 public class AuthorizationInteractor implements AuthorizationInteractorContract{
 
     private boolean mSuccess;
-    private String mConnectionError;
-    private String mSuccessError;
+    private String mConnectionError,mSuccessError;
     private RepositoryContract mRepository;
     private ProgressContract mProgressListener;
 
@@ -20,9 +19,9 @@ public class AuthorizationInteractor implements AuthorizationInteractorContract{
         mSuccess=false;
     }
     @Override
-    public void logIn(@NonNull final getSuccessCallback callback, @NonNull  String login,@NonNull String password) {
+    public void logIn(@NonNull final getSuccessCallback callback, @NonNull  String login,@NonNull String password, @NonNull boolean firstLoad) {
         Log.e("TAG", "auth interactor login");
-        new AsyncAuth(callback).execute(login,password);
+        new AsyncAuth(callback,firstLoad).execute(login,password);
     }
 
     @Override
@@ -32,8 +31,11 @@ public class AuthorizationInteractor implements AuthorizationInteractorContract{
 
     private class AsyncAuth extends AsyncTask<String, Void, Void> {
         private getSuccessCallback mCallback;
-        public AsyncAuth(getSuccessCallback callback) {
+        private boolean mFirstLoad;
+
+        public AsyncAuth(@NonNull getSuccessCallback callback, @NonNull boolean firstLoad) {
             mCallback=callback;
+            mFirstLoad=firstLoad;
         }
 
         @Override
@@ -66,7 +68,7 @@ public class AuthorizationInteractor implements AuthorizationInteractorContract{
                      Log.e("TAG", "auth interactor connectionError");
                      mConnectionError=errorMessage;
                  }
-             }, strings[0], strings[1]);
+             }, strings[0], strings[1], mFirstLoad);
             return null;
         }
 

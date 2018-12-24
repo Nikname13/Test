@@ -44,7 +44,7 @@ public class StartPresenter implements StartContract.Presenter {
                 mStartView.showConnectionError(errorMessage);
             }
         },
-                EMPTY_LOGIN, EMPTY_PASSWORD);
+                EMPTY_LOGIN, EMPTY_PASSWORD, true);
     }
 
     @Override
