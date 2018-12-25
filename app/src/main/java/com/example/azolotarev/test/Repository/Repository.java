@@ -1,13 +1,10 @@
 package com.example.azolotarev.test.Repository;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import com.example.azolotarev.test.Data.Local.PersistentStorage;
 import com.example.azolotarev.test.Data.Net.NetContract;
 import com.example.azolotarev.test.Model.DepartmentModel;
-import com.example.azolotarev.test.Data.Net.Connect;
-import com.example.azolotarev.test.Data.Local.PersistentStorage;
-import com.example.azolotarev.test.Data.Net.URLBuilder;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -16,7 +13,7 @@ import java.util.Map;
 public  class Repository implements RepositoryContract {
 
 
-    private final Context mContext;
+    private PersistentStorage mStorage;
     private boolean mSuccess =false;
     private JParserContract mJParser;
     private boolean mStorageFull=false;
@@ -24,11 +21,10 @@ public  class Repository implements RepositoryContract {
     Map<String,DepartmentModel> mCachedDepartment;
 
 
-    public Repository(@NonNull Context context, @NonNull NetContract net) {
+    public Repository(@NonNull PersistentStorage storage, @NonNull NetContract net) {
         mNet=net;
         mJParser=new JParser();
-        mContext = context;
-        PersistentStorage.init(mContext);
+        mStorage=storage;
     }
 
     @Override
@@ -40,26 +36,25 @@ public  class Repository implements RepositoryContract {
         }else {
             Log.e("TAG", "repository not Empty");
             getSuccessFromNet(callback,login,password, firstLoad);
-       checkStorage(mSuccess,login,password);
+       checkStorage(mSuccess,login,password,firstLoad);
         }
     }
 
     private void isAuth(@NonNull final LoadSuccessCallback callback,@NonNull boolean firstLoad ){
-        if(PersistentStorage.getLOGIN().isEmpty() || PersistentStorage.getPASSWORD().isEmpty()) {
+        if(mStorage.getLOGIN().isEmpty() || mStorage.getPASSWORD().isEmpty()) {
             callback.onSuccess(false);
         }else{
             mStorageFull=true;
-             isAuth(callback,PersistentStorage.getLOGIN(), PersistentStorage.getPASSWORD(),firstLoad);
+             isAuth(callback,mStorage.getLOGIN(), mStorage.getPASSWORD(),firstLoad);
         }
     }
 
-    private void checkStorage(boolean success, String login, String password){
+    private void checkStorage(boolean success, String login, String password, boolean firstLoad){
         Log.e("TAG", "repository checkStorage "+success);
         if(success){
-            if(!mStorageFull) PersistentStorage.addCredentials(login, password);
+            if(!mStorageFull) mStorage.addCredentials(login, password);
         }else{
-            //удаляется из сторэджа т.к. локальная проверка авторизации
-            if(mStorageFull) PersistentStorage.clearCredentials();
+            if(mStorageFull && firstLoad) mStorage.clearCredentials();
         }
     }
 

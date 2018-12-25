@@ -1,4 +1,4 @@
-package com.example.azolotarev.test.UI.DepartmentsList;
+package com.example.azolotarev.test.UI.DepartmentsList.RootDepartments;
 
 import android.util.Log;
 import com.example.azolotarev.test.Domain.DepartmentsList.DepartmentInteractorContract;
@@ -18,6 +18,8 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
         mInteractor = interactor;
         mInteractor.setProgressListener(this);
     }
+
+
 
     @Override
     public void start() {
@@ -50,6 +52,11 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
             }
         },
         firstLoad);
+    }
+
+    @Override
+    public void openDepartmentDetail(DepartmentModel selectedDepartment) {
+
     }
 
     @Override

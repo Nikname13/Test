@@ -9,12 +9,11 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
+import com.example.azolotarev.test.Data.Local.PersistentStorage;
 import com.example.azolotarev.test.Data.Net.Connect;
 import com.example.azolotarev.test.Data.Net.Net;
 import com.example.azolotarev.test.Domain.Authorization.AuthorizationInteractor;
@@ -22,7 +21,7 @@ import com.example.azolotarev.test.R;
 import com.example.azolotarev.test.Repository.Repository;
 import com.example.azolotarev.test.UI.Authorization.AuthorizationFragment;
 import com.example.azolotarev.test.UI.Authorization.AuthorizationPresenter;
-import com.example.azolotarev.test.UI.DepartmentsList.DepartmentListActivity;
+import com.example.azolotarev.test.UI.DepartmentsList.RootDepartments.DepartmentListActivity;
 
 public class StartFragment extends Fragment implements StartContract.View {
 
@@ -72,7 +71,7 @@ public class StartFragment extends Fragment implements StartContract.View {
     @Override
     public void showAuthorization() {
         AuthorizationFragment fragment=AuthorizationFragment.newInstance();
-        new AuthorizationPresenter(fragment,new AuthorizationInteractor(new Repository(getContext(),new Net(new Connect(),(ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE)))));
+        new AuthorizationPresenter(fragment,new AuthorizationInteractor(new Repository(PersistentStorage.init(getActivity().getApplicationContext()),new Net(new Connect(),(ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE)))));
         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,fragment).commit();
     }
 

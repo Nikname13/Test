@@ -12,11 +12,16 @@ public class PersistentStorage {
 
     private static SharedPreferences sSettings=null;
     private static SharedPreferences.Editor sEditor=null;
-    private static Context sContext =null;
+    private static Context sContext=null;
+    private static PersistentStorage mPersistentStorage;
 
-    public static void init(Context context){
+    public static PersistentStorage init(Context context){
+        if(mPersistentStorage==null) mPersistentStorage=new PersistentStorage();
         sContext =context;
+        return mPersistentStorage;
     }
+
+    private PersistentStorage(){}
 
     private static void init(){
         sSettings=sContext.getSharedPreferences(CREDENTIALS,Context.MODE_PRIVATE);
