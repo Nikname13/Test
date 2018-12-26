@@ -3,6 +3,7 @@ package com.example.azolotarev.test.UI.Authorization;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,8 +18,17 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import com.example.azolotarev.test.Data.Local.PersistentStorage;
+import com.example.azolotarev.test.Data.Net.Connect;
+import com.example.azolotarev.test.Data.Net.Net;
+import com.example.azolotarev.test.Domain.Authorization.AuthorizationInteractor;
+import com.example.azolotarev.test.Domain.DepartmentsList.DepartmentInteractor;
 import com.example.azolotarev.test.R;
-import com.example.azolotarev.test.UI.DepartmentsList.RootDepartments.DepartmentListActivity;
+import com.example.azolotarev.test.Repository.Repository;
+import com.example.azolotarev.test.UI.Main.DepartmentsList.RootDepartments.DepartmentListFragment;
+import com.example.azolotarev.test.UI.Main.DepartmentsList.RootDepartments.DepartmentListPresenter;
+import com.example.azolotarev.test.UI.Start.StartFragment;
+import com.example.azolotarev.test.UI.Start.StartPresenter;
 
 
 public class AuthorizationFragment extends Fragment implements AuthorizationContract.View {
@@ -78,6 +88,7 @@ public class AuthorizationFragment extends Fragment implements AuthorizationCont
                    mLoginField.clearFocus();
                    mPasswordField.clearFocus();
                    InputMethodManager inputMethodManager=(InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                   if(getActivity().getCurrentFocus()!=null)
                    inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
                }
             }
@@ -108,9 +119,15 @@ public class AuthorizationFragment extends Fragment implements AuthorizationCont
 
     @Override
     public void showDepartmentsList() {
-        Intent intent = new Intent(getActivity().getApplicationContext(), DepartmentListActivity.class);
-        intent.putExtra(DepartmentListActivity.EXTRA_SUCCESS,true);
-        startActivity(intent);
+        StartFragment fragment=StartFragment.newInstance(true);
+        new StartPresenter(fragment,new AuthorizationInteractor(
+                new Repository(PersistentStorage.init(getActivity().getApplicationContext()),
+                        new Net(new Connect(),
+                                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE)))),
+                new DepartmentInteractor(new Repository(PersistentStorage.init(getActivity().getApplicationContext()),
+                        new Net(new Connect(),
+                                (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE)))));
+        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,fragment).commit();
     }
 
     @Override

@@ -1,8 +1,8 @@
-package com.example.azolotarev.test.UI.DepartmentsList.RootDepartments;
+package com.example.azolotarev.test.UI.Main.DepartmentsList.RootDepartments;
 
 import android.support.annotation.NonNull;
 import com.example.azolotarev.test.Model.DepartmentModel;
-import com.example.azolotarev.test.UI.DepartmentsList.ItemClickListener;
+import com.example.azolotarev.test.UI.Main.DepartmentsList.ItemClickListener;
 import com.example.azolotarev.test.UI.ProgressContract;
 import com.example.azolotarev.test.UI.BasePresenter;
 import com.example.azolotarev.test.UI.BaseView;

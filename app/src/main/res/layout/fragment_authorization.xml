@@ -40,7 +40,7 @@
                 android:layout_height="300dp"
                 android:layout_gravity="center"
                 android:id="@+id/progress_card"
-                android:visibility="gone">
+                android:visibility="visible">
             <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="wrap_content"

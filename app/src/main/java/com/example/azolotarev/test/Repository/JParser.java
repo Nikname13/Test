@@ -2,7 +2,9 @@ package com.example.azolotarev.test.Repository;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.ListView;
 import com.example.azolotarev.test.Model.DepartmentModel;
+import com.example.azolotarev.test.Model.EmployeeModel;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -43,7 +45,19 @@ public class JParser implements JParserContract {
 
     private List<DepartmentModel> parsJson(JSONObject json) {
         List<DepartmentModel> list=new ArrayList<>();
-        for(int i=0;i<10;i++){
+        for(int i=0;i<25;i++){
+            DepartmentModel departmentModel=new DepartmentModel(i,"Отдел "+i);
+            List<DepartmentModel> underDepartment=new ArrayList<>();
+            List<EmployeeModel> employees=new ArrayList<>();
+            for(int y=0;y<10;y++){
+               underDepartment.add(new DepartmentModel(y,"Подотдел "+i));
+            }
+            for(int x=0;x<15;x++){
+                employees.add(new EmployeeModel(x,"Сотрудник "+x));
+            }
+            //if(i%2==0)
+                departmentModel.setDepartmentsList(underDepartment);
+            //else departmentModel.setEmploeeList(employees);
             list.add(new DepartmentModel(i,"Отдел "+i));
         }
         return list;

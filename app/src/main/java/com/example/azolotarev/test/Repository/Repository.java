@@ -36,7 +36,7 @@ public  class Repository implements RepositoryContract {
         }else {
             Log.e("TAG", "repository not Empty");
             getSuccessFromNet(callback,login,password, firstLoad);
-       checkStorage(mSuccess,login,password,firstLoad);
+       checkStorage(mSuccess,login,password);
         }
     }
 
@@ -49,12 +49,11 @@ public  class Repository implements RepositoryContract {
         }
     }
 
-    private void checkStorage(boolean success, String login, String password, boolean firstLoad){
+    private void checkStorage(boolean success, String login, String password){
         Log.e("TAG", "repository checkStorage "+success);
         if(success){
-            if(!mStorageFull) mStorage.addCredentials(login, password);
-        }else{
-            if(mStorageFull && firstLoad) mStorage.clearCredentials();
+            mStorage.clearCredentials();
+            mStorage.addCredentials(login, password);
         }
     }
 

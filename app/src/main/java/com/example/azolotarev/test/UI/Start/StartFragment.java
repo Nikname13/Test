@@ -1,7 +1,6 @@
 package com.example.azolotarev.test.UI.Start;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -17,22 +16,35 @@ import com.example.azolotarev.test.Data.Local.PersistentStorage;
 import com.example.azolotarev.test.Data.Net.Connect;
 import com.example.azolotarev.test.Data.Net.Net;
 import com.example.azolotarev.test.Domain.Authorization.AuthorizationInteractor;
+import com.example.azolotarev.test.Domain.DepartmentsList.DepartmentInteractor;
+import com.example.azolotarev.test.Model.DepartmentModel;
 import com.example.azolotarev.test.R;
 import com.example.azolotarev.test.Repository.Repository;
 import com.example.azolotarev.test.UI.Authorization.AuthorizationFragment;
 import com.example.azolotarev.test.UI.Authorization.AuthorizationPresenter;
-import com.example.azolotarev.test.UI.DepartmentsList.RootDepartments.DepartmentListActivity;
+import com.example.azolotarev.test.UI.Main.DepartmentsList.RootDepartments.DepartmentListFragment;
+import com.example.azolotarev.test.UI.Main.DepartmentsList.RootDepartments.DepartmentListPresenter;
+
+import java.util.List;
 
 public class StartFragment extends Fragment implements StartContract.View {
 
     private StartContract.Presenter mPresenter;
     private FrameLayout mFrameLayout;
     private CardView mProgress;
+    private static final String ARG_SUCCESS="success";
+    private boolean mSuccess;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mSuccess=getArguments().getBoolean(ARG_SUCCESS,false);
+    }
 
     @Override
     public void onResume() {
         super.onResume();
-        mPresenter.start();
+        mPresenter.start(mSuccess);
     }
 
     @Nullable
@@ -44,8 +56,12 @@ public class StartFragment extends Fragment implements StartContract.View {
         return v;
     }
 
-    public static StartFragment newInstance() {
-        return new StartFragment();
+    public static StartFragment newInstance(@NonNull boolean success) {
+        Bundle arg=new Bundle();
+        arg.putBoolean(ARG_SUCCESS,success);
+        StartFragment fragment=new StartFragment();
+        fragment.setArguments(arg);
+        return fragment;
     }
 
     @Override
@@ -62,10 +78,9 @@ public class StartFragment extends Fragment implements StartContract.View {
 
     @Override
     public void showDepartmentsList() {
-        Intent intent=new Intent(getContext(),DepartmentListActivity.class);
-        intent.putExtra(DepartmentListActivity.EXTRA_SUCCESS, true);
-        startActivity(intent);
-
+        DepartmentListFragment fragment=DepartmentListFragment.newInstance();
+        new DepartmentListPresenter(fragment, new DepartmentInteractor(new Repository(PersistentStorage.init(getActivity().getApplicationContext()),new Net(new Connect(),(ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE)))));
+        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,fragment).commit();
     }
 
     @Override
