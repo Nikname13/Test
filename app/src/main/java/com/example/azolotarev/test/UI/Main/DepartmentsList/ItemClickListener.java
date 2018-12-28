@@ -5,5 +5,5 @@ import android.support.v7.widget.RecyclerView;
 import com.example.azolotarev.test.Model.DepartmentModel;
 
 public interface ItemClickListener {
-    void onClickItem(@NonNull DepartmentModel department,@NonNull RecyclerView container);
+    void onClickItem(@NonNull DepartmentModel department, @NonNull int containerId);
 }

@@ -15,11 +15,12 @@ public interface DepartmentListContract {
         void showConnectionError(String errorMessage);
         void showSuccessError(String errorMessage);
         void showAuthorization();
-        void showDepartmentsList(List<DepartmentModel> departmentList);
+        void showDepartmentsList(@NonNull List<DepartmentModel> departmentList);
+        void showDepartmentChildren(@NonNull List<DepartmentModel> departmentList, @NonNull int containerId);
     }
 
     interface Presenter extends BasePresenter,ProgressContract{
         void loadDepartments(@NonNull boolean freshUpdate, @NonNull boolean firstLoad);
-        void openDepartmentDetail(DepartmentModel selectedDepartment);
+        void openDepartmentDetail(@NonNull DepartmentModel selectedDepartment, @NonNull int containerId);
     }
 }

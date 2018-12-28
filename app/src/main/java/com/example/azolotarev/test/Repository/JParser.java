@@ -45,12 +45,12 @@ public class JParser implements JParserContract {
 
     private List<DepartmentModel> parsJson(JSONObject json) {
         List<DepartmentModel> list=new ArrayList<>();
-        for(int i=0;i<25;i++){
+        for(int i=0;i<100;i++){
             DepartmentModel departmentModel=new DepartmentModel(i,"Отдел "+i);
             List<DepartmentModel> underDepartment=new ArrayList<>();
             List<EmployeeModel> employees=new ArrayList<>();
-            for(int y=0;y<10;y++){
-               underDepartment.add(new DepartmentModel(y,"Подотдел "+i));
+            for(int y=0;y<=i;y++){
+               underDepartment.add(new DepartmentModel(y,"Подотдел "+y));
             }
             for(int x=0;x<15;x++){
                 employees.add(new EmployeeModel(x,"Сотрудник "+x));
@@ -58,7 +58,7 @@ public class JParser implements JParserContract {
             //if(i%2==0)
                 departmentModel.setDepartmentsList(underDepartment);
             //else departmentModel.setEmploeeList(employees);
-            list.add(new DepartmentModel(i,"Отдел "+i));
+            list.add(departmentModel);
         }
         return list;
     }

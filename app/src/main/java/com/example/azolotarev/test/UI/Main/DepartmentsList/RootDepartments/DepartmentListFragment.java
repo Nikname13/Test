@@ -1,5 +1,7 @@
 package com.example.azolotarev.test.UI.Main.DepartmentsList.RootDepartments;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -7,12 +9,20 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import com.example.azolotarev.test.Data.Local.PersistentStorage;
+import com.example.azolotarev.test.Data.Net.Connect;
+import com.example.azolotarev.test.Data.Net.Net;
+import com.example.azolotarev.test.Domain.DepartmentsList.DepartmentInteractor;
 import com.example.azolotarev.test.Model.DepartmentModel;
 import com.example.azolotarev.test.R;
+import com.example.azolotarev.test.Repository.Repository;
+import com.example.azolotarev.test.UI.Main.DepartmentsList.ChildrenDepartments.ChildrenDepartmentFragment;
+import com.example.azolotarev.test.UI.Main.DepartmentsList.ChildrenDepartments.ChildrenDepartmentPresenter;
 import com.example.azolotarev.test.UI.Main.DepartmentsList.DepartmentsAdapter;
 
 
@@ -24,7 +34,6 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     private RecyclerView mRecyclerViewRoot;
     private DepartmentsAdapter mDepartmentsAdapter;
     private RelativeLayout mRelativeLayout;
-    private static final String ARG_DEPARTMENT_OBJECT="department_object";
 
     public static DepartmentListFragment newInstance() {
         return new DepartmentListFragment();
@@ -42,7 +51,6 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
         mRecyclerViewRoot =(RecyclerView)v.findViewById(R.id.departments_recycler_view);
         mRecyclerViewRoot.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRelativeLayout=(RelativeLayout)v.findViewById(R.id.departments_layout);
-
         return v;
     }
 
@@ -71,7 +79,18 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     @Override
     public void showDepartmentsList(List<DepartmentModel> departmentList) {
         mDepartmentsAdapter=new DepartmentsAdapter(departmentList, getActivity(),this);
+        mDepartmentsAdapter.setHasStableIds(true);
         mRecyclerViewRoot.setAdapter(mDepartmentsAdapter);
+    }
+
+    @Override
+    public void showDepartmentChildren(@NonNull List<DepartmentModel> departmentList,@NonNull int containerId) {
+        Log.e("TAG","departmentlistfragment showDepartmentChildren container "+containerId);
+         ChildrenDepartmentFragment fragment = ChildrenDepartmentFragment.newInstance(departmentList);
+            new ChildrenDepartmentPresenter(fragment, new DepartmentInteractor(new Repository(PersistentStorage.init(getActivity().getApplicationContext()),
+                    new Net(new Connect(),
+                            (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE)))));
+            getActivity().getSupportFragmentManager().beginTransaction().replace(containerId, fragment).commit();
     }
 
     @Override
@@ -90,9 +109,15 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     }
 
     @Override
-    public void onClickItem(@NonNull DepartmentModel department,@NonNull RecyclerView container) {
-       // mPresenter.openDepartmentDetail(department);
+    public void onClickItem(@NonNull DepartmentModel department, @NonNull int containerId) {
+        Log.e("TAG","departments list fragment onClickItem container id= "+containerId);
+        for(Fragment fragment:getActivity().getSupportFragmentManager().getFragments()){
+            Log.e("TAG","departments list fragment onClickItem fragment tag "+fragment.toString());
+        }
+        mPresenter.openDepartmentDetail(department,containerId);
         Snackbar snackbar=Snackbar.make(mRelativeLayout,department.getName(),Snackbar.LENGTH_SHORT);
         snackbar.show();
     }
+
+
 }

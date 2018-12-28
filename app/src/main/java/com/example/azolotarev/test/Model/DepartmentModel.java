@@ -2,9 +2,10 @@ package com.example.azolotarev.test.Model;
 
 import android.support.annotation.NonNull;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class DepartmentModel extends BaseModel {
+public class DepartmentModel extends BaseModel implements Serializable {
 
     private List<EmployeeModel> mEmploeeList;
     private List<DepartmentModel> mDepartmentsList;

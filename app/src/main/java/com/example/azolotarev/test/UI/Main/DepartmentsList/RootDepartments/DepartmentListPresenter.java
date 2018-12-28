@@ -1,5 +1,6 @@
 package com.example.azolotarev.test.UI.Main.DepartmentsList.RootDepartments;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 import com.example.azolotarev.test.Domain.DepartmentsList.DepartmentInteractorContract;
 import com.example.azolotarev.test.Model.DepartmentModel;
@@ -8,11 +9,11 @@ import java.util.List;
 
 public class DepartmentListPresenter implements DepartmentListContract.Presenter {
 
-    private DepartmentListContract.View mDepartmentView;
-    private DepartmentInteractorContract mInteractor;
+    private final DepartmentListContract.View mDepartmentView;
+    private final DepartmentInteractorContract mInteractor;
     private boolean mFirstLoad=true;
 
-    public DepartmentListPresenter(DepartmentListContract.View departmentView, DepartmentInteractorContract interactor) {
+    public DepartmentListPresenter(@NonNull DepartmentListContract.View departmentView,@NonNull DepartmentInteractorContract interactor) {
         mDepartmentView = departmentView;
         mDepartmentView.setPresenter(this);
         mInteractor = interactor;
@@ -53,8 +54,9 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
     }
 
     @Override
-    public void openDepartmentDetail(DepartmentModel selectedDepartment) {
-        if(selectedDepartment.getEmploeeList()==null) mDepartmentView.showDepartmentsList(selectedDepartment.getDepartmentsList());
+    public void openDepartmentDetail(@NonNull DepartmentModel selectedDepartment, @NonNull int containerId) {
+        Log.e("TAG","departments list presenter open department detail ");
+        if(selectedDepartment.getEmploeeList()==null) mDepartmentView.showDepartmentChildren(selectedDepartment.getDepartmentsList(),containerId);
     }
 
     @Override
