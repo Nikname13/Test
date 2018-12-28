@@ -101,14 +101,14 @@ public  class Repository implements RepositoryContract {
 
     @Override
     public void getDepartments(@NonNull LoadDepartmentsCallback callback,@NonNull boolean refreshCache,  @NonNull boolean firstLoad) {
-        Log.e("TAG", "repository getDepartments "+refreshCache);
+        Log.e("TAG", "repository getListModel "+refreshCache);
         if(mCachedDepartment!=null && !refreshCache){
-            Log.e("TAG", "repository getDepartments cachedDepartment");
+            Log.e("TAG", "repository getListModel cachedDepartment");
             //из кэша
             return;
         }
         if(refreshCache){
-            Log.e("TAG", "repository getDepartments refreshCache");
+            Log.e("TAG", "repository getListModel refreshCache");
             getDepartmentsFromNet(callback,firstLoad);
         }
         //добавить not available

@@ -18,6 +18,7 @@ import com.example.azolotarev.test.Data.Local.PersistentStorage;
 import com.example.azolotarev.test.Data.Net.Connect;
 import com.example.azolotarev.test.Data.Net.Net;
 import com.example.azolotarev.test.Domain.DepartmentsList.DepartmentInteractor;
+import com.example.azolotarev.test.Model.BaseModel;
 import com.example.azolotarev.test.Model.DepartmentModel;
 import com.example.azolotarev.test.R;
 import com.example.azolotarev.test.Repository.Repository;
@@ -35,6 +36,7 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     private DepartmentsAdapter mDepartmentsAdapter;
     private RelativeLayout mRelativeLayout;
 
+
     public static DepartmentListFragment newInstance() {
         return new DepartmentListFragment();
     }
@@ -47,7 +49,7 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v=inflater.inflate(R.layout.fragment_departments_list,container,false);
+        View v=inflater.inflate(R.layout.fragment_list,container,false);
         mRecyclerViewRoot =(RecyclerView)v.findViewById(R.id.departments_recycler_view);
         mRecyclerViewRoot.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRelativeLayout=(RelativeLayout)v.findViewById(R.id.departments_layout);
@@ -77,20 +79,20 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     }
 
     @Override
-    public void showDepartmentsList(List<DepartmentModel> departmentList) {
-        mDepartmentsAdapter=new DepartmentsAdapter(departmentList, getActivity(),this);
+    public void showDepartmentsList(@NonNull List<Object> departmentList,@NonNull int viewType) {
+        mDepartmentsAdapter=new DepartmentsAdapter(departmentList, getActivity(),this, viewType);
         mDepartmentsAdapter.setHasStableIds(true);
         mRecyclerViewRoot.setAdapter(mDepartmentsAdapter);
     }
 
     @Override
-    public void showDepartmentChildren(@NonNull List<DepartmentModel> departmentList,@NonNull int containerId) {
-        Log.e("TAG","departmentlistfragment showDepartmentChildren container "+containerId);
-         ChildrenDepartmentFragment fragment = ChildrenDepartmentFragment.newInstance(departmentList);
+    public void showDepartmentChildren(@NonNull List<Object> departmentList,@NonNull int containerId, @NonNull int viewType) {
+        Log.e("TAG","departmentlistfragment showChildrenList container "+containerId);
+         ChildrenDepartmentFragment fragment = ChildrenDepartmentFragment.newInstance(departmentList,viewType);
             new ChildrenDepartmentPresenter(fragment, new DepartmentInteractor(new Repository(PersistentStorage.init(getActivity().getApplicationContext()),
                     new Net(new Connect(),
                             (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE)))));
-            getActivity().getSupportFragmentManager().beginTransaction().replace(containerId, fragment).commit();
+            getActivity().getSupportFragmentManager().beginTransaction().replace(containerId, fragment, String.valueOf(containerId)).commit();
     }
 
     @Override
@@ -109,14 +111,23 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     }
 
     @Override
-    public void onClickItem(@NonNull DepartmentModel department, @NonNull int containerId) {
+    public void onClickItem(@NonNull BaseModel department, @NonNull int containerId) {
         Log.e("TAG","departments list fragment onClickItem container id= "+containerId);
         for(Fragment fragment:getActivity().getSupportFragmentManager().getFragments()){
             Log.e("TAG","departments list fragment onClickItem fragment tag "+fragment.toString());
         }
-        mPresenter.openDepartmentDetail(department,containerId);
+        mPresenter.openDepartmentDetail((DepartmentModel) department,containerId);
         Snackbar snackbar=Snackbar.make(mRelativeLayout,department.getName(),Snackbar.LENGTH_SHORT);
         snackbar.show();
+    }
+
+    @Override
+    public void removeFragment(@NonNull int containerId) {
+        Log.e("TAG","!!departments list fragment removeFragment container id= "+ getActivity().getSupportFragmentManager().findFragmentByTag(String.valueOf(containerId)));
+        if(getActivity().getSupportFragmentManager().findFragmentByTag(String.valueOf(containerId))!=null){
+            getActivity().getSupportFragmentManager().beginTransaction().remove(getActivity().getSupportFragmentManager().findFragmentByTag(String.valueOf(containerId))).commit();
+            Log.e("TAG","!!!departments list fragment after remove container id= "+ getActivity().getSupportFragmentManager().findFragmentByTag(String.valueOf(containerId)));
+        }
     }
 
 

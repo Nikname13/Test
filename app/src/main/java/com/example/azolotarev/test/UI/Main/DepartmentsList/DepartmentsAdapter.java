@@ -10,40 +10,61 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import com.example.azolotarev.test.Model.BaseModel;
 import com.example.azolotarev.test.Model.DepartmentModel;
+import com.example.azolotarev.test.Model.EmployeeModel;
 import com.example.azolotarev.test.R;
 
 import java.util.List;
 
-public class DepartmentsAdapter  extends RecyclerView.Adapter<ItemHolder> {
-    private List<DepartmentModel> mDepartments;
+public class DepartmentsAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    private List<Object> mModels;
     private Context mContext;
     private ItemClickListener mClickListener;
+    private int mViewType;
 
-    public DepartmentsAdapter(List<DepartmentModel> departments, Context context, ItemClickListener listener) {
+    public DepartmentsAdapter(@NonNull List<Object> models,@NonNull Context context,@NonNull ItemClickListener listener,@NonNull int viewType) {
         mClickListener=listener;
         mContext=context;
-        setList(departments);
+        mViewType=viewType;
+        setList(models);
     }
 
-    private void setList(List<DepartmentModel> departments) {
-        mDepartments = departments;
+    private void setList(List<Object> models) {
+        mModels = models;
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return super.getItemViewType(position);
+    }
 
     @NonNull
     @Override
-    public ItemHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         Log.e("TAG","departmentsadapter oncreateviewholder "+i);
-        LayoutInflater layoutInflater=LayoutInflater.from(mContext);
-        View v=layoutInflater.inflate(R.layout.row_item,viewGroup,false);
         LinearLayout container=new LinearLayout(mContext);
-        return new ItemHolder(v,mClickListener,container);
+        LayoutInflater layoutInflater=LayoutInflater.from(mContext);
+        switch (mViewType){
+            case 0:return new ItemDepartmentHolder(layoutInflater.inflate(R.layout.departments_row_item,viewGroup,false),mClickListener,container);
+            case 1:return new ItemEmployeeHolder(layoutInflater.inflate(R.layout.employee_row_item,viewGroup,false),mClickListener);
+        }
+        return null;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ItemHolder departmentHolder, int i) {
-        departmentHolder.onBindViewHolder(mDepartments.get(i));
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+        switch (mViewType){
+            case 0:
+                ItemDepartmentHolder holderD= (ItemDepartmentHolder) viewHolder;
+                holderD.onBindViewHolder(mModels.get(i));
+                break;
+            case 1:
+                ItemEmployeeHolder holderE= (ItemEmployeeHolder) viewHolder;
+                holderE.onBindViewHolder(mModels.get(i));
+                break;
+        }
     }
 
     @Override
@@ -53,18 +74,19 @@ public class DepartmentsAdapter  extends RecyclerView.Adapter<ItemHolder> {
 
     @Override
     public int getItemCount() {
-        return mDepartments.size();
+        return mModels.size();
     }
+
 }
-class ItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+class ItemDepartmentHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     private TextView mTextView;
     private ItemClickListener mClickListener;
-    private DepartmentModel mDepartment;
+    private BaseModel mDepartment;
     private CardView mCardViewRoot,mChildrenCardView;
     private LinearLayout mLinerLayoutContainer;
 
-    public ItemHolder(@NonNull View itemView, @NonNull ItemClickListener listener, @NonNull LinearLayout childrenContainer) {
+    public ItemDepartmentHolder(@NonNull View itemView, @NonNull ItemClickListener listener, @NonNull LinearLayout childrenContainer) {
         super(itemView);
         mClickListener=listener;
         mTextView=(TextView)itemView.findViewById(R.id.title_text_view);
@@ -75,10 +97,13 @@ class ItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener
         mChildrenCardView.addView(mLinerLayoutContainer);
     }
 
-    public void onBindViewHolder(DepartmentModel department){
+    public void onBindViewHolder(Object entity){
+        DepartmentModel department= (DepartmentModel) entity;
+        Log.e("TAG","itemholder onBindView "+department.getName()+ " - "+department.hashCode()+" id "+mLinerLayoutContainer.getId());
+        mClickListener.removeFragment(mLinerLayoutContainer.getId());
         mDepartment=department;
         mTextView.setText(department.getName());
-        mLinerLayoutContainer.setId(department.hashCode());
+        mLinerLayoutContainer.setId(entity.hashCode());
         mChildrenCardView.setVisibility(View.GONE);
     }
 
@@ -93,4 +118,28 @@ class ItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener
 
 
     }
+
 }
+
+class ItemEmployeeHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private TextView mTextView;
+    private ItemClickListener mClickListener;
+    private EmployeeModel mModel;
+
+    public ItemEmployeeHolder(@NonNull View itemView,@NonNull ItemClickListener clickListener) {
+        super(itemView);
+        mTextView=(TextView)itemView.findViewById(R.id.title_text_view);
+        mClickListener=clickListener;
+    }
+
+    public void onBindViewHolder(Object entity){
+        mModel= (EmployeeModel) entity;
+        mTextView.setText(mModel.getName());
+    }
+
+    @Override
+    public void onClick(View v) {
+        mClickListener.onClickItem(mModel,R.id.fragmentContainer);
+    }
+}
+

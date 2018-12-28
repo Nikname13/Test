@@ -15,9 +15,9 @@ public class JParser implements JParserContract {
 
     @Override
     public void getDepartments(@NonNull ParsDepartmentsCallback callback, String jsonString) {
-        Log.e("TAG", "jparser getDepartments");
+        Log.e("TAG", "jparser getListModel");
         if(jsonString==null)
-        Log.e("TAG", "jparser getDepartments jsonString = null");
+        Log.e("TAG", "jparser getListModel jsonString = null");
         try {
             JSONObject json=new JSONObject(jsonString);
             if(json.length()!=0)
@@ -50,14 +50,27 @@ public class JParser implements JParserContract {
             List<DepartmentModel> underDepartment=new ArrayList<>();
             List<EmployeeModel> employees=new ArrayList<>();
             for(int y=0;y<=i;y++){
-               underDepartment.add(new DepartmentModel(y,"Подотдел "+y));
+                DepartmentModel childrenDepartment=new DepartmentModel(y,"Подотдел "+y);
+               List<DepartmentModel> underunderDepartment=new ArrayList<>();
+               List<EmployeeModel> underEmployee=new ArrayList<>();
+               for(int z=0;z<=y;z++){
+                   underunderDepartment.add(new DepartmentModel(z,"Подотдельный отдел"+z));
+               }
+                for(int w=0;w<15;w++){
+                    underEmployee.add(new EmployeeModel(w,"Сотрудник "+w));
+                }
+                if(y%2==0)
+               childrenDepartment.setDepartmentsList(underunderDepartment);
+               else
+                   childrenDepartment.setEmploeeList(underEmployee);
+                underDepartment.add(childrenDepartment);
             }
             for(int x=0;x<15;x++){
                 employees.add(new EmployeeModel(x,"Сотрудник "+x));
             }
-            //if(i%2==0)
+            if(i%2==0)
                 departmentModel.setDepartmentsList(underDepartment);
-            //else departmentModel.setEmploeeList(employees);
+            else departmentModel.setEmploeeList(employees);
             list.add(departmentModel);
         }
         return list;
