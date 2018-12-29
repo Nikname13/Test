@@ -1,4 +1,4 @@
-package com.example.azolotarev.test.UI.Main.DepartmentsList;
+package com.example.azolotarev.test.UI.Main;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;

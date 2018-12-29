@@ -17,15 +17,12 @@ import com.example.azolotarev.test.Data.Net.Connect;
 import com.example.azolotarev.test.Data.Net.Net;
 import com.example.azolotarev.test.Domain.Authorization.AuthorizationInteractor;
 import com.example.azolotarev.test.Domain.DepartmentsList.DepartmentInteractor;
-import com.example.azolotarev.test.Model.DepartmentModel;
 import com.example.azolotarev.test.R;
 import com.example.azolotarev.test.Repository.Repository;
 import com.example.azolotarev.test.UI.Authorization.AuthorizationFragment;
 import com.example.azolotarev.test.UI.Authorization.AuthorizationPresenter;
-import com.example.azolotarev.test.UI.Main.DepartmentsList.RootDepartments.DepartmentListFragment;
-import com.example.azolotarev.test.UI.Main.DepartmentsList.RootDepartments.DepartmentListPresenter;
-
-import java.util.List;
+import com.example.azolotarev.test.UI.Main.DepartmentsListRoot.DepartmentListFragment;
+import com.example.azolotarev.test.UI.Main.DepartmentsListRoot.DepartmentListPresenter;
 
 public class StartFragment extends Fragment implements StartContract.View {
 

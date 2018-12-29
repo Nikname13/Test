@@ -46,7 +46,7 @@ public class AuthorizationPresenter implements AuthorizationContract.Presenter {
 
     @Override
     public void start() {
-
+        mAuthorizationView.hideProgress();
     }
 
 

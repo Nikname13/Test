@@ -1,4 +1,4 @@
-package com.example.azolotarev.test.UI.Main.DepartmentsList.RootDepartments;
+package com.example.azolotarev.test.UI.Main.DepartmentsListRoot;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -22,9 +22,9 @@ import com.example.azolotarev.test.Model.BaseModel;
 import com.example.azolotarev.test.Model.DepartmentModel;
 import com.example.azolotarev.test.R;
 import com.example.azolotarev.test.Repository.Repository;
-import com.example.azolotarev.test.UI.Main.DepartmentsList.ChildrenDepartments.ChildrenDepartmentFragment;
-import com.example.azolotarev.test.UI.Main.DepartmentsList.ChildrenDepartments.ChildrenDepartmentPresenter;
-import com.example.azolotarev.test.UI.Main.DepartmentsList.DepartmentsAdapter;
+import com.example.azolotarev.test.UI.Main.ChildrenElements.ChildrenFragment;
+import com.example.azolotarev.test.UI.Main.ChildrenElements.ChildrenPresenter;
+import com.example.azolotarev.test.UI.Main.RecyclerListAdapter;
 
 
 import java.util.List;
@@ -33,7 +33,7 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
 
     private DepartmentListContract.Presenter mPresenter;
     private RecyclerView mRecyclerViewRoot;
-    private DepartmentsAdapter mDepartmentsAdapter;
+    private RecyclerListAdapter mDepartmentsAdapter;
     private RelativeLayout mRelativeLayout;
 
 
@@ -79,17 +79,17 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     }
 
     @Override
-    public void showDepartmentsList(@NonNull List<Object> departmentList,@NonNull int viewType) {
-        mDepartmentsAdapter=new DepartmentsAdapter(departmentList, getActivity(),this, viewType);
+    public void showDepartmentsList(@NonNull List<BaseModel> departmentList,@NonNull int viewType) {
+        mDepartmentsAdapter=new RecyclerListAdapter(departmentList, getActivity(),this, viewType);
         mDepartmentsAdapter.setHasStableIds(true);
         mRecyclerViewRoot.setAdapter(mDepartmentsAdapter);
     }
 
     @Override
-    public void showDepartmentChildren(@NonNull List<Object> departmentList,@NonNull int containerId, @NonNull int viewType) {
+    public void showDepartmentChildren(@NonNull List<BaseModel> departmentList,@NonNull int containerId, @NonNull int viewType) {
         Log.e("TAG","departmentlistfragment showChildrenList container "+containerId);
-         ChildrenDepartmentFragment fragment = ChildrenDepartmentFragment.newInstance(departmentList,viewType);
-            new ChildrenDepartmentPresenter(fragment, new DepartmentInteractor(new Repository(PersistentStorage.init(getActivity().getApplicationContext()),
+         ChildrenFragment fragment = ChildrenFragment.newInstance(departmentList,viewType);
+            new ChildrenPresenter(fragment, new DepartmentInteractor(new Repository(PersistentStorage.init(getActivity().getApplicationContext()),
                     new Net(new Connect(),
                             (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE)))));
             getActivity().getSupportFragmentManager().beginTransaction().replace(containerId, fragment, String.valueOf(containerId)).commit();

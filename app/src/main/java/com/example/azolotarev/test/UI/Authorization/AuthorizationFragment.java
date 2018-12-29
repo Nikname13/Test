@@ -2,7 +2,6 @@ package com.example.azolotarev.test.UI.Authorization;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,8 +24,6 @@ import com.example.azolotarev.test.Domain.Authorization.AuthorizationInteractor;
 import com.example.azolotarev.test.Domain.DepartmentsList.DepartmentInteractor;
 import com.example.azolotarev.test.R;
 import com.example.azolotarev.test.Repository.Repository;
-import com.example.azolotarev.test.UI.Main.DepartmentsList.RootDepartments.DepartmentListFragment;
-import com.example.azolotarev.test.UI.Main.DepartmentsList.RootDepartments.DepartmentListPresenter;
 import com.example.azolotarev.test.UI.Start.StartFragment;
 import com.example.azolotarev.test.UI.Start.StartPresenter;
 

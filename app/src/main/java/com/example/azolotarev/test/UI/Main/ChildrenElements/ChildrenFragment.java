@@ -1,4 +1,4 @@
-package com.example.azolotarev.test.UI.Main.DepartmentsList.ChildrenDepartments;
+package com.example.azolotarev.test.UI.Main.ChildrenElements;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -16,28 +16,32 @@ import com.example.azolotarev.test.Data.Local.PersistentStorage;
 import com.example.azolotarev.test.Data.Net.Connect;
 import com.example.azolotarev.test.Data.Net.Net;
 import com.example.azolotarev.test.Domain.DepartmentsList.DepartmentInteractor;
+import com.example.azolotarev.test.Domain.EmployeePage.EmployeeInteractor;
 import com.example.azolotarev.test.Model.BaseModel;
+import com.example.azolotarev.test.Model.EmployeeModel;
 import com.example.azolotarev.test.R;
 import com.example.azolotarev.test.Repository.Repository;
-import com.example.azolotarev.test.UI.Main.DepartmentsList.DepartmentsAdapter;
+import com.example.azolotarev.test.UI.Main.EmployeePage.EmployeeFragment;
+import com.example.azolotarev.test.UI.Main.EmployeePage.EmployeePresenter;
+import com.example.azolotarev.test.UI.Main.RecyclerListAdapter;
 
 import java.io.Serializable;
 import java.util.List;
 
-public class ChildrenDepartmentFragment extends Fragment implements ChildrenDepartmentContract.View {
+public class ChildrenFragment extends Fragment implements ChildrenContract.View {
 
-    private ChildrenDepartmentContract.Presenter mPresenter;
+    private ChildrenContract.Presenter mPresenter;
     private RecyclerView mRecyclerViewChildren;
-    private DepartmentsAdapter mDepartmentsAdapterChildren;
-    private static final String ARG_OBJECT ="department_object";
+    private RecyclerListAdapter mDepartmentsAdapterChildren;
+    private static final String ARG_OBJECT ="base_model_object";
     private static final String ARG_VIEW_TYPE="view_type";
 
 
-    public static ChildrenDepartmentFragment newInstance(List<Object> departments, int viewType){
+    public static ChildrenFragment newInstance(List<BaseModel> departments, int viewType){
         Bundle arg=new Bundle();
         arg.putSerializable(ARG_OBJECT, (Serializable) departments);
         arg.putInt(ARG_VIEW_TYPE,viewType);
-        ChildrenDepartmentFragment fragment=new ChildrenDepartmentFragment();
+        ChildrenFragment fragment=new ChildrenFragment();
         fragment.setArguments(arg);
         return fragment;
     }
@@ -64,9 +68,9 @@ public class ChildrenDepartmentFragment extends Fragment implements ChildrenDepa
     }
 
     @Override
-    public List<Object> getListModel() {
+    public List<BaseModel> getListModel() {
         Log.e("TAG","children department fragment getListModel size ");
-        return (List<Object>) getArguments().getSerializable(ARG_OBJECT);
+        return (List<BaseModel>) getArguments().getSerializable(ARG_OBJECT);
     }
 
     @Override
@@ -75,24 +79,33 @@ public class ChildrenDepartmentFragment extends Fragment implements ChildrenDepa
     }
 
     @Override
-    public void showListModel(List<Object> listModel, int viewType) {
+    public void showListModel(List<BaseModel> listModel, int viewType) {
         Log.e("TAG","children department fragment showListModel size " +listModel.size());
-        mDepartmentsAdapterChildren=new DepartmentsAdapter(listModel, getActivity(), this, viewType);
+        mDepartmentsAdapterChildren=new RecyclerListAdapter(listModel, getActivity(), this, viewType);
         mRecyclerViewChildren.setAdapter(mDepartmentsAdapterChildren);
     }
 
     @Override
-    public void showChildrenList(@NonNull List<Object> departmentList, @NonNull int containerId, @NonNull int viewType) {
-        ChildrenDepartmentFragment fragment = ChildrenDepartmentFragment.newInstance(departmentList,viewType);
-        new ChildrenDepartmentPresenter(fragment, new DepartmentInteractor(new Repository(PersistentStorage.init(getActivity().getApplicationContext()),
+    public void showChildrenList(@NonNull List<BaseModel> departmentList, @NonNull int containerId, @NonNull int viewType) {
+        ChildrenFragment fragment = ChildrenFragment.newInstance(departmentList,viewType);
+        new ChildrenPresenter(fragment, new DepartmentInteractor(new Repository(PersistentStorage.init(getActivity().getApplicationContext()),
                 new Net(new Connect(),
                         (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE)))));
         getActivity().getSupportFragmentManager().beginTransaction().replace(containerId, fragment, String.valueOf(containerId)).commit();
     }
 
+    @Override
+    public void showChildrenDetail(@NonNull BaseModel model) {
+        EmployeeFragment fragment=EmployeeFragment.newInstance((EmployeeModel) model);
+        new EmployeePresenter(fragment,new EmployeeInteractor(
+                new Repository(PersistentStorage.init(getActivity().getApplicationContext()),
+                        new Net(new Connect(),(ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE)))));
+        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, fragment).commit();
+    }
+
 
     @Override
-    public void setPresenter(@NonNull ChildrenDepartmentContract.Presenter presenter) {
+    public void setPresenter(@NonNull ChildrenContract.Presenter presenter) {
         mPresenter=presenter;
     }
 

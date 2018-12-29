@@ -2,7 +2,9 @@ package com.example.azolotarev.test.Model;
 
 import android.support.annotation.NonNull;
 
-public class EmployeeModel extends BaseModel {
+import java.io.Serializable;
+
+public class EmployeeModel extends BaseModel implements Serializable {
 
     private String mTitle;
     private String mEmail;

@@ -1,9 +1,9 @@
-package com.example.azolotarev.test.UI.Main.DepartmentsList.RootDepartments;
+package com.example.azolotarev.test.UI.Main.DepartmentsListRoot;
 
 import android.support.annotation.NonNull;
 import com.example.azolotarev.test.Model.BaseModel;
 import com.example.azolotarev.test.Model.DepartmentModel;
-import com.example.azolotarev.test.UI.Main.DepartmentsList.ItemClickListener;
+import com.example.azolotarev.test.UI.Main.ItemClickListener;
 import com.example.azolotarev.test.UI.ProgressContract;
 import com.example.azolotarev.test.UI.BasePresenter;
 import com.example.azolotarev.test.UI.BaseView;
@@ -16,8 +16,8 @@ public interface DepartmentListContract {
         void showConnectionError(String errorMessage);
         void showSuccessError(String errorMessage);
         void showAuthorization();
-        void showDepartmentsList(@NonNull List<Object> departmentList,@NonNull int viewType);
-        void showDepartmentChildren(@NonNull List<Object> departmentList, @NonNull int containerId,@NonNull int viewType);
+        void showDepartmentsList(@NonNull List<BaseModel> departmentList,@NonNull int viewType);
+        void showDepartmentChildren(@NonNull List<BaseModel> departmentList, @NonNull int containerId,@NonNull int viewType);
     }
 
     interface Presenter extends BasePresenter,ProgressContract{

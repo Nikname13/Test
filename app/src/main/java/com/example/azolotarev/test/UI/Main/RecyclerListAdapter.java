@@ -1,4 +1,4 @@
-package com.example.azolotarev.test.UI.Main.DepartmentsList;
+package com.example.azolotarev.test.UI.Main;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -17,21 +17,21 @@ import com.example.azolotarev.test.R;
 
 import java.util.List;
 
-public class DepartmentsAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<Object> mModels;
+    private List<BaseModel> mModels;
     private Context mContext;
     private ItemClickListener mClickListener;
     private int mViewType;
 
-    public DepartmentsAdapter(@NonNull List<Object> models,@NonNull Context context,@NonNull ItemClickListener listener,@NonNull int viewType) {
+    public RecyclerListAdapter(@NonNull List<BaseModel> models, @NonNull Context context, @NonNull ItemClickListener listener, @NonNull int viewType) {
         mClickListener=listener;
         mContext=context;
         mViewType=viewType;
         setList(models);
     }
 
-    private void setList(List<Object> models) {
+    private void setList(List<BaseModel> models) {
         mModels = models;
     }
 
@@ -97,7 +97,7 @@ class ItemDepartmentHolder extends RecyclerView.ViewHolder implements View.OnCli
         mChildrenCardView.addView(mLinerLayoutContainer);
     }
 
-    public void onBindViewHolder(Object entity){
+    public void onBindViewHolder(BaseModel entity){
         DepartmentModel department= (DepartmentModel) entity;
         Log.e("TAG","itemholder onBindView "+department.getName()+ " - "+department.hashCode()+" id "+mLinerLayoutContainer.getId());
         mClickListener.removeFragment(mLinerLayoutContainer.getId());
@@ -128,11 +128,12 @@ class ItemEmployeeHolder extends RecyclerView.ViewHolder implements View.OnClick
 
     public ItemEmployeeHolder(@NonNull View itemView,@NonNull ItemClickListener clickListener) {
         super(itemView);
+        itemView.setOnClickListener(this);
         mTextView=(TextView)itemView.findViewById(R.id.title_text_view);
         mClickListener=clickListener;
     }
 
-    public void onBindViewHolder(Object entity){
+    public void onBindViewHolder(BaseModel entity){
         mModel= (EmployeeModel) entity;
         mTextView.setText(mModel.getName());
     }
