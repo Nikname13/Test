@@ -10,6 +10,6 @@ public interface EmployeeInteractorContract {
     interface getPhotoCallback extends BaseCallback.BaseErrorCallback{
         void onPhoto(Bitmap photo);
     }
-    void loadPhoto(@NonNull final getPhotoCallback callback);
+    void loadPhoto(@NonNull final getPhotoCallback callback, @NonNull int id);
     void setProgressListener(@NonNull ProgressContract listener);
 }
