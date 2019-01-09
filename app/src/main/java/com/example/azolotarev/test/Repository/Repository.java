@@ -1,7 +1,9 @@
 package com.example.azolotarev.test.Repository;
 
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import com.example.azolotarev.test.Data.Local.AvatarCache;
 import com.example.azolotarev.test.Data.Local.PersistentStorage;
 import com.example.azolotarev.test.Data.Net.NetContract;
 import com.example.azolotarev.test.Model.DepartmentModel;
@@ -115,7 +117,11 @@ public  class Repository implements RepositoryContract {
     }
 
     @Override
-    public void getPhoto(@NonNull LoadPhotoCallback callback, @NonNull int id) {
+    public void getPhoto(@NonNull final LoadPhotoCallback callback, @NonNull final int id) {
+        if(AvatarCache.get().getBitmapFromMemory(String.valueOf(id))!=null){
+            callback.onResponse(AvatarCache.get().getBitmapFromMemory(String.valueOf(id)));
+            return;
+        }
         isAuth(new LoadSuccessCallback() {
                    @Override
                    public void onSuccess(boolean success) {
@@ -135,8 +141,9 @@ public  class Repository implements RepositoryContract {
                 false);
         mNet.getPhoto(new NetContract.LoadPhotoCallback() {
                           @Override
-                          public void onResponse(String response) {
-                              Log.e("TAG", response);
+                          public void onResponse(Bitmap response) {
+                              callback.onResponse(response);
+                              AvatarCache.get().setBitmapToMemory(String.valueOf(id),response);
                           }
 
                           @Override

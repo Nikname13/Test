@@ -123,10 +123,10 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
 
     @Override
     public void removeFragment(@NonNull int containerId) {
-        Log.e("TAG","!!departments list fragment removeFragment container id= "+ getActivity().getSupportFragmentManager().findFragmentByTag(String.valueOf(containerId)));
+        //Log.e("TAG","!!departments list fragment removeFragment container id= "+ getActivity().getSupportFragmentManager().findFragmentByTag(String.valueOf(containerId)));
         if(getActivity().getSupportFragmentManager().findFragmentByTag(String.valueOf(containerId))!=null){
             getActivity().getSupportFragmentManager().beginTransaction().remove(getActivity().getSupportFragmentManager().findFragmentByTag(String.valueOf(containerId))).commit();
-            Log.e("TAG","!!!departments list fragment after remove container id= "+ getActivity().getSupportFragmentManager().findFragmentByTag(String.valueOf(containerId)));
+           // Log.e("TAG","!!!departments list fragment after remove container id= "+ getActivity().getSupportFragmentManager().findFragmentByTag(String.valueOf(containerId)));
         }
     }
 

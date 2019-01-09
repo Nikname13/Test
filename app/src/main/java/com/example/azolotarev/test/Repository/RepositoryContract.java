@@ -1,5 +1,6 @@
 package com.example.azolotarev.test.Repository;
 
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import com.example.azolotarev.test.BaseCallback;
 import com.example.azolotarev.test.Model.DepartmentModel;
@@ -13,6 +14,7 @@ public interface RepositoryContract {
         void onSuccess(boolean success);
     }
     interface LoadPhotoCallback extends BaseCallback.BaseErrorCallback {
+        void onResponse(Bitmap photo);
     }
     void isAuth(@NonNull final LoadSuccessCallback callback, @NonNull String login,@NonNull String password, @NonNull boolean firstLoad);
     void getDepartments(@NonNull final LoadDepartmentsCallback callback, boolean refreshCache, @NonNull boolean firstLoad);

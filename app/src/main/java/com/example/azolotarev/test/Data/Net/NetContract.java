@@ -1,5 +1,6 @@
 package com.example.azolotarev.test.Data.Net;
 
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import com.example.azolotarev.test.BaseCallback;
 
@@ -14,7 +15,7 @@ public interface NetContract {
     }
 
     interface  LoadPhotoCallback{
-        void onResponse(String response);
+        void onResponse(Bitmap response);
         void connectionError(String errorMessage);
     }
     void isAuth(@NonNull final LoadSuccessCallback callback);

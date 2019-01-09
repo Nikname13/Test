@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -124,7 +125,9 @@ public class AuthorizationFragment extends Fragment implements AuthorizationCont
                 new DepartmentInteractor(new Repository(PersistentStorage.init(getActivity().getApplicationContext()),
                         new Net(new Connect(),
                                 (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE)))));
-        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,fragment).commit();
+        FragmentTransaction transaction=getActivity().getSupportFragmentManager().beginTransaction();
+       // transaction.addToBackStack(null);
+        transaction.replace(R.id.fragmentContainer,fragment).commit();
     }
 
     @Override

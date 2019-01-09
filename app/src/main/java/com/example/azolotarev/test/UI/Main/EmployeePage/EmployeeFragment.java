@@ -1,14 +1,16 @@
 package com.example.azolotarev.test.UI.Main.EmployeePage;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.example.azolotarev.test.Model.EmployeeModel;
 import com.example.azolotarev.test.R;
@@ -17,6 +19,7 @@ public class EmployeeFragment extends Fragment implements EmployeePageContract.V
 
     private EmployeePageContract.Presenter mPresenter;
     private static final String ARG_EMPLOYEE_OBJECT="employee_object";
+    private ImageView mAvatar;
     private TextView mTitle, mName, mPhone, mEmail;
     private CardView mTitleContainer, mNameContainer, mPhoneContainer, mEmailContainer;
 
@@ -32,6 +35,7 @@ public class EmployeeFragment extends Fragment implements EmployeePageContract.V
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v=inflater.inflate(R.layout.employee_detail,container,false);
+        mAvatar =(ImageView)v.findViewById(R.id.employee_avatar);
         mTitle=(TextView)v.findViewById(R.id.employee_title_textView);
         mTitleContainer=(CardView)v.findViewById(R.id.employee_title);
         mName=(TextView)v.findViewById(R.id.employee_name_textView);
@@ -89,8 +93,8 @@ public class EmployeeFragment extends Fragment implements EmployeePageContract.V
     }
 
     @Override
-    public void setPhoto() {
-
+    public void setAvatar(Bitmap avatar) {
+        mAvatar.setImageBitmap(avatar);
     }
 
     @Override
@@ -116,5 +120,30 @@ public class EmployeeFragment extends Fragment implements EmployeePageContract.V
     @Override
     public EmployeeModel getEmployee() {
         return (EmployeeModel) getArguments().getSerializable(ARG_EMPLOYEE_OBJECT);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.e("TAG","employee onPause");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.e("TAG","employee onStop");
+        getActivity().getSupportFragmentManager().beginTransaction().remove(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.e("TAG","employee onDestroy");
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.e("TAG","employee onDetach");
     }
 }

@@ -30,7 +30,7 @@ public class EmployeePresenter implements EmployeePageContract.Presenter {
             mInteractorContract.loadPhoto(new EmployeeInteractorContract.getPhotoCallback() {
                                               @Override
                                               public void onPhoto(Bitmap photo) {
-                                                  mView.setPhoto();
+                                                  mView.setAvatar(photo);
                                               }
 
                                               @Override

@@ -1,5 +1,6 @@
 package com.example.azolotarev.test.Domain.EmployeePage;
 
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import com.example.azolotarev.test.Repository.RepositoryContract;
@@ -10,6 +11,7 @@ public class EmployeeInteractor implements EmployeeInteractorContract {
     private final RepositoryContract mRepository;
     private ProgressContract mProgress;
     private String mConnectionError,mSuccessError,mNotAvailable;
+    private Bitmap mPhoto;
 
     public EmployeeInteractor(RepositoryContract repository) {
         mRepository = repository;
@@ -42,14 +44,20 @@ public class EmployeeInteractor implements EmployeeInteractorContract {
         @Override
         protected Void doInBackground(Boolean... booleans) {
             mRepository.getPhoto(new RepositoryContract.LoadPhotoCallback() {
+
+                                     @Override
+                                     public void onResponse(Bitmap photo) {
+                                         mPhoto=photo;
+                                     }
+
                                      @Override
                                      public void logOut(String errorMessage) {
-
+                                         mSuccessError=errorMessage;
                                      }
 
                                      @Override
                                      public void connectionError(String errorMessage) {
-
+                                         mConnectionError=errorMessage;
                                      }
                                  },
                     mId);
@@ -59,6 +67,10 @@ public class EmployeeInteractor implements EmployeeInteractorContract {
         @Override
         protected void onPostExecute(Void aVoid) {
             mProgress.hideProgress();
+            if(mPhoto!=null) mCallback.onPhoto(mPhoto);
+            if(mConnectionError!=null)mCallback.connectionError(mConnectionError);
+            if(mSuccessError!=null)mCallback.logOut(mSuccessError);
+
         }
     }
 }

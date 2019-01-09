@@ -1,5 +1,6 @@
 package com.example.azolotarev.test.Data.Net;
 
+import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -61,19 +62,19 @@ public class Net implements NetContract {
     }
 
     @Override
-    public void getPhoto(@NonNull LoadPhotoCallback callback, @NonNull int id) {
+    public void getPhoto(@NonNull final LoadPhotoCallback callback, @NonNull int id) {
         Log.e("TAG", "Net getPhoto");
-        mConnect.GET(new ConnectContract.GETCallback() {
-                         @Override
-                         public void onResponse(String response) {
+        mConnect.GETPhoto(new ConnectContract.GETPhotoCallback() {
+            @Override
+            public void onResponse(Bitmap response) {
+                callback.onResponse(response);
+            }
 
-                         }
+            @Override
+            public void connectionError(String errorMessage) {
 
-                         @Override
-                         public void connectionError(String errorMessage) {
-
-                         }
-                     },
+            }
+        },
                 new URLBuilder(URI_PHOTO)
                         .withParam(PARAM_LOGIN, mLogin)
                         .withParam(PARAM_PASSWORD, mPassword)

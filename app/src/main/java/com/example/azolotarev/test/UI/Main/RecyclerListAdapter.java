@@ -43,7 +43,7 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        Log.e("TAG","departmentsadapter oncreateviewholder "+i);
+        //Log.e("TAG","departmentsadapter oncreateviewholder "+i);
         LinearLayout container=new LinearLayout(mContext);
         LayoutInflater layoutInflater=LayoutInflater.from(mContext);
         switch (mViewType){
@@ -99,7 +99,7 @@ class ItemDepartmentHolder extends RecyclerView.ViewHolder implements View.OnCli
 
     public void onBindViewHolder(BaseModel entity){
         DepartmentModel department= (DepartmentModel) entity;
-        Log.e("TAG","itemholder onBindView "+department.getName()+ " - "+department.hashCode()+" id "+mLinerLayoutContainer.getId());
+       // Log.e("TAG","itemholder onBindView "+department.getName()+ " - "+department.hashCode()+" id "+mLinerLayoutContainer.getId());
         mClickListener.removeFragment(mLinerLayoutContainer.getId());
         mDepartment=department;
         mTextView.setText(department.getName());

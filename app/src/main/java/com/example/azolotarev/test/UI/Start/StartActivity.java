@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.net.ConnectivityManagerCompat;
+import android.util.Log;
 import com.example.azolotarev.test.Data.Local.PersistentStorage;
 import com.example.azolotarev.test.Data.Net.Connect;
 import com.example.azolotarev.test.Data.Net.Net;
@@ -29,5 +30,17 @@ public class StartActivity extends GenericFragmentActivity {
                        new Net(new Connect(),
                                (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE)))));
        return fragment;
+    }
+
+    @Override
+    public void onBackPressed() {
+        int count=getSupportFragmentManager().getBackStackEntryCount();
+        Log.e("TAG", "!!! fragment count "+count);
+        if(count==0){
+            super.onBackPressed();
+        }else {
+
+            getSupportFragmentManager().popBackStack();
+        }
     }
 }

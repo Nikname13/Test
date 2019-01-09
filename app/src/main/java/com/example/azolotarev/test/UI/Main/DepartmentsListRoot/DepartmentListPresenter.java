@@ -2,6 +2,7 @@ package com.example.azolotarev.test.UI.Main.DepartmentsListRoot;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
+import com.example.azolotarev.test.Data.Local.AvatarCache;
 import com.example.azolotarev.test.Domain.DepartmentsList.DepartmentInteractorContract;
 import com.example.azolotarev.test.Model.BaseModel;
 import com.example.azolotarev.test.Model.DepartmentModel;
@@ -28,6 +29,7 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
     @Override
     public void start() {
         Log.e("TAG", "start department");
+        if(mFirstLoad)
         loadDepartments(false, false);
     }
 

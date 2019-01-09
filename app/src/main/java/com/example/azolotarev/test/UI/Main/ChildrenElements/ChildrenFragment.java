@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -91,7 +92,8 @@ public class ChildrenFragment extends Fragment implements ChildrenContract.View 
         new ChildrenPresenter(fragment, new DepartmentInteractor(new Repository(PersistentStorage.init(getActivity().getApplicationContext()),
                 new Net(new Connect(),
                         (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE)))));
-        getActivity().getSupportFragmentManager().beginTransaction().replace(containerId, fragment, String.valueOf(containerId)).commit();
+        FragmentTransaction transaction=getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(containerId, fragment, String.valueOf(containerId)).commit();
     }
 
     @Override
@@ -100,7 +102,9 @@ public class ChildrenFragment extends Fragment implements ChildrenContract.View 
         new EmployeePresenter(fragment,new EmployeeInteractor(
                 new Repository(PersistentStorage.init(getActivity().getApplicationContext()),
                         new Net(new Connect(),(ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE)))));
-        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, fragment).commit();
+        FragmentTransaction transaction=getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.addToBackStack(null);
+        transaction.replace(R.id.fragmentContainer, fragment).commit();
     }
 
 

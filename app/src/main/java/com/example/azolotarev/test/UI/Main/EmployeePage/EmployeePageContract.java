@@ -1,5 +1,6 @@
 package com.example.azolotarev.test.UI.Main.EmployeePage;
 
+import android.graphics.Bitmap;
 import com.example.azolotarev.test.Model.EmployeeModel;
 import com.example.azolotarev.test.UI.BasePresenter;
 import com.example.azolotarev.test.UI.BaseView;
@@ -11,7 +12,7 @@ public interface EmployeePageContract {
         void setName(String name);
         void setPhone(String phone);
         void setEmail(String email);
-        void setPhoto();
+        void setAvatar(Bitmap avatar);
         void hideTitle();
         void hideName();
         void hidePhone();
