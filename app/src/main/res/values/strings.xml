@@ -12,4 +12,9 @@
     <string name="auth_error_message">Логин/пароль неверный</string>
     <string name="title_activity_login">Sign in</string>
 
+    <string name="employee_title">Должность</string>
+    <string name="employee_name">ФИО</string>
+    <string name="employee_phone">Телефон</string>
+    <string name="employee_email">Эл.почта</string>
+
 </resources>

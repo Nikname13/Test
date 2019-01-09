@@ -114,6 +114,39 @@ public  class Repository implements RepositoryContract {
         //добавить not available
     }
 
+    @Override
+    public void getPhoto(@NonNull LoadPhotoCallback callback, @NonNull int id) {
+        isAuth(new LoadSuccessCallback() {
+                   @Override
+                   public void onSuccess(boolean success) {
+
+                   }
+
+                   @Override
+                   public void logOut(String errorMessage) {
+
+                   }
+
+                   @Override
+                   public void connectionError(String errorMessage) {
+
+                   }
+               },
+                false);
+        mNet.getPhoto(new NetContract.LoadPhotoCallback() {
+                          @Override
+                          public void onResponse(String response) {
+                              Log.e("TAG", response);
+                          }
+
+                          @Override
+                          public void connectionError(String errorMessage) {
+
+                          }
+                      },
+                id);
+    }
+
     private void getDepartmentsFromNet(@NonNull final LoadDepartmentsCallback callback,@NonNull final boolean firstLoad){
         isAuth(new LoadSuccessCallback() {
             @Override
