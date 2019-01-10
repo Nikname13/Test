@@ -13,7 +13,7 @@ public class DepartmentInteractor implements DepartmentInteractorContract {
 
     private RepositoryContract mRepository;
     private ProgressContract mProgress;
-    private boolean mRefreshCache=true;
+    private boolean mRefreshCache=false;
     private List<DepartmentModel> mDepartmentModels;
     private String mConnectionError,mSuccessError,mNotAvailable;
 
@@ -23,7 +23,9 @@ public class DepartmentInteractor implements DepartmentInteractorContract {
 
     @Override
     public void getDepartments(@NonNull final getDepartmentsCallback callback, @NonNull boolean firstLoad) {
+        Log.e("TAG","department interacrot getDepartments refreshCache= "+mRefreshCache);
         new AsyncDepartments(callback).execute(mRefreshCache,firstLoad);
+        mRefreshCache=false;
     }
 
     @Override
@@ -33,6 +35,7 @@ public class DepartmentInteractor implements DepartmentInteractorContract {
 
     @Override
     public void refreshDepartments() {
+        Log.e("TAG","department interacrot refreshDepartments");
         mRefreshCache=true;
     }
 

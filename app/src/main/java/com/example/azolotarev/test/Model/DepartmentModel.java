@@ -7,23 +7,28 @@ import java.util.List;
 
 public class DepartmentModel extends BaseModel implements Serializable {
 
-    private List<EmployeeModel> mEmploeeList;
+    @SerializedNameField(name = "Employees")
+    private List<EmployeeModel> mEmployeeList;
+    @SerializedNameField(name = "Departments")
     private List<DepartmentModel> mDepartmentsList;
 
     public DepartmentModel(@NonNull int id,@NonNull String name) {
         super(id, name);
     }
 
-    public void setEmploeeList(List<EmployeeModel> emploeeList) {
-        mEmploeeList = emploeeList;
+    public DepartmentModel() {
+    }
+
+    public void setEmployeeList(List<EmployeeModel> employeeList) {
+        mEmployeeList = employeeList;
     }
 
     public void setDepartmentsList(List<DepartmentModel> departmentsList) {
         mDepartmentsList = departmentsList;
     }
 
-    public List<EmployeeModel> getEmploeeList() {
-        return mEmploeeList;
+    public List<EmployeeModel> getEmployeeList() {
+        return mEmployeeList;
     }
 
     public List<DepartmentModel> getDepartmentsList() {

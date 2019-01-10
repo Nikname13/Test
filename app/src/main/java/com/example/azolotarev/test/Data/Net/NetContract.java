@@ -14,11 +14,6 @@ public interface NetContract {
         void connectionError(String errorMessage);
     }
     interface  LoadPhotoCallback{
-        void onResponse(String response);
-        void connectionError(String errorMessage);
-    }
-
-    interface  LoadPhotoCallback{
         void onResponse(Bitmap response);
         void connectionError(String errorMessage);
     }

@@ -4,9 +4,6 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import com.example.azolotarev.test.Domain.Authorization.AuthorizationInteractorContract;
 import com.example.azolotarev.test.Domain.DepartmentsList.DepartmentInteractorContract;
-import com.example.azolotarev.test.Model.DepartmentModel;
-
-import java.util.List;
 
 public class StartPresenter implements StartContract.Presenter {
 
@@ -36,7 +33,7 @@ public class StartPresenter implements StartContract.Presenter {
                                                public void onSuccess(boolean success) {
                                                    Log.e("TAG", "start login on success " + success);
                                                    if (success) {
-                                                       loadDepartment();
+                                                       showDepartments();
                                                    } else {
                                                        mStartView.showAuthorization();
                                                    }
@@ -57,34 +54,13 @@ public class StartPresenter implements StartContract.Presenter {
                     EMPTY_LOGIN, EMPTY_PASSWORD, mFirstLoad);
         }else{
             Log.e("TAG", "start login "+success);
-            loadDepartment();
+            showDepartments();
         }
     }
 
-    private void loadDepartment(){
-        Log.e("TAG", "start load department");
-        mDepartmentInteractor.getDepartments(new DepartmentInteractorContract.getDepartmentsCallback() {
-                                       @Override
-                                       public void onDepartmentsLoaded(List<DepartmentModel> departments) {
-                                           mStartView.showDepartmentsList();
-                                       }
-
-                                       @Override
-                                       public void notAvailable(String errorMessage) {
-
-                                       }
-
-                                       @Override
-                                       public void logOut(String errorMessage) {
-                                           mStartView.showSuccessError(errorMessage);
-                                       }
-
-                                       @Override
-                                       public void connectionError(String errorMessage) {
-                                           mStartView.showConnectionError(errorMessage);
-                                       }
-                                   },
-                mFirstLoad);
+    private void showDepartments(){
+        Log.e("TAG", "start show department");
+        mStartView.showDepartmentsList();
     }
 
     @Override

@@ -2,7 +2,6 @@ package com.example.azolotarev.test.UI.Main.DepartmentsListRoot;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
-import com.example.azolotarev.test.Data.Local.AvatarCache;
 import com.example.azolotarev.test.Domain.DepartmentsList.DepartmentInteractorContract;
 import com.example.azolotarev.test.Model.BaseModel;
 import com.example.azolotarev.test.Model.DepartmentModel;
@@ -15,7 +14,8 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
 
     private final DepartmentListContract.View mDepartmentView;
     private final DepartmentInteractorContract mInteractor;
-    private boolean mFirstLoad=true;
+    private boolean mFirstLoad=false;
+    private boolean mFreshUpdate=true;
     private static final int sDepartmentType =0;
     private static final int sEmployeeType =1;
 
@@ -29,8 +29,8 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
     @Override
     public void start() {
         Log.e("TAG", "start department");
-        if(mFirstLoad)
-        loadDepartments(false, false);
+        loadDepartments(mFreshUpdate, mFirstLoad);
+        mFreshUpdate=false;
     }
 
     @Override
@@ -78,10 +78,10 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
     @Override
     public void openDepartmentDetail(@NonNull DepartmentModel selectedDepartment, @NonNull int containerId) {
         Log.e("TAG","departments list presenter open department detail ");
-        if(selectedDepartment.getEmploeeList()==null && selectedDepartment.getDepartmentsList()!=null)
+        if(selectedDepartment.getEmployeeList()==null && selectedDepartment.getDepartmentsList()!=null)
             mDepartmentView.showDepartmentChildren(getObjectList(selectedDepartment.getDepartmentsList()),containerId,sDepartmentType);
-        if(selectedDepartment.getDepartmentsList()==null && selectedDepartment.getEmploeeList()!=null)
-            mDepartmentView.showDepartmentChildren(getEObjectList(selectedDepartment.getEmploeeList()),containerId, sEmployeeType);
+        if(selectedDepartment.getDepartmentsList()==null && selectedDepartment.getEmployeeList()!=null)
+            mDepartmentView.showDepartmentChildren(getEObjectList(selectedDepartment.getEmployeeList()),containerId, sEmployeeType);
     }
 
     @Override

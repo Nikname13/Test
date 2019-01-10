@@ -2,9 +2,9 @@ package com.example.azolotarev.test.Repository;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
-import android.widget.ListView;
 import com.example.azolotarev.test.Model.DepartmentModel;
 import com.example.azolotarev.test.Model.EmployeeModel;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -20,13 +20,16 @@ public class JParser implements JParserContract {
         Log.e("TAG", "jparser getListModel jsonString = null");
         try {
             JSONObject json=new JSONObject(jsonString);
-            if(json.length()!=0)
-            callback.onDepartmentsLoaded(parsJson(json));
-            else callback.errorSuccess("Ошибка данных либо пустой список");
+            if(json.length()!=0) {
+                List<DepartmentModel> list= getDepartment(json).getDepartmentsList();
+               if(list!=null) callback.onDepartmentsLoaded(list);
+                else callback.notAvailable("Лист = null");
+            }
+            else callback.notAvailable("Ошибка данных либо пустой список");
         } catch (JSONException e) {
             Log.e("TAG",e.getMessage());
             e.printStackTrace();
-            callback.errorSuccess(e.getMessage());
+            callback.notAvailable(e.getMessage());
         }
     }
 
@@ -43,36 +46,50 @@ public class JParser implements JParserContract {
         }
     }
 
-    private List<DepartmentModel> parsJson(JSONObject json) {
-        List<DepartmentModel> list=new ArrayList<>();
-        for(int i=0;i<100;i++){
-            DepartmentModel departmentModel=new DepartmentModel(i,"Отдел "+i);
-            List<DepartmentModel> underDepartment=new ArrayList<>();
-            List<EmployeeModel> employees=new ArrayList<>();
-            for(int y=0;y<=i;y++){
-                DepartmentModel childrenDepartment=new DepartmentModel(y,"Подотдел "+y);
-               List<DepartmentModel> underunderDepartment=new ArrayList<>();
-               List<EmployeeModel> underEmployee=new ArrayList<>();
-               for(int z=0;z<=y;z++){
-                   underunderDepartment.add(new DepartmentModel(z,"Подотдельный отдел"+z));
-               }
-                for(int w=0;w<15;w++){
-                    underEmployee.add(new EmployeeModel(w,"Сотрудник "+w));
+    private DepartmentModel getDepartment(JSONObject json) {
+        DepartmentModel departmentModel=new DepartmentModel();
+        try {
+            departmentModel.setId(Integer.valueOf(json.getString("ID")));
+            departmentModel.setName(json.getString("Name"));
+            if(!json.isNull("Departments")){
+                List<DepartmentModel> listDepartments=new ArrayList<>();
+                JSONArray jsonArray=json.getJSONArray("Departments");
+                for(int i=0;i<jsonArray.length();i++){
+                    Log.e("TAG",jsonArray.getJSONObject(i).getString("ID"));
+                   listDepartments.add(getDepartment(jsonArray.getJSONObject(i)));
                 }
-                if(y%2==0)
-               childrenDepartment.setDepartmentsList(underunderDepartment);
-               else
-                   childrenDepartment.setEmploeeList(underEmployee);
-                underDepartment.add(childrenDepartment);
+                departmentModel.setDepartmentsList(listDepartments);
+                  return departmentModel;
             }
-            for(int x=0;x<15;x++){
-                employees.add(new EmployeeModel(x,"Сотрудник "+x));
+            if(!json.isNull("Employees")){
+                List<EmployeeModel> listEmployee=new ArrayList<>();
+                    JSONArray jsonArray=json.getJSONArray("Employees");
+                    for(int i=0;i<jsonArray.length();i++){
+                        Log.e("TAG",jsonArray.getJSONObject(i).getString("ID"));
+                        listEmployee.add(getEmployee(jsonArray.getJSONObject(i)));
+                    }
+                    departmentModel.setEmployeeList(listEmployee);
+                    return departmentModel;
             }
-            if(i%2==0)
-                departmentModel.setDepartmentsList(underDepartment);
-            else departmentModel.setEmploeeList(employees);
-            list.add(departmentModel);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-        return list;
+
+        return null;
+    }
+
+    private EmployeeModel getEmployee(JSONObject json){
+        EmployeeModel employeeModel=new EmployeeModel();
+        try {
+            employeeModel.setId(Integer.valueOf(json.getString("ID")));
+            employeeModel.setName(json.getString("Name"));
+            employeeModel.setTitle(json.getString("Title"));
+            employeeModel.setPhone(json.getString("Phone"));
+            employeeModel.setEmail(json.getString("Email"));
+            return employeeModel;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

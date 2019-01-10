@@ -4,12 +4,17 @@ import android.support.annotation.NonNull;
 
 public class BaseModel {
 
+    @SerializedNameField(name = "ID")
    private int mId;
+    @SerializedNameField(name = "Name")
    private String mName;
 
     public BaseModel(@NonNull int id,@NonNull String name) {
         mId = id;
         mName = name;
+    }
+
+    public BaseModel() {
     }
 
     public int getId() {

@@ -8,6 +8,7 @@ import com.example.azolotarev.test.Data.Local.PersistentStorage;
 import com.example.azolotarev.test.Data.Net.NetContract;
 import com.example.azolotarev.test.Model.DepartmentModel;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,12 +43,36 @@ public  class Repository implements RepositoryContract {
         }
     }
 
+    @Override
+    public void getDepartments(@NonNull LoadDepartmentsCallback callback,@NonNull boolean refreshCache,  @NonNull boolean firstLoad) {
+        Log.e("TAG", "repository getListModel "+refreshCache);
+        if(mCachedDepartment!=null && !refreshCache){
+            Log.e("TAG", "repository getListModel cachedDepartment");
+            callback.onDepartmentsLoaded(new ArrayList<>(mCachedDepartment.values()));
+            return;
+        }
+        if(refreshCache){
+            Log.e("TAG", "repository getListModel refreshCache");
+            getDepartmentsFromNet(callback,firstLoad);
+        }
+        //добавить not available
+    }
+
+    @Override
+    public void getPhoto(@NonNull final LoadPhotoCallback callback, @NonNull final int id) {
+        if(AvatarCache.get().getBitmapFromMemory(String.valueOf(id))!=null){
+            callback.onResponse(AvatarCache.get().getBitmapFromMemory(String.valueOf(id)));
+            return;
+        }
+       getPhotoFromNet(callback,id);
+    }
+
     private void isAuth(@NonNull final LoadSuccessCallback callback,@NonNull boolean firstLoad ){
         if(mStorage.getLOGIN().isEmpty() || mStorage.getPASSWORD().isEmpty()) {
             callback.onSuccess(false);
         }else{
             mStorageFull=true;
-             isAuth(callback,mStorage.getLOGIN(), mStorage.getPASSWORD(),firstLoad);
+            isAuth(callback,mStorage.getLOGIN(), mStorage.getPASSWORD(),firstLoad);
         }
     }
 
@@ -58,7 +83,6 @@ public  class Repository implements RepositoryContract {
             mStorage.addCredentials(login, password);
         }
     }
-
 
     private void getSuccessFromNet(@NonNull final LoadSuccessCallback callback, @NonNull String login,@NonNull String password, @NonNull boolean firstLoad) {
         Log.e("TAG", "repository getSuccessFromNet");
@@ -78,7 +102,7 @@ public  class Repository implements RepositoryContract {
 
                                                         @Override
                                                         public void errorSuccess(String errorMessage) {
-                                                            Log.e("TAG", "repository mJParser errorSuccess");
+                                                            Log.e("TAG", "repository mJParser notAvailable");
                                                             callback.logOut(errorMessage);
                                                         }
                                                     },
@@ -101,27 +125,62 @@ public  class Repository implements RepositoryContract {
         }
     }
 
-    @Override
-    public void getDepartments(@NonNull LoadDepartmentsCallback callback,@NonNull boolean refreshCache,  @NonNull boolean firstLoad) {
-        Log.e("TAG", "repository getListModel "+refreshCache);
-        if(mCachedDepartment!=null && !refreshCache){
-            Log.e("TAG", "repository getListModel cachedDepartment");
-            //из кэша
-            return;
+    private void getDepartmentsFromNet(@NonNull final LoadDepartmentsCallback callback,@NonNull final boolean firstLoad){
+        isAuth(new LoadSuccessCallback() {
+            @Override
+            public void onSuccess(boolean success) {
+
+            }
+
+            @Override
+            public void logOut(String errorMessage) {
+
+            }
+
+            @Override
+            public void connectionError(String errorMessage) {
+
+            }
+        },
+        firstLoad);
+        if(mStorageFull){
+            mNet.getDepartments(new NetContract.LoadDepartmentsCallback() {
+                @Override
+                public void onResponse(String response) {
+                    mJParser.getDepartments(new JParserContract.ParsDepartmentsCallback(){
+                                                @Override
+                                                public void onDepartmentsLoaded(List<DepartmentModel> departments) {
+                                                    Log.e("TAG", "repository mJParser pnDepartmentsLoaded");
+                                                   callback.onDepartmentsLoaded(departments);
+                                                   refreshCache(departments);
+                                                }
+
+                                                @Override
+                                                public void notAvailable(String errorMessage) {
+
+                                                }
+                                            },
+                    response);
+                }
+
+                @Override
+                public void connectionError(String errorMessage) {
+                    if(mCachedDepartment!=null){
+                        getDepartments(callback,true, firstLoad);
+                        callback.connectionError(errorMessage);
+                    }else {
+                        callback.notAvailable(errorMessage);
+                    }
+                }
+            },
+            true
+                );
+        }else{
+            callback.logOut("Ошибка авторизации");
         }
-        if(refreshCache){
-            Log.e("TAG", "repository getListModel refreshCache");
-            getDepartmentsFromNet(callback,firstLoad);
-        }
-        //добавить not available
     }
 
-    @Override
-    public void getPhoto(@NonNull final LoadPhotoCallback callback, @NonNull final int id) {
-        if(AvatarCache.get().getBitmapFromMemory(String.valueOf(id))!=null){
-            callback.onResponse(AvatarCache.get().getBitmapFromMemory(String.valueOf(id)));
-            return;
-        }
+    private void getPhotoFromNet(@NonNull final LoadPhotoCallback callback, @NonNull final int id){
         isAuth(new LoadSuccessCallback() {
                    @Override
                    public void onSuccess(boolean success) {
@@ -152,60 +211,6 @@ public  class Repository implements RepositoryContract {
                           }
                       },
                 id);
-    }
-
-    private void getDepartmentsFromNet(@NonNull final LoadDepartmentsCallback callback,@NonNull final boolean firstLoad){
-        isAuth(new LoadSuccessCallback() {
-            @Override
-            public void onSuccess(boolean success) {
-
-            }
-
-            @Override
-            public void logOut(String errorMessage) {
-
-            }
-
-            @Override
-            public void connectionError(String errorMessage) {
-
-            }
-        },
-        firstLoad);
-        if(mStorageFull){
-            mNet.getDepartments(new NetContract.LoadDepartmentsCallback() {
-                @Override
-                public void onResponse(String response) {
-                    mJParser.getDepartments(new JParserContract.ParsDepartmentsCallback(){
-                                                @Override
-                                                public void onDepartmentsLoaded(List<DepartmentModel> departments) {
-                                                    Log.e("TAG", "repository mJParser pnDepartmentsLoaded");
-                                                   callback.onDepartmentsLoaded(departments);
-                                                }
-
-                                                @Override
-                                                public void errorSuccess(String errorMessage) {
-
-                                                }
-                                            },
-                    response);
-                }
-
-                @Override
-                public void connectionError(String errorMessage) {
-                    if(mCachedDepartment!=null){
-                        getDepartments(callback,true, firstLoad);
-                        callback.connectionError(errorMessage);
-                    }else {
-                        callback.notAvailable(errorMessage);
-                    }
-                }
-            },
-            true
-                );
-        }else{
-            callback.logOut("Ошибка авторизации");
-        }
     }
 
     private void refreshCache(List<DepartmentModel> departments) {

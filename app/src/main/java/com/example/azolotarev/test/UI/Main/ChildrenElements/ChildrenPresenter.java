@@ -42,8 +42,8 @@ public class ChildrenPresenter implements ChildrenContract.Presenter {
     public void openDetail(@NonNull BaseModel selectedModel, @NonNull int containerId) {
         if(selectedModel instanceof DepartmentModel){
             DepartmentModel department=(DepartmentModel)selectedModel;
-            if(department.getEmploeeList()==null && department.getDepartmentsList()!=null) mView.showChildrenList(departmentToObject(department.getDepartmentsList()),containerId,sDepartmentType);
-            if(department.getDepartmentsList()==null && department.getEmploeeList()!=null) mView.showChildrenList(employeeToObjcet(department.getEmploeeList()),containerId,sEmployyeType);
+            if(department.getEmployeeList()==null && department.getDepartmentsList()!=null) mView.showChildrenList(departmentToObject(department.getDepartmentsList()),containerId,sDepartmentType);
+            if(department.getDepartmentsList()==null && department.getEmployeeList()!=null) mView.showChildrenList(employeeToObjcet(department.getEmployeeList()),containerId,sEmployyeType);
         }else{
             mView.showChildrenDetail(selectedModel);
         }
