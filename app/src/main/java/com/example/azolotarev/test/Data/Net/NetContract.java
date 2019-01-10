@@ -8,8 +8,12 @@ public interface NetContract {
 
     interface LoadDepartmentsCallback extends LoadSuccessCallback{
     }
+    interface LoadSuccessCallback {
+        void onResponse(String response);
 
-    interface LoadSuccessCallback{
+        void connectionError(String errorMessage);
+    }
+    interface  LoadPhotoCallback{
         void onResponse(String response);
         void connectionError(String errorMessage);
     }
