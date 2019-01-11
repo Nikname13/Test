@@ -6,12 +6,10 @@ import java.io.Serializable;
 
 public class EmployeeModel extends BaseModel implements Serializable {
 
-    @SerializedNameField(name = "Title")
     private String mTitle;
-    @SerializedNameField(name = "Email")
     private String mEmail;
-    @SerializedNameField(name = "Phone")
     private String mPhone;
+
 
     public EmployeeModel(@NonNull int id,@NonNull String name) {
         super(id, name);
@@ -50,4 +48,5 @@ public class EmployeeModel extends BaseModel implements Serializable {
     public void setPhone(String phone) {
         mPhone = phone;
     }
+
 }

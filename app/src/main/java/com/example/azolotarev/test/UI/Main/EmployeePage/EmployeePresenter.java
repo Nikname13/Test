@@ -57,4 +57,14 @@ public class EmployeePresenter implements EmployeePageContract.Presenter {
     public void hideProgress() {
 
     }
+
+    @Override
+    public void callNumber(String number) {
+        mView.callNumber(number);
+    }
+
+    @Override
+    public void sendEmail(String email) {
+        mView.sendEmail(email);
+    }
 }

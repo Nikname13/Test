@@ -3,12 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+android:id="@+id/employee_detail_container">
 
-    <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-    android:layout_margin="@dimen/activity_horizontal_margin">
+
 
     <LinearLayout
             android:layout_width="match_parent"
@@ -18,29 +16,31 @@
         <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/list_item_padding"
                 android:orientation="horizontal">
 
+            <android.support.v7.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
             <ImageView
                     android:id="@+id/employee_avatar"
                     android:layout_width="200dp"
                     android:layout_height="300dp"
                     android:layout_gravity="center"
+                    android:layout_margin="@dimen/list_item_padding"
                     tools:srcCompat="@tools:sample/avatars" />
+            </android.support.v7.widget.CardView>
 
         </FrameLayout>
         <!--employee title-->
-        <android.support.v7.widget.CardView
-                android:id="@+id/employee_title"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="@dimen/list_item_padding"
-                android:layout_weight="1">
 
             <LinearLayout
+                    android:id="@+id/employee_title"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+            android:background="@color/cardview_light_background">
 
                 <TextView
                         android:id="@+id/employee_title_label"
@@ -60,19 +60,15 @@
                         android:gravity="center"
                         android:text="TextView" />
             </LinearLayout>
-        </android.support.v7.widget.CardView>
         <!--employee name-->
-        <android.support.v7.widget.CardView
-                android:id="@+id/employee_name"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="@dimen/list_item_padding"
-                android:layout_weight="1">
 
             <LinearLayout
+                    android:id="@+id/employee_name"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:background="@color/cardview_light_background">
 
                 <TextView
                         android:id="@+id/employee_name_label"
@@ -92,19 +88,16 @@
                         android:gravity="center"
                         android:text="TextView" />
             </LinearLayout>
-        </android.support.v7.widget.CardView>
         <!--employee phone-->
-        <android.support.v7.widget.CardView
-                android:id="@+id/employee_phone"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="@dimen/list_item_padding"
-                android:layout_weight="1">
 
             <LinearLayout
+                    android:id="@+id/employee_phone"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:background="@drawable/ripple_list"
+                    android:clickable="true"
+                    android:layout_weight="1">
 
                 <TextView
                         android:id="@+id/employee_phone_label"
@@ -112,6 +105,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/list_item_padding"
                         android:layout_weight="1"
+                        android:gravity="center_vertical"
                         android:text="@string/employee_phone" />
 
                 <TextView
@@ -120,21 +114,20 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/list_item_padding"
                         android:layout_weight="1"
+                        android:gravity="center"
                         android:text="TextView" />
             </LinearLayout>
-        </android.support.v7.widget.CardView>
+
         <!--employee email-->
-        <android.support.v7.widget.CardView
-                android:id="@+id/employee_email"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="@dimen/list_item_padding"
-                android:layout_weight="1">
 
             <LinearLayout
+                    android:id="@+id/employee_email"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:background="@drawable/ripple_list"
+                    android:clickable="true"
+                    android:layout_weight="1">
 
                 <TextView
                         android:id="@+id/employee_email_label"
@@ -142,6 +135,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/list_item_padding"
                         android:layout_weight="1"
+                        android:gravity="center_vertical"
                         android:text="@string/employee_email" />
 
                 <TextView
@@ -150,12 +144,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/list_item_padding"
                         android:layout_weight="1"
+                        android:gravity="center"
                         android:text="TextView" />
             </LinearLayout>
-        </android.support.v7.widget.CardView>
-
-
     </LinearLayout>
 
-</android.support.v7.widget.CardView>
         </FrameLayout>

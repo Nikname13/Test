@@ -22,6 +22,7 @@ import com.example.azolotarev.test.Model.BaseModel;
 import com.example.azolotarev.test.Model.EmployeeModel;
 import com.example.azolotarev.test.R;
 import com.example.azolotarev.test.Repository.Repository;
+import com.example.azolotarev.test.Repository.RepositoryContract;
 import com.example.azolotarev.test.UI.Main.EmployeePage.EmployeeFragment;
 import com.example.azolotarev.test.UI.Main.EmployeePage.EmployeePresenter;
 import com.example.azolotarev.test.UI.Main.RecyclerListAdapter;
@@ -57,6 +58,7 @@ public class ChildrenFragment extends Fragment implements ChildrenContract.View 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("TAG","CREATE CHILDREN FRAGMENT");
     }
 
     @Nullable
@@ -142,24 +144,24 @@ public class ChildrenFragment extends Fragment implements ChildrenContract.View 
     @Override
     public void onPause() {
         super.onPause();
-        Log.e("TAG","onPause");
+        Log.e("TAG","onPause children");
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Log.e("TAG","onStop");
+        Log.e("TAG","onStop children");
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.e("TAG","onDestroy");
+        Log.e("TAG","onDestroy children");
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        Log.e("TAG","onDetach");
+        Log.e("TAG","onDetach children");
     }
 }

@@ -4,10 +4,10 @@ import android.support.annotation.NonNull;
 
 public class BaseModel {
 
-    @SerializedNameField(name = "ID")
-   private int mId;
-    @SerializedNameField(name = "Name")
-   private String mName;
+    private int mId;
+    private String mName;
+    private DepartmentModel mParent;
+
 
     public BaseModel(@NonNull int id,@NonNull String name) {
         mId = id;
@@ -31,5 +31,13 @@ public class BaseModel {
 
     public void setName(String name) {
         mName = name;
+    }
+
+    public DepartmentModel getParent() {
+        return mParent;
+    }
+
+    public void setParent(DepartmentModel parent) {
+        mParent = parent;
     }
 }

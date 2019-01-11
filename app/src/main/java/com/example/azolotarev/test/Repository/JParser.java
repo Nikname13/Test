@@ -47,49 +47,58 @@ public class JParser implements JParserContract {
     }
 
     private DepartmentModel getDepartment(JSONObject json) {
-        DepartmentModel departmentModel=new DepartmentModel();
+        DepartmentModel rootDepartment=new DepartmentModel();
         try {
-            departmentModel.setId(Integer.valueOf(json.getString("ID")));
-            departmentModel.setName(json.getString("Name"));
+            rootDepartment.setId(Integer.valueOf(json.getString("ID")));
+            if(!json.isNull("Name")) rootDepartment.setName(json.getString("Name"));
             if(!json.isNull("Departments")){
                 List<DepartmentModel> listDepartments=new ArrayList<>();
                 JSONArray jsonArray=json.getJSONArray("Departments");
                 for(int i=0;i<jsonArray.length();i++){
-                    Log.e("TAG",jsonArray.getJSONObject(i).getString("ID"));
-                   listDepartments.add(getDepartment(jsonArray.getJSONObject(i)));
+                  //  Log.e("TAG",jsonArray.getJSONObject(i).getString("ID"));
+                    DepartmentModel childrenDepartment=getDepartment(jsonArray.getJSONObject(i));
+                    if(childrenDepartment!=null) {
+                        childrenDepartment.setParent(rootDepartment);
+                        listDepartments.add(childrenDepartment);
+                    }
                 }
-                departmentModel.setDepartmentsList(listDepartments);
-                  return departmentModel;
+                rootDepartment.setDepartmentsList(listDepartments);
+                return rootDepartment;
             }
             if(!json.isNull("Employees")){
                 List<EmployeeModel> listEmployee=new ArrayList<>();
                     JSONArray jsonArray=json.getJSONArray("Employees");
                     for(int i=0;i<jsonArray.length();i++){
-                        Log.e("TAG",jsonArray.getJSONObject(i).getString("ID"));
-                        listEmployee.add(getEmployee(jsonArray.getJSONObject(i)));
+                      //  Log.e("TAG",jsonArray.getJSONObject(i).getString("ID"));
+                        EmployeeModel employeeModel=getEmployee(jsonArray.getJSONObject(i));
+                        if(employeeModel!=null){
+                            employeeModel.setParent(rootDepartment);
+                            listEmployee.add(employeeModel);
+                        }
                     }
-                    departmentModel.setEmployeeList(listEmployee);
-                    return departmentModel;
+                    rootDepartment.setEmployeeList(listEmployee);
+                    return rootDepartment;
             }
         } catch (JSONException e) {
             e.printStackTrace();
+            return null;
         }
-
-        return null;
+        return rootDepartment;
     }
 
     private EmployeeModel getEmployee(JSONObject json){
         EmployeeModel employeeModel=new EmployeeModel();
         try {
             employeeModel.setId(Integer.valueOf(json.getString("ID")));
-            employeeModel.setName(json.getString("Name"));
-            employeeModel.setTitle(json.getString("Title"));
-            employeeModel.setPhone(json.getString("Phone"));
-            employeeModel.setEmail(json.getString("Email"));
+           if(!json.isNull("Name")) employeeModel.setName(json.getString("Name"));
+           if(!json.isNull("Title")) employeeModel.setTitle(json.getString("Title"));
+           if(!json.isNull("Phone")) employeeModel.setPhone(json.getString("Phone"));
+           if(!json.isNull("Email")) employeeModel.setEmail(json.getString("Email"));
             return employeeModel;
         } catch (JSONException e) {
             e.printStackTrace();
+            Log.e("TAG","getEmployee error");
+            return null;
         }
-        return null;
     }
 }

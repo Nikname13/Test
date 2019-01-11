@@ -60,6 +60,7 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     @Override
     public void onResume() {
         super.onResume();
+        Log.e("TAG","onResume rootdepartment");
         mPresenter.start();
     }
 
@@ -81,7 +82,6 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     @Override
     public void showDepartmentsList(@NonNull List<BaseModel> departmentList,@NonNull int viewType) {
         mDepartmentsAdapter=new RecyclerListAdapter(departmentList, getActivity(),this, viewType);
-        mDepartmentsAdapter.setHasStableIds(true);
         mRecyclerViewRoot.setAdapter(mDepartmentsAdapter);
     }
 
@@ -123,12 +123,34 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
 
     @Override
     public void removeFragment(@NonNull int containerId) {
-        //Log.e("TAG","!!departments list fragment removeFragment container id= "+ getActivity().getSupportFragmentManager().findFragmentByTag(String.valueOf(containerId)));
+        Log.e("TAG","!!departments list fragment removeFragment container id= "+ getActivity().getSupportFragmentManager().findFragmentByTag(String.valueOf(containerId)));
         if(getActivity().getSupportFragmentManager().findFragmentByTag(String.valueOf(containerId))!=null){
             getActivity().getSupportFragmentManager().beginTransaction().remove(getActivity().getSupportFragmentManager().findFragmentByTag(String.valueOf(containerId))).commit();
-           // Log.e("TAG","!!!departments list fragment after remove container id= "+ getActivity().getSupportFragmentManager().findFragmentByTag(String.valueOf(containerId)));
+            Log.e("TAG","!!!departments list fragment after remove container id= "+ getActivity().getSupportFragmentManager().findFragmentByTag(String.valueOf(containerId)));
         }
     }
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.e("TAG","onPause rootdepartment");
+    }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.e("TAG","onStop rootdepartment");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.e("TAG","onDestroy rootdepartment");
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.e("TAG","onDetach rootdepartment");
+    }
 
 }

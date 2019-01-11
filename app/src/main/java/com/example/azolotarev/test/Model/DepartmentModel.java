@@ -7,10 +7,9 @@ import java.util.List;
 
 public class DepartmentModel extends BaseModel implements Serializable {
 
-    @SerializedNameField(name = "Employees")
     private List<EmployeeModel> mEmployeeList;
-    @SerializedNameField(name = "Departments")
     private List<DepartmentModel> mDepartmentsList;
+
 
     public DepartmentModel(@NonNull int id,@NonNull String name) {
         super(id, name);
@@ -34,4 +33,5 @@ public class DepartmentModel extends BaseModel implements Serializable {
     public List<DepartmentModel> getDepartmentsList() {
         return mDepartmentsList;
     }
+
 }

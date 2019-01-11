@@ -18,7 +18,12 @@ public interface EmployeePageContract {
         void hidePhone();
         void hideEmail();
         EmployeeModel getEmployee();
+        void callNumber(String number);
+        void sendEmail(String email);
     }
 
-    interface Presenter extends BasePresenter,ProgressContract{}
+    interface Presenter extends BasePresenter,ProgressContract{
+        void callNumber(String number);
+        void sendEmail(String email);
+    }
 }

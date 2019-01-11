@@ -1,16 +1,21 @@
 package com.example.azolotarev.test.UI.Main.EmployeePage;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.example.azolotarev.test.Model.EmployeeModel;
 import com.example.azolotarev.test.R;
@@ -21,7 +26,8 @@ public class EmployeeFragment extends Fragment implements EmployeePageContract.V
     private static final String ARG_EMPLOYEE_OBJECT="employee_object";
     private ImageView mAvatar;
     private TextView mTitle, mName, mPhone, mEmail;
-    private CardView mTitleContainer, mNameContainer, mPhoneContainer, mEmailContainer;
+    private LinearLayout mTitleContainer, mNameContainer, mPhoneContainer, mEmailContainer;
+    private FrameLayout mFrameLayout;
 
     public static EmployeeFragment newInstance(EmployeeModel employeeModel){
         Bundle arg=new Bundle();
@@ -35,15 +41,28 @@ public class EmployeeFragment extends Fragment implements EmployeePageContract.V
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v=inflater.inflate(R.layout.employee_detail,container,false);
+        mFrameLayout=(FrameLayout)v.findViewById(R.id.employee_detail_container);
         mAvatar =(ImageView)v.findViewById(R.id.employee_avatar);
         mTitle=(TextView)v.findViewById(R.id.employee_title_textView);
-        mTitleContainer=(CardView)v.findViewById(R.id.employee_title);
+        mTitleContainer=(LinearLayout)v.findViewById(R.id.employee_title);
         mName=(TextView)v.findViewById(R.id.employee_name_textView);
-        mNameContainer=(CardView)v.findViewById(R.id.employee_name);
+        mNameContainer=(LinearLayout) v.findViewById(R.id.employee_name);
         mPhone=(TextView)v.findViewById(R.id.employee_phone_textView);
-        mPhoneContainer=(CardView)v.findViewById(R.id.employee_phone);
+        mPhoneContainer=(LinearLayout) v.findViewById(R.id.employee_phone);
+        mPhoneContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPresenter.callNumber(mPhone.getText().toString());
+            }
+        });
         mEmail=(TextView)v.findViewById(R.id.employee_email_textView);
-        mEmailContainer=(CardView)v.findViewById(R.id.employee_email);
+        mEmailContainer=(LinearLayout) v.findViewById(R.id.employee_email);
+        mEmailContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPresenter.sendEmail(mEmail.getText().toString());
+            }
+        });
         return v;
     }
 
@@ -120,6 +139,30 @@ public class EmployeeFragment extends Fragment implements EmployeePageContract.V
     @Override
     public EmployeeModel getEmployee() {
         return (EmployeeModel) getArguments().getSerializable(ARG_EMPLOYEE_OBJECT);
+    }
+
+    @Override
+    public void callNumber(String number) {
+        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"+number));
+        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivity(intent);
+        }else{
+            Snackbar snackbar=Snackbar.make(mFrameLayout,"Нет необходимого приложения",Snackbar.LENGTH_SHORT);
+            snackbar.show();
+        }
+    }
+
+    @Override
+    public void sendEmail(String email) {
+        Intent sendIntent = new Intent(Intent.ACTION_SENDTO);
+        sendIntent.setData(Uri.parse("mailto:"));
+        sendIntent.putExtra(Intent.EXTRA_EMAIL  , new String[] {email});
+        if (sendIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivity(sendIntent);
+        }else{
+            Snackbar snackbar=Snackbar.make(mFrameLayout,"Нет необходимого приложения",Snackbar.LENGTH_SHORT);
+            snackbar.show();
+        }
     }
 
     @Override
