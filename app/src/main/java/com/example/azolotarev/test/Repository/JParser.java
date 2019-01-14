@@ -21,7 +21,7 @@ public class JParser implements JParserContract {
         try {
             JSONObject json=new JSONObject(jsonString);
             if(json.length()!=0) {
-                List<DepartmentModel> list= getDepartment(json).getDepartmentsList();
+                List<DepartmentModel> list= getTestList();
                if(list!=null) callback.onDepartmentsLoaded(list);
                 else callback.notAvailable("Лист = null");
             }
@@ -100,5 +100,46 @@ public class JParser implements JParserContract {
             Log.e("TAG","getEmployee error");
             return null;
         }
+    }
+
+    private List<DepartmentModel> getTestList() {
+        List<DepartmentModel> list=new ArrayList<>();
+        for(int i=0;i<100;i++){
+            DepartmentModel departmentModel=new DepartmentModel(i,"Отдел "+i);
+            List<DepartmentModel> underDepartment=new ArrayList<>();
+            List<EmployeeModel> employees=new ArrayList<>();
+            for(int y=0;y<=i;y++){
+                DepartmentModel childrenDepartment=new DepartmentModel(y,"Подотдел "+y);
+                List<DepartmentModel> underunderDepartment=new ArrayList<>();
+                List<EmployeeModel> underEmployee=new ArrayList<>();
+                for(int z=0;z<=y;z++){
+                    DepartmentModel testdep2Lvl=new DepartmentModel(z,"Подотдельный отдел"+z);
+                    testdep2Lvl.setParent(childrenDepartment);
+                    underunderDepartment.add(testdep2Lvl);
+                }
+                for(int w=0;w<15;w++){
+                    EmployeeModel testEmp2Lvl=new EmployeeModel(w,"Сотрудник "+w);
+                    testEmp2Lvl.setParent(childrenDepartment);
+                    underEmployee.add(testEmp2Lvl);
+                }
+                if(y%2==0)
+                    childrenDepartment.setDepartmentsList(underunderDepartment);
+                else
+                    childrenDepartment.setEmployeeList(underEmployee);
+                childrenDepartment.setParent(departmentModel);
+                underDepartment.add(childrenDepartment);
+            }
+            for(int x=0;x<15;x++){
+                EmployeeModel testEm1lvl=new EmployeeModel(x,"Сотрудник "+x);
+                testEm1lvl.setParent(departmentModel);
+                employees.add(testEm1lvl);
+            }
+            if(i%2==0)
+                departmentModel.setDepartmentsList(underDepartment);
+            else departmentModel.setEmployeeList(employees);
+            departmentModel.setParent(new DepartmentModel(0,"parent"));
+            list.add(departmentModel);
+        }
+        return list;
     }
 }

@@ -34,6 +34,18 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
     }
 
     @Override
+    public void removeFragment(@NonNull BaseModel model) {
+        if(model instanceof DepartmentModel) {
+            DepartmentModel department = (DepartmentModel) model;
+            if (department.getDepartmentsList() != null)
+                for (DepartmentModel departmentModel : department.getDepartmentsList()) {
+                mDepartmentView.removeFragment(departmentModel);
+                removeFragment(departmentModel);
+                }
+        }
+    }
+
+    @Override
     public void loadDepartments(boolean freshUpdate, boolean firstLoad) {
         if(freshUpdate) mInteractor.refreshDepartments();
         mInteractor.getDepartments(new DepartmentInteractorContract.getDepartmentsCallback() {

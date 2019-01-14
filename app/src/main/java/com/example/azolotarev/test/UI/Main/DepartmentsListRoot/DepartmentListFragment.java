@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -35,7 +36,7 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     private RecyclerView mRecyclerViewRoot;
     private RecyclerListAdapter mDepartmentsAdapter;
     private RelativeLayout mRelativeLayout;
-
+    private int mRecyclerPosition;
 
     public static DepartmentListFragment newInstance() {
         return new DepartmentListFragment();
@@ -50,9 +51,9 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v=inflater.inflate(R.layout.fragment_list,container,false);
-        mRecyclerViewRoot =(RecyclerView)v.findViewById(R.id.departments_recycler_view);
+        mRecyclerViewRoot =v.findViewById(R.id.departments_recycler_view);
         mRecyclerViewRoot.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRelativeLayout=(RelativeLayout)v.findViewById(R.id.departments_layout);
+        mRelativeLayout=v.findViewById(R.id.departments_layout);
         return v;
     }
 
@@ -83,6 +84,8 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     public void showDepartmentsList(@NonNull List<BaseModel> departmentList,@NonNull int viewType) {
         mDepartmentsAdapter=new RecyclerListAdapter(departmentList, getActivity(),this, viewType);
         mRecyclerViewRoot.setAdapter(mDepartmentsAdapter);
+        Log.d("TAG","position "+mRecyclerPosition);
+        mRecyclerViewRoot.scrollToPosition(mRecyclerPosition);
     }
 
     @Override
@@ -112,9 +115,9 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
 
     @Override
     public void onClickItem(@NonNull BaseModel department, @NonNull int containerId) {
-        Log.e("TAG","departments list fragment onClickItem container id= "+containerId);
+        Log.d("TAG","departments list fragment onClickItem scroll(Y)= ");
         for(Fragment fragment:getActivity().getSupportFragmentManager().getFragments()){
-            Log.e("TAG","departments list fragment onClickItem fragment tag "+fragment.toString());
+            Log.d("TAG","departments list fragment onClickItem fragment tag "+fragment.toString());
         }
         mPresenter.openDepartmentDetail((DepartmentModel) department,containerId);
         Snackbar snackbar=Snackbar.make(mRelativeLayout,department.getName(),Snackbar.LENGTH_SHORT);
@@ -122,13 +125,22 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     }
 
     @Override
-    public void removeFragment(@NonNull int containerId) {
-        Log.e("TAG","!!departments list fragment removeFragment container id= "+ getActivity().getSupportFragmentManager().findFragmentByTag(String.valueOf(containerId)));
-        if(getActivity().getSupportFragmentManager().findFragmentByTag(String.valueOf(containerId))!=null){
-            getActivity().getSupportFragmentManager().beginTransaction().remove(getActivity().getSupportFragmentManager().findFragmentByTag(String.valueOf(containerId))).commit();
-            Log.e("TAG","!!!departments list fragment after remove container id= "+ getActivity().getSupportFragmentManager().findFragmentByTag(String.valueOf(containerId)));
+    public void removeFragment(@NonNull BaseModel model) {
+        Log.e("TAG","!!departments list fragment removeFragment container id= "+ getActivity().getSupportFragmentManager().findFragmentByTag(String.valueOf(model.hashCode())));
+        mPresenter.removeFragment(model);
+        if(getActivity().getSupportFragmentManager().findFragmentByTag(String.valueOf(model.hashCode()))!=null){
+            getActivity().getSupportFragmentManager().beginTransaction().remove(getActivity().getSupportFragmentManager().findFragmentByTag(String.valueOf(model.hashCode()))).commit();
+            Log.e("TAG","!!!departments list fragment after remove container id= "+ getActivity().getSupportFragmentManager().findFragmentByTag(String.valueOf(model.hashCode())));
         }
     }
+
+    @Override
+    public void scrollToPosition(@NonNull int position) {
+       // mRecyclerViewRoot.scrollToPosition(position);
+        Log.d("TAG","scrollToPosition "+position);
+        mRecyclerPosition=position;
+    }
+
     @Override
     public void onPause() {
         super.onPause();

@@ -4,14 +4,14 @@ import android.support.annotation.NonNull;
 import com.example.azolotarev.test.Model.BaseModel;
 import com.example.azolotarev.test.UI.BasePresenter;
 import com.example.azolotarev.test.UI.BaseView;
-import com.example.azolotarev.test.UI.Main.ItemClickListener;
+import com.example.azolotarev.test.UI.Main.RecyclerItemContract;
 import com.example.azolotarev.test.UI.ProgressContract;
 
 import java.util.List;
 
 public interface ChildrenContract {
 
-    interface View extends BaseView<Presenter>,ItemClickListener,ProgressContract {
+    interface View extends BaseView<Presenter>,RecyclerItemContract,ProgressContract {
          List<BaseModel> getListModel();
          int getViewType();
         void showListModel(@NonNull List<BaseModel> departmentList, @NonNull int viewType);

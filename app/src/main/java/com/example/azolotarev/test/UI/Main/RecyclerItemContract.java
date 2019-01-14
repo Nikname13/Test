@@ -5,8 +5,9 @@ import android.support.v7.widget.RecyclerView;
 import com.example.azolotarev.test.Model.BaseModel;
 import com.example.azolotarev.test.Model.DepartmentModel;
 
-public interface ItemClickListener {
-    void onClickItem(@NonNull BaseModel model, @NonNull int containerId);
-
-    void removeFragment(@NonNull int containerId);
+public interface RecyclerItemContract {
+        void scrollToPosition(@NonNull int position);
+        void onClickItem(@NonNull BaseModel model, @NonNull int containerId);
+        void removeFragment(@NonNull BaseModel model);
 }
+

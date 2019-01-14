@@ -37,6 +37,7 @@ public class ChildrenFragment extends Fragment implements ChildrenContract.View 
     private RecyclerListAdapter mDepartmentsAdapterChildren;
     private static final String ARG_OBJECT ="base_model_object";
     private static final String ARG_VIEW_TYPE="view_type";
+    private int mRecyclerPosition;
 
 
     public static ChildrenFragment newInstance(List<BaseModel> departments, int viewType){
@@ -86,6 +87,7 @@ public class ChildrenFragment extends Fragment implements ChildrenContract.View 
         Log.e("TAG","children department fragment showListModel size " +listModel.size());
         mDepartmentsAdapterChildren=new RecyclerListAdapter(listModel, getActivity(), this, viewType);
         mRecyclerViewChildren.setAdapter(mDepartmentsAdapterChildren);
+        mRecyclerViewChildren.scrollToPosition(mRecyclerPosition);
     }
 
     @Override
@@ -118,16 +120,19 @@ public class ChildrenFragment extends Fragment implements ChildrenContract.View 
     @Override
     public void onClickItem(@NonNull BaseModel model, @NonNull int containerId) {
         Log.e("TAG","children department fragment click "+model.getName()+" id "+containerId);
+        for(Fragment fragment:getActivity().getSupportFragmentManager().getFragments()){
+            Log.d("TAG","children list fragment onClickItem fragment tag "+fragment.toString());
+        }
         mPresenter.openDetail(model,containerId);
     }
 
     @Override
-    public void removeFragment(@NonNull int containerId) {
-        Log.e("TAG","!! children departments list fragment removeFragment container id= "+ getActivity().getSupportFragmentManager().findFragmentByTag(String.valueOf(containerId)));
-        if(getActivity().getSupportFragmentManager().findFragmentByTag(String.valueOf(containerId))!=null){
-            getActivity().getSupportFragmentManager().beginTransaction().remove(getActivity().getSupportFragmentManager().findFragmentByTag(String.valueOf(containerId))).commit();
-            Log.e("TAG","!!!children departments list fragment after remove container id= "+ getActivity().getSupportFragmentManager().findFragmentByTag(String.valueOf(containerId)));
-        }
+    public void removeFragment(@NonNull BaseModel containerId) {
+    }
+
+    @Override
+    public void scrollToPosition(@NonNull int position) {
+       mRecyclerPosition=position;
     }
 
 
