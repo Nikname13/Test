@@ -3,10 +3,16 @@ package com.example.azolotarev.test.Domain.DepartmentsList;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.ListView;
+import com.example.azolotarev.test.Model.BaseModel;
 import com.example.azolotarev.test.Model.DepartmentModel;
+import com.example.azolotarev.test.Model.EmployeeModel;
+import com.example.azolotarev.test.Model.RecyclerModel;
 import com.example.azolotarev.test.Repository.RepositoryContract;
+import com.example.azolotarev.test.UI.Main.RecyclerLvl;
 import com.example.azolotarev.test.UI.ProgressContract;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DepartmentInteractor implements DepartmentInteractorContract {
@@ -16,9 +22,11 @@ public class DepartmentInteractor implements DepartmentInteractorContract {
     private boolean mRefreshCache=false;
     private List<DepartmentModel> mDepartmentModels;
     private String mConnectionError,mSuccessError,mNotAvailable;
+    private List<RecyclerModel> mRecyclerList;
 
     public DepartmentInteractor(RepositoryContract repository) {
         mRepository = repository;
+        mRecyclerList=new ArrayList<>();
     }
 
     @Override
@@ -84,7 +92,33 @@ public class DepartmentInteractor implements DepartmentInteractorContract {
             if(mSuccessError!=null && !mSuccessError.isEmpty()) mCallback.logOut(mSuccessError);
             if(mConnectionError!=null && !mConnectionError.isEmpty()) mCallback.connectionError(mConnectionError);
             if(mNotAvailable!=null && !mNotAvailable.isEmpty()) mCallback.notAvailable(mNotAvailable);
-            if(mDepartmentModels!=null) mCallback.onDepartmentsLoaded(mDepartmentModels);
+            if(mDepartmentModels!=null){
+                //mCallback.onDepartmentsLoaded(mDepartmentModels);
+                setList();
+                mCallback.onDepartmentsLoaded(mRecyclerList);
+            }
+        }
+    }
+
+    private void setList(){
+        for(DepartmentModel departmentModel:mDepartmentModels){
+            mRecyclerList.add(new RecyclerModel(departmentModel,0, true));
+            setRecyclerSetting(departmentModel,0);
+        }
+        Log.d("TAG","set Recycler list done!");
+    }
+
+    private void setRecyclerSetting(DepartmentModel department, int lvl){
+        if(department.getDepartmentsList()!=null){
+            for(DepartmentModel departmentModel:department.getDepartmentsList()){
+                mRecyclerList.add(new RecyclerModel(departmentModel,lvl+1, false));
+                setRecyclerSetting(departmentModel,lvl+1);
+            }
+        }
+        if(department.getEmployeeList()!=null){
+            for(EmployeeModel employeeModel:department.getEmployeeList()){
+                mRecyclerList.add(new RecyclerModel(employeeModel,lvl+1, false));
+            }
         }
     }
 }

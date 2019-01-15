@@ -31,7 +31,7 @@ public class RecyclerLvl {
             for (BaseModel baseModel : mLvlList) {
                 if (baseModel.getId() != model.getId()) mLvlList.remove(baseModel);
                 else {
-                    mLvlList.remove(baseModel);
+                    mLvlList.remove(model);
                     print();
                     return;
                 }

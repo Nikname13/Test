@@ -1,13 +1,9 @@
 package com.example.azolotarev.test.UI.Main.DepartmentsListRoot;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,18 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-import com.example.azolotarev.test.Data.Local.PersistentStorage;
-import com.example.azolotarev.test.Data.Net.Connect;
-import com.example.azolotarev.test.Data.Net.Net;
-import com.example.azolotarev.test.Domain.DepartmentsList.DepartmentInteractor;
-import com.example.azolotarev.test.Model.BaseModel;
-import com.example.azolotarev.test.Model.DepartmentModel;
+import com.example.azolotarev.test.Model.EmployeeModel;
+import com.example.azolotarev.test.Model.RecyclerModel;
 import com.example.azolotarev.test.R;
-import com.example.azolotarev.test.Repository.Repository;
-import com.example.azolotarev.test.UI.Main.ChildrenElements.ChildrenFragment;
-import com.example.azolotarev.test.UI.Main.ChildrenElements.ChildrenPresenter;
 import com.example.azolotarev.test.UI.Main.RecyclerListAdapter;
-
 
 import java.util.List;
 
@@ -81,21 +69,22 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     }
 
     @Override
-    public void showDepartmentsList(@NonNull List<BaseModel> departmentList,@NonNull int viewType) {
-        mDepartmentsAdapter=new RecyclerListAdapter(departmentList, getActivity(),this, viewType);
+    public void showList(@NonNull List<Integer> list) {
+        mDepartmentsAdapter=new RecyclerListAdapter(list, getActivity(),this);
         mRecyclerViewRoot.setAdapter(mDepartmentsAdapter);
         Log.d("TAG","position "+mRecyclerPosition);
         mRecyclerViewRoot.scrollToPosition(mRecyclerPosition);
     }
 
     @Override
-    public void showDepartmentChildren(@NonNull List<BaseModel> departmentList,@NonNull int containerId, @NonNull int viewType) {
-        Log.e("TAG","departmentlistfragment showChildrenList container "+containerId);
-         ChildrenFragment fragment = ChildrenFragment.newInstance(departmentList,viewType);
-            new ChildrenPresenter(fragment, new DepartmentInteractor(new Repository(PersistentStorage.init(getActivity().getApplicationContext()),
-                    new Net(new Connect(),
-                            (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE)))));
-            getActivity().getSupportFragmentManager().beginTransaction().replace(containerId, fragment, String.valueOf(containerId)).commit();
+    public void updateList(@NonNull List<Integer> recyclerModelList) {
+        mDepartmentsAdapter.setList(recyclerModelList);
+        mDepartmentsAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void showEmployeeDetail(@NonNull EmployeeModel model) {
+        //запилить создание фрагмента EmployeePage
     }
 
     @Override
@@ -114,24 +103,20 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     }
 
     @Override
-    public void onClickItem(@NonNull BaseModel department, @NonNull int containerId) {
+    public void onClickItem(@NonNull RecyclerModel model) {
         Log.d("TAG","departments list fragment onClickItem scroll(Y)= ");
-        for(Fragment fragment:getActivity().getSupportFragmentManager().getFragments()){
-            Log.d("TAG","departments list fragment onClickItem fragment tag "+fragment.toString());
-        }
-        mPresenter.openDepartmentDetail((DepartmentModel) department,containerId);
-        Snackbar snackbar=Snackbar.make(mRelativeLayout,department.getName(),Snackbar.LENGTH_SHORT);
-        snackbar.show();
+        mPresenter.openElementDetail(model);
     }
 
     @Override
-    public void removeFragment(@NonNull BaseModel model) {
-        Log.e("TAG","!!departments list fragment removeFragment container id= "+ getActivity().getSupportFragmentManager().findFragmentByTag(String.valueOf(model.hashCode())));
-        mPresenter.removeFragment(model);
-        if(getActivity().getSupportFragmentManager().findFragmentByTag(String.valueOf(model.hashCode()))!=null){
-            getActivity().getSupportFragmentManager().beginTransaction().remove(getActivity().getSupportFragmentManager().findFragmentByTag(String.valueOf(model.hashCode()))).commit();
-            Log.e("TAG","!!!departments list fragment after remove container id= "+ getActivity().getSupportFragmentManager().findFragmentByTag(String.valueOf(model.hashCode())));
-        }
+    public void itemInPosition(@NonNull final itemInPositionCallback callback, @NonNull int position) {
+        mPresenter.itemInPosition(new itemInPositionCallback() {
+            @Override
+            public void onItem(@NonNull RecyclerModel model) {
+                callback.onItem(model);
+            }
+        },
+        position);
     }
 
     @Override
@@ -165,4 +150,10 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
         Log.e("TAG","onDetach rootdepartment");
     }
 
+    @Override
+    public void scrollTo(@NonNull int position) {
+        Log.e("TAG","scrollTo position= "+position);
+        mRecyclerViewRoot.scrollBy(0,position*15);
+
+    }
 }
