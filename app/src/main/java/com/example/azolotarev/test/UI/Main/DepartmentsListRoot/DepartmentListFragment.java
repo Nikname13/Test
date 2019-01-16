@@ -1,9 +1,12 @@
 package com.example.azolotarev.test.UI.Main.DepartmentsListRoot;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,9 +14,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import com.example.azolotarev.test.Data.Local.PersistentStorage;
+import com.example.azolotarev.test.Data.Net.Connect;
+import com.example.azolotarev.test.Data.Net.Net;
+import com.example.azolotarev.test.Domain.EmployeePage.EmployeeInteractor;
 import com.example.azolotarev.test.Model.EmployeeModel;
 import com.example.azolotarev.test.Model.RecyclerModel;
 import com.example.azolotarev.test.R;
+import com.example.azolotarev.test.Repository.Repository;
+import com.example.azolotarev.test.UI.Main.EmployeePage.EmployeeFragment;
+import com.example.azolotarev.test.UI.Main.EmployeePage.EmployeePresenter;
 import com.example.azolotarev.test.UI.Main.RecyclerListAdapter;
 
 import java.util.List;
@@ -70,10 +80,8 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
 
     @Override
     public void showList(@NonNull List<Integer> list) {
-        mDepartmentsAdapter=new RecyclerListAdapter(list, getActivity(),this);
-        mRecyclerViewRoot.setAdapter(mDepartmentsAdapter);
-        Log.d("TAG","position "+mRecyclerPosition);
-        mRecyclerViewRoot.scrollToPosition(mRecyclerPosition);
+            mDepartmentsAdapter = new RecyclerListAdapter(list, getActivity(), this);
+            mRecyclerViewRoot.setAdapter(mDepartmentsAdapter);
     }
 
     @Override
@@ -85,6 +93,13 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     @Override
     public void showEmployeeDetail(@NonNull EmployeeModel model) {
         //запилить создание фрагмента EmployeePage
+        EmployeeFragment fragment=EmployeeFragment.newInstance(model);
+        new EmployeePresenter(fragment,new EmployeeInteractor(
+                new Repository(PersistentStorage.init(getActivity().getApplicationContext()),
+                        new Net(new Connect(),(ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE)))));
+        FragmentTransaction transaction=getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.addToBackStack(null);
+        transaction.replace(R.id.fragmentContainer, fragment).commit();
     }
 
     @Override

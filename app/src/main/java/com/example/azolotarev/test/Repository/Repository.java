@@ -7,6 +7,7 @@ import com.example.azolotarev.test.Data.Local.AvatarCache;
 import com.example.azolotarev.test.Data.Local.PersistentStorage;
 import com.example.azolotarev.test.Data.Net.NetContract;
 import com.example.azolotarev.test.Model.DepartmentModel;
+import com.example.azolotarev.test.Model.RecyclerModel;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -21,7 +22,7 @@ public  class Repository implements RepositoryContract {
     private JParserContract mJParser;
     private boolean mStorageFull=false;
     private NetContract mNet;
-    Map<String,DepartmentModel> mCachedDepartment;
+    Map<String,RecyclerModel> mCachedList;
 
 
     public Repository(@NonNull PersistentStorage storage, @NonNull NetContract net) {
@@ -45,17 +46,24 @@ public  class Repository implements RepositoryContract {
 
     @Override
     public void getDepartments(@NonNull LoadDepartmentsCallback callback,@NonNull boolean refreshCache,  @NonNull boolean firstLoad) {
-        Log.e("TAG", "repository getListModel "+refreshCache);
-        if(mCachedDepartment!=null && !refreshCache){
-            Log.e("TAG", "repository getListModel cachedDepartment");
-            callback.onDepartmentsLoaded(new ArrayList<>(mCachedDepartment.values()));
+        Log.d("TAG", "repository getListModel "+refreshCache);
+        if(mCachedList !=null && !refreshCache){
+            Log.d("TAG", "repository getListModel cachedDepartment");
+            callback.onMapListLoaded(new ArrayList<>(mCachedList.values()));
             return;
         }
         if(refreshCache){
-            Log.e("TAG", "repository getListModel refreshCache");
+            Log.d("TAG", "repository getListModel refreshCache");
             getDepartmentsFromNet(callback,firstLoad);
         }
         //добавить not available
+    }
+
+    @Override
+    public void getItem(@NonNull LoadItemCallback callback, @NonNull int id) {
+        if(mCachedList !=null && !mCachedList.isEmpty()){
+            callback.onItemLoaded(mCachedList.get(id));
+        }else callback.notAvailable("No item");
     }
 
     @Override
@@ -65,6 +73,18 @@ public  class Repository implements RepositoryContract {
             return;
         }
        getPhotoFromNet(callback,id);
+    }
+
+    @Override
+    public void refreshCache(List<RecyclerModel> mapList) {
+        if(mCachedList ==null){
+            mCachedList =new LinkedHashMap<>();
+        }
+        mCachedList.clear();
+        for(RecyclerModel model:mapList) {
+            mCachedList.put(String.valueOf(model.hashCode()), model);
+        }
+        Log.d("TAG","mCachedList size"+mCachedList.size());
     }
 
     private void isAuth(@NonNull final LoadSuccessCallback callback,@NonNull boolean firstLoad ){
@@ -152,7 +172,6 @@ public  class Repository implements RepositoryContract {
                                                 public void onDepartmentsLoaded(List<DepartmentModel> departments) {
                                                     Log.e("TAG", "repository mJParser pnDepartmentsLoaded");
                                                    callback.onDepartmentsLoaded(departments);
-                                                   refreshCache(departments);
                                                 }
 
                                                 @Override
@@ -165,7 +184,7 @@ public  class Repository implements RepositoryContract {
 
                 @Override
                 public void connectionError(String errorMessage) {
-                    if(mCachedDepartment!=null){
+                    if(mCachedList !=null){
                         getDepartments(callback,true, firstLoad);
                         callback.connectionError(errorMessage);
                     }else {
@@ -213,13 +232,4 @@ public  class Repository implements RepositoryContract {
                 id);
     }
 
-    private void refreshCache(List<DepartmentModel> departments) {
-        if(mCachedDepartment ==null){
-            mCachedDepartment=new LinkedHashMap<>();
-        }
-        mCachedDepartment.clear();
-        for(DepartmentModel department:departments){
-            mCachedDepartment.put(String.valueOf(department.getId()),department);
-        }
-    }
 }

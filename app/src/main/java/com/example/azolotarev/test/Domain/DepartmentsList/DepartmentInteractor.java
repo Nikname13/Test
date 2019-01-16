@@ -3,13 +3,10 @@ package com.example.azolotarev.test.Domain.DepartmentsList;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.util.Log;
-import android.widget.ListView;
-import com.example.azolotarev.test.Model.BaseModel;
 import com.example.azolotarev.test.Model.DepartmentModel;
 import com.example.azolotarev.test.Model.EmployeeModel;
 import com.example.azolotarev.test.Model.RecyclerModel;
 import com.example.azolotarev.test.Repository.RepositoryContract;
-import com.example.azolotarev.test.UI.Main.RecyclerLvl;
 import com.example.azolotarev.test.UI.ProgressContract;
 
 import java.util.ArrayList;
@@ -22,15 +19,14 @@ public class DepartmentInteractor implements DepartmentInteractorContract {
     private boolean mRefreshCache=false;
     private List<DepartmentModel> mDepartmentModels;
     private String mConnectionError,mSuccessError,mNotAvailable;
-    private List<RecyclerModel> mRecyclerList;
+    private List<RecyclerModel> mMapList;
 
     public DepartmentInteractor(RepositoryContract repository) {
         mRepository = repository;
-        mRecyclerList=new ArrayList<>();
     }
 
     @Override
-    public void getDepartments(@NonNull final getDepartmentsCallback callback, @NonNull boolean firstLoad) {
+    public void getDepartments(@NonNull final GetListCallback callback, @NonNull boolean firstLoad) {
         Log.e("TAG","department interacrot getDepartments refreshCache= "+mRefreshCache);
         new AsyncDepartments(callback).execute(mRefreshCache,firstLoad);
         mRefreshCache=false;
@@ -47,10 +43,35 @@ public class DepartmentInteractor implements DepartmentInteractorContract {
         mRefreshCache=true;
     }
 
-    private class AsyncDepartments extends AsyncTask<Boolean,Void, Void>{
-        private getDepartmentsCallback mCallback;
+    private void setMapList(){
+        mMapList=new ArrayList<>();
+        for(DepartmentModel departmentModel:mDepartmentModels){
+            mMapList.add(new RecyclerModel(departmentModel,0, true));
+            mapToRecyclerModel(departmentModel,0);
+        }
+        mRepository.refreshCache(mMapList);
+        Log.d("TAG","set Recycler list done!");
+    }
 
-        public AsyncDepartments(getDepartmentsCallback callback) {
+    private void mapToRecyclerModel(DepartmentModel department, int lvl){
+        if(department.getDepartmentsList()!=null){
+            for(DepartmentModel departmentModel:department.getDepartmentsList()){
+                mMapList.add(new RecyclerModel(departmentModel,lvl+1, false));
+                mapToRecyclerModel(departmentModel,lvl+1);
+            }
+        }
+        if(department.getEmployeeList()!=null){
+            for(EmployeeModel employeeModel:department.getEmployeeList()){
+                mMapList.add(new RecyclerModel(employeeModel,lvl+1, false));
+
+            }
+        }
+    }
+
+    private class AsyncDepartments extends AsyncTask<Boolean,Void, Void>{
+        private GetListCallback mCallback;
+
+        public AsyncDepartments(GetListCallback callback) {
             mCallback = callback;
         }
 
@@ -62,27 +83,34 @@ public class DepartmentInteractor implements DepartmentInteractorContract {
         @Override
         protected Void doInBackground(Boolean... booleans) {
             mRepository.getDepartments(new RepositoryContract.LoadDepartmentsCallback() {
-                @Override
-                public void logOut(String errorMessage) {
-                    mSuccessError=errorMessage;
-                }
+                                           @Override
+                                           public void onMapListLoaded(List<RecyclerModel> list) {
+                                               mMapList =list;
+                                           }
 
-                @Override
-                public void connectionError(String errorMessage) {
-                    mConnectionError=errorMessage;
-                }
+                                           @Override
+                                           public void logOut(String errorMessage) {
+                                               mSuccessError=errorMessage;
+                                           }
 
-                @Override
-                public void onDepartmentsLoaded(List<DepartmentModel> departments) {
-                    mDepartmentModels=departments;
-                }
+                                           @Override
+                                           public void connectionError(String errorMessage) {
+                                               mConnectionError=errorMessage;
+                                           }
 
-                @Override
-                public void notAvailable(String errorMessage) {
-                    mNotAvailable=errorMessage;
-                }
-            }
-            ,booleans[0],booleans[1]);
+                                           @Override
+                                           public void onDepartmentsLoaded(List<DepartmentModel> departments) {
+                                               Log.d("TAG","doInBackground");
+                                               mDepartmentModels=departments;
+                                           }
+
+                                           @Override
+                                           public void notAvailable(String errorMessage) {
+                                               mNotAvailable=errorMessage;
+                                           }
+                                       }
+                    ,booleans[0],booleans[1]);
+            if(mMapList==null && mDepartmentModels!=null) setMapList();
             return null;
         }
 
@@ -92,33 +120,10 @@ public class DepartmentInteractor implements DepartmentInteractorContract {
             if(mSuccessError!=null && !mSuccessError.isEmpty()) mCallback.logOut(mSuccessError);
             if(mConnectionError!=null && !mConnectionError.isEmpty()) mCallback.connectionError(mConnectionError);
             if(mNotAvailable!=null && !mNotAvailable.isEmpty()) mCallback.notAvailable(mNotAvailable);
-            if(mDepartmentModels!=null){
-                //mCallback.onDepartmentsLoaded(mDepartmentModels);
-                setList();
-                mCallback.onDepartmentsLoaded(mRecyclerList);
-            }
+            if(mMapList!=null) mCallback.onMapListLoaded(mMapList);
+            Log.d("TAG","onPostExecute");
+
         }
     }
 
-    private void setList(){
-        for(DepartmentModel departmentModel:mDepartmentModels){
-            mRecyclerList.add(new RecyclerModel(departmentModel,0, true));
-            setRecyclerSetting(departmentModel,0);
-        }
-        Log.d("TAG","set Recycler list done!");
-    }
-
-    private void setRecyclerSetting(DepartmentModel department, int lvl){
-        if(department.getDepartmentsList()!=null){
-            for(DepartmentModel departmentModel:department.getDepartmentsList()){
-                mRecyclerList.add(new RecyclerModel(departmentModel,lvl+1, false));
-                setRecyclerSetting(departmentModel,lvl+1);
-            }
-        }
-        if(department.getEmployeeList()!=null){
-            for(EmployeeModel employeeModel:department.getEmployeeList()){
-                mRecyclerList.add(new RecyclerModel(employeeModel,lvl+1, false));
-            }
-        }
-    }
 }

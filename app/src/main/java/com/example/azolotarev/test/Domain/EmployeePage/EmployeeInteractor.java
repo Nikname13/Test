@@ -3,6 +3,7 @@ package com.example.azolotarev.test.Domain.EmployeePage;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import com.example.azolotarev.test.Model.RecyclerModel;
 import com.example.azolotarev.test.Repository.RepositoryContract;
 import com.example.azolotarev.test.UI.ProgressContract;
 
@@ -12,14 +13,20 @@ public class EmployeeInteractor implements EmployeeInteractorContract {
     private ProgressContract mProgress;
     private String mConnectionError,mSuccessError,mNotAvailable;
     private Bitmap mPhoto;
+    private RecyclerModel mItem;
 
     public EmployeeInteractor(RepositoryContract repository) {
         mRepository = repository;
     }
 
     @Override
+    public void getItem(@NonNull int id, @NonNull GetItemCallback callback) {
+        new AsyncItem(callback).execute(id);
+    }
+
+    @Override
     public void loadPhoto(@NonNull getPhotoCallback callback, @NonNull int id) {
-        new AsyncEmployee(callback,4647).execute();
+        new AsyncEmployeePhoto(callback,4647).execute();
     }
 
     @Override
@@ -27,11 +34,11 @@ public class EmployeeInteractor implements EmployeeInteractorContract {
         mProgress=listener;
     }
 
-    private class AsyncEmployee extends AsyncTask<Boolean,Void, Void> {
+    private class AsyncEmployeePhoto extends AsyncTask<Boolean,Void, Void> {
         private getPhotoCallback mCallback;
         private int mId;
 
-        public AsyncEmployee(getPhotoCallback callback, int id) {
+        public AsyncEmployeePhoto(getPhotoCallback callback, int id) {
             mCallback = callback;
             mId=id;
         }
@@ -73,4 +80,44 @@ public class EmployeeInteractor implements EmployeeInteractorContract {
 
         }
     }
+
+    private class AsyncItem extends AsyncTask<Integer,Void,Void>{
+        private GetItemCallback mCallback;
+
+        public AsyncItem(GetItemCallback callback) {
+            mCallback = callback;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            mProgress.showProgress();
+        }
+
+        @Override
+        protected Void doInBackground(Integer... integers) {
+            mRepository.getItem(new RepositoryContract.LoadItemCallback() {
+                                    @Override
+                                    public void onItemLoaded(@NonNull RecyclerModel item) {
+                                        mItem=item;
+                                    }
+
+                                    @Override
+                                    public void notAvailable(String errorMessage) {
+
+                                    }
+                                },
+                    integers[0]
+            );
+            return null;
+        }
+
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            mProgress.hideProgress();
+            if(mItem!=null) mCallback.onItemLoaded(mItem);
+        }
+
+    }
+
 }

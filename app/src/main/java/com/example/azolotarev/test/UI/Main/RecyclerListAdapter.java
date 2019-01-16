@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.example.azolotarev.test.Model.BaseModel;
+import com.example.azolotarev.test.Model.EmployeeModel;
 import com.example.azolotarev.test.Model.RecyclerModel;
 import com.example.azolotarev.test.R;
 
@@ -86,9 +87,8 @@ class ItemDepartmentHolder extends RecyclerView.ViewHolder implements View.OnCli
     private TextView mTextView;
     private RecyclerItemContract mClickListener;
     private RecyclerModel mDepartment;
-    private CardView mCardViewRoot, mChildrenContainer;
-    private LinearLayout mLinerLayoutContainer;
-    private int mPosition;
+    private CardView mCardViewRoot;
+    private static final int sMarginStart=50;
 
     public ItemDepartmentHolder(@NonNull View itemView, @NonNull RecyclerItemContract listener, @NonNull LinearLayout childrenContainer, Context context) {
         super(itemView);
@@ -96,13 +96,10 @@ class ItemDepartmentHolder extends RecyclerView.ViewHolder implements View.OnCli
         mTextView=itemView.findViewById(R.id.title_text_view);
         mCardViewRoot =itemView.findViewById(R.id.root_card_view);
         itemView.setOnClickListener(this);
-        mChildrenContainer =itemView.findViewById(R.id.children_card_view);
-        mLinerLayoutContainer=childrenContainer;
-        mChildrenContainer.addView(mLinerLayoutContainer);
         mCardViewRoot.setBackground(ContextCompat.getDrawable(context,R.drawable.ripple_list));
-       // Log.d("TAG","itemholder ItemDepartmentHolder create  id "+mLinerLayoutContainer.getId());
     }
 
+    @SuppressLint("ResourceAsColor")
     public void onBindViewHolder(int position){
         mClickListener.itemInPosition(new RecyclerItemContract.itemInPositionCallback() {
             @Override
@@ -113,38 +110,16 @@ class ItemDepartmentHolder extends RecyclerView.ViewHolder implements View.OnCli
         position);
         Log.d("TAG","itemholder onBindView "+mDepartment.getModel().getName());
         mTextView.setText(mDepartment.getModel().getName());
-        //mClickListener.removeFragment(entity);
         ViewGroup.MarginLayoutParams layoutParams= (ViewGroup.MarginLayoutParams) mCardViewRoot.getLayoutParams();
-        layoutParams.setMarginStart(mDepartment.getLevel()*100);
-        RecyclerView.LayoutParams params= (RecyclerView.LayoutParams) itemView.getLayoutParams();
+        layoutParams.setMarginStart(mDepartment.getLevel()*sMarginStart);
         mCardViewRoot.requestLayout();
-      /*  mLinerLayoutContainer.setId(entity.hashCode());
-        mTextView.setText(entity.getModel().getName());
-        if(!entity.isVisible()){
-            itemView.setVisibility(View.GONE);
-            params.height=0;
-            params.width=0;
-        }
-        itemView.setLayoutParams(params);*/
-        /*if(mDepartment==null && RecyclerLvl.elementIsOpen(entity)){
-            mPosition=getAdapterPosition();
-            openElement(entity);
-        }else mChildrenContainer.setVisibility(View.GONE);
-       // if(mDepartment!=null) Log.d("TAG","itemholder onBindView "+entity.getName()+ " - "+entity.getId()+" model "+mDepartment.getId()+" "+mDepartment.getName());
-        mDepartment=entity;*/
+        if(mDepartment.isSelected()) mCardViewRoot.setCardBackgroundColor(R.color.cardview_dark_background);
     }
 
     @Override
     public void onClick(View v) {
-            openElement(mDepartment);
+        mClickListener.onClickItem(mDepartment);
     }
-    private void openElement(@NonNull RecyclerModel model){
-        Log.d("TAG","OPEN ELEMENT");
-        //mClickListener.scrollToPosition(getAdapterPosition());
-       // mChildrenContainer.setVisibility(View.VISIBLE);
-        mClickListener.onClickItem(model);
-    }
-
 }
 
 class ItemEmployeeHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

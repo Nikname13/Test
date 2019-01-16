@@ -13,6 +13,7 @@ import java.util.List;
 
 public class JParser implements JParserContract {
 
+
     @Override
     public void getDepartments(@NonNull ParsDepartmentsCallback callback, String jsonString) {
         Log.e("TAG", "jparser getListModel");

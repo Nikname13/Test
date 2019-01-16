@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,15 +22,15 @@ import com.example.azolotarev.test.R;
 public class EmployeeFragment extends Fragment implements EmployeePageContract.View {
 
     private EmployeePageContract.Presenter mPresenter;
-    private static final String ARG_EMPLOYEE_OBJECT="employee_object";
+    private static final String ARG_EMPLOYEE ="employee_id";
     private ImageView mAvatar;
     private TextView mTitle, mName, mPhone, mEmail;
     private LinearLayout mTitleContainer, mNameContainer, mPhoneContainer, mEmailContainer;
     private FrameLayout mFrameLayout;
 
-    public static EmployeeFragment newInstance(EmployeeModel employeeModel){
+    public static EmployeeFragment newInstance(@NonNull int id){
         Bundle arg=new Bundle();
-        arg.putSerializable(ARG_EMPLOYEE_OBJECT,employeeModel);
+        arg.putInt(ARG_EMPLOYEE,id);
         EmployeeFragment fragment=new EmployeeFragment();
         fragment.setArguments(arg);
         return fragment;
@@ -41,22 +40,22 @@ public class EmployeeFragment extends Fragment implements EmployeePageContract.V
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v=inflater.inflate(R.layout.employee_detail,container,false);
-        mFrameLayout=(FrameLayout)v.findViewById(R.id.employee_detail_container);
-        mAvatar =(ImageView)v.findViewById(R.id.employee_avatar);
-        mTitle=(TextView)v.findViewById(R.id.employee_title_textView);
-        mTitleContainer=(LinearLayout)v.findViewById(R.id.employee_title);
-        mName=(TextView)v.findViewById(R.id.employee_name_textView);
-        mNameContainer=(LinearLayout) v.findViewById(R.id.employee_name);
-        mPhone=(TextView)v.findViewById(R.id.employee_phone_textView);
-        mPhoneContainer=(LinearLayout) v.findViewById(R.id.employee_phone);
+        mFrameLayout=v.findViewById(R.id.employee_detail_container);
+        mAvatar =v.findViewById(R.id.employee_avatar);
+        mTitle=v.findViewById(R.id.employee_title_textView);
+        mTitleContainer=v.findViewById(R.id.employee_title);
+        mName=v.findViewById(R.id.employee_name_textView);
+        mNameContainer=v.findViewById(R.id.employee_name);
+        mPhone=v.findViewById(R.id.employee_phone_textView);
+        mPhoneContainer=v.findViewById(R.id.employee_phone);
         mPhoneContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mPresenter.callNumber(mPhone.getText().toString());
             }
         });
-        mEmail=(TextView)v.findViewById(R.id.employee_email_textView);
-        mEmailContainer=(LinearLayout) v.findViewById(R.id.employee_email);
+        mEmail=v.findViewById(R.id.employee_email_textView);
+        mEmailContainer=v.findViewById(R.id.employee_email);
         mEmailContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -138,7 +137,7 @@ public class EmployeeFragment extends Fragment implements EmployeePageContract.V
 
     @Override
     public EmployeeModel getEmployee() {
-        return (EmployeeModel) getArguments().getSerializable(ARG_EMPLOYEE_OBJECT);
+        return (EmployeeModel) getArguments().getSerializable(ARG_EMPLOYEE);
     }
 
     @Override
