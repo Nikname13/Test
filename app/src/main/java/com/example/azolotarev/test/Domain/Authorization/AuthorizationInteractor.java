@@ -45,11 +45,6 @@ public class AuthorizationInteractor implements AuthorizationInteractorContract{
 
         @Override
         protected Void doInBackground(String... strings) {
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
              mRepository.isAuth(new RepositoryContract.LoadSuccessCallback() {
                  @Override
                  public void onSuccess(boolean success) {

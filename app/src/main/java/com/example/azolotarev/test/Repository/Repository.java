@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import com.example.azolotarev.test.Data.Local.AvatarCache;
+import com.example.azolotarev.test.Data.Local.ListCache;
 import com.example.azolotarev.test.Data.Local.PersistentStorage;
 import com.example.azolotarev.test.Data.Net.NetContract;
 import com.example.azolotarev.test.Model.DepartmentModel;
@@ -22,7 +23,7 @@ public  class Repository implements RepositoryContract {
     private JParserContract mJParser;
     private boolean mStorageFull=false;
     private NetContract mNet;
-    Map<String,RecyclerModel> mCachedList;
+
 
 
     public Repository(@NonNull PersistentStorage storage, @NonNull NetContract net) {
@@ -47,9 +48,9 @@ public  class Repository implements RepositoryContract {
     @Override
     public void getDepartments(@NonNull LoadDepartmentsCallback callback,@NonNull boolean refreshCache,  @NonNull boolean firstLoad) {
         Log.d("TAG", "repository getListModel "+refreshCache);
-        if(mCachedList !=null && !refreshCache){
+        if(ListCache.getCachedList() !=null && !refreshCache){
             Log.d("TAG", "repository getListModel cachedDepartment");
-            callback.onMapListLoaded(new ArrayList<>(mCachedList.values()));
+            callback.onMapListLoaded(new ArrayList<>(ListCache.getCachedList().values()));
             return;
         }
         if(refreshCache){
@@ -60,14 +61,15 @@ public  class Repository implements RepositoryContract {
     }
 
     @Override
-    public void getItem(@NonNull LoadItemCallback callback, @NonNull int id) {
-        if(mCachedList !=null && !mCachedList.isEmpty()){
-            callback.onItemLoaded(mCachedList.get(id));
+    public void getItem(@NonNull LoadItemCallback callback, @NonNull String id) {
+        if(ListCache.getCachedList() !=null && !ListCache.getCachedList().isEmpty()){
+            RecyclerModel recyclerModel=ListCache.getCachedList().get(id);
+            callback.onItemLoaded(recyclerModel);
         }else callback.notAvailable("No item");
     }
 
     @Override
-    public void getPhoto(@NonNull final LoadPhotoCallback callback, @NonNull final int id) {
+    public void getPhoto(@NonNull final LoadPhotoCallback callback, @NonNull final String id) {
         if(AvatarCache.get().getBitmapFromMemory(String.valueOf(id))!=null){
             callback.onResponse(AvatarCache.get().getBitmapFromMemory(String.valueOf(id)));
             return;
@@ -77,14 +79,12 @@ public  class Repository implements RepositoryContract {
 
     @Override
     public void refreshCache(List<RecyclerModel> mapList) {
-        if(mCachedList ==null){
-            mCachedList =new LinkedHashMap<>();
-        }
-        mCachedList.clear();
-        for(RecyclerModel model:mapList) {
-            mCachedList.put(String.valueOf(model.hashCode()), model);
-        }
-        Log.d("TAG","mCachedList size"+mCachedList.size());
+        ListCache.setCachedList(mapList);
+    }
+
+    @Override
+    public void clearCredentials() {
+        mStorage.clearCredentials();
     }
 
     private void isAuth(@NonNull final LoadSuccessCallback callback,@NonNull boolean firstLoad ){
@@ -99,7 +99,7 @@ public  class Repository implements RepositoryContract {
     private void checkStorage(boolean success, String login, String password){
         Log.e("TAG", "repository checkStorage "+success);
         if(success){
-            mStorage.clearCredentials();
+            clearCredentials();
             mStorage.addCredentials(login, password);
         }
     }
@@ -184,7 +184,7 @@ public  class Repository implements RepositoryContract {
 
                 @Override
                 public void connectionError(String errorMessage) {
-                    if(mCachedList !=null){
+                    if(ListCache.getCachedList() !=null){
                         getDepartments(callback,true, firstLoad);
                         callback.connectionError(errorMessage);
                     }else {
@@ -199,7 +199,7 @@ public  class Repository implements RepositoryContract {
         }
     }
 
-    private void getPhotoFromNet(@NonNull final LoadPhotoCallback callback, @NonNull final int id){
+    private void getPhotoFromNet(@NonNull final LoadPhotoCallback callback, @NonNull final String id){
         isAuth(new LoadSuccessCallback() {
                    @Override
                    public void onSuccess(boolean success) {
@@ -221,7 +221,7 @@ public  class Repository implements RepositoryContract {
                           @Override
                           public void onResponse(Bitmap response) {
                               callback.onResponse(response);
-                              AvatarCache.get().setBitmapToMemory(String.valueOf(id),response);
+                              AvatarCache.get().setBitmapToMemory(id,response);
                           }
 
                           @Override

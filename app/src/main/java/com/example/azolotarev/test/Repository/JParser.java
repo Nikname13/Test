@@ -50,7 +50,7 @@ public class JParser implements JParserContract {
     private DepartmentModel getDepartment(JSONObject json) {
         DepartmentModel rootDepartment=new DepartmentModel();
         try {
-            rootDepartment.setId(Integer.valueOf(json.getString("ID")));
+            rootDepartment.setId(json.getString("ID"));
             if(!json.isNull("Name")) rootDepartment.setName(json.getString("Name"));
             if(!json.isNull("Departments")){
                 List<DepartmentModel> listDepartments=new ArrayList<>();
@@ -90,7 +90,7 @@ public class JParser implements JParserContract {
     private EmployeeModel getEmployee(JSONObject json){
         EmployeeModel employeeModel=new EmployeeModel();
         try {
-            employeeModel.setId(Integer.valueOf(json.getString("ID")));
+            employeeModel.setId(json.getString("ID"));
            if(!json.isNull("Name")) employeeModel.setName(json.getString("Name"));
            if(!json.isNull("Title")) employeeModel.setTitle(json.getString("Title"));
            if(!json.isNull("Phone")) employeeModel.setPhone(json.getString("Phone"));
@@ -106,20 +106,20 @@ public class JParser implements JParserContract {
     private List<DepartmentModel> getTestList() {
         List<DepartmentModel> list=new ArrayList<>();
         for(int i=0;i<100;i++){
-            DepartmentModel departmentModel=new DepartmentModel(i,"Отдел "+i);
+            DepartmentModel departmentModel=new DepartmentModel(String.valueOf(i),"Отдел "+i);
             List<DepartmentModel> underDepartment=new ArrayList<>();
             List<EmployeeModel> employees=new ArrayList<>();
             for(int y=0;y<=i;y++){
-                DepartmentModel childrenDepartment=new DepartmentModel(y,"Подотдел "+y);
+                DepartmentModel childrenDepartment=new DepartmentModel(String.valueOf(y),"Подотдел "+y);
                 List<DepartmentModel> underunderDepartment=new ArrayList<>();
                 List<EmployeeModel> underEmployee=new ArrayList<>();
                 for(int z=0;z<=y;z++){
-                    DepartmentModel testdep2Lvl=new DepartmentModel(z,"Подотдельный отдел"+z);
+                    DepartmentModel testdep2Lvl=new DepartmentModel(String.valueOf(z),"Подотдельный отдел"+z);
                     testdep2Lvl.setParent(childrenDepartment);
                     underunderDepartment.add(testdep2Lvl);
                 }
                 for(int w=0;w<15;w++){
-                    EmployeeModel testEmp2Lvl=new EmployeeModel(w,"Сотрудник "+w);
+                    EmployeeModel testEmp2Lvl=new EmployeeModel(String.valueOf(w),"Сотрудник "+w);
                     testEmp2Lvl.setParent(childrenDepartment);
                     underEmployee.add(testEmp2Lvl);
                 }
@@ -131,14 +131,14 @@ public class JParser implements JParserContract {
                 underDepartment.add(childrenDepartment);
             }
             for(int x=0;x<15;x++){
-                EmployeeModel testEm1lvl=new EmployeeModel(x,"Сотрудник "+x);
+                EmployeeModel testEm1lvl=new EmployeeModel(String.valueOf(x),"Сотрудник "+x);
                 testEm1lvl.setParent(departmentModel);
                 employees.add(testEm1lvl);
             }
             if(i%2==0)
                 departmentModel.setDepartmentsList(underDepartment);
             else departmentModel.setEmployeeList(employees);
-            departmentModel.setParent(new DepartmentModel(0,"parent"));
+            departmentModel.setParent(new DepartmentModel("0","parent"));
             list.add(departmentModel);
         }
         return list;

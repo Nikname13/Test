@@ -11,7 +11,7 @@ public class DepartmentModel extends BaseModel implements Serializable {
     private List<DepartmentModel> mDepartmentsList;
 
 
-    public DepartmentModel(@NonNull int id,@NonNull String name) {
+    public DepartmentModel(@NonNull String id,@NonNull String name) {
         super(id, name);
     }
 

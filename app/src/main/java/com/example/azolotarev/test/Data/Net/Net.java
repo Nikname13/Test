@@ -62,7 +62,7 @@ public class Net implements NetContract {
     }
 
     @Override
-    public void getPhoto(@NonNull final LoadPhotoCallback callback, @NonNull int id) {
+    public void getPhoto(@NonNull final LoadPhotoCallback callback, @NonNull String id) {
         Log.e("TAG", "Net getPhoto");
         mConnect.GETPhoto(new ConnectContract.GETPhotoCallback() {
             @Override
@@ -78,7 +78,7 @@ public class Net implements NetContract {
                 new URLBuilder(URI_PHOTO)
                         .withParam(PARAM_LOGIN, mLogin)
                         .withParam(PARAM_PASSWORD, mPassword)
-                        .withParam(PARAM_ID, String.valueOf(id))
+                        .withParam(PARAM_ID, id)
                         .build(),
                 mConnectivityManager.getActiveNetworkInfo());
     }

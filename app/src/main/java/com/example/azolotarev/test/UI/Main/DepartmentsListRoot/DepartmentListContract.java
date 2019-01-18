@@ -20,15 +20,16 @@ public interface DepartmentListContract {
         void showAuthorization();
         void showList(@NonNull List<Integer> recyclerModelList);
         void updateList(@NonNull List<Integer> recyclerModelList);
-        void showEmployeeDetail(@NonNull EmployeeModel model);
+        void showEmployeeDetail(@NonNull String id);
     }
 
     interface Presenter extends BasePresenter,ProgressContract{
-        interface itemInPositionCallback{
+        interface ItemInPositionCallback {
             void onItem(@NonNull RecyclerModel model);
         }
-        void itemInPosition(@NonNull final RecyclerItemContract.itemInPositionCallback callback, @NonNull int position);
+        void itemInPosition(@NonNull final RecyclerItemContract.itemInPositionCallback callback, int position);
         void loadList(@NonNull boolean freshUpdate, @NonNull boolean firstLoad);
         void openElementDetail(@NonNull RecyclerModel model);
+        void logOut();
     }
 }

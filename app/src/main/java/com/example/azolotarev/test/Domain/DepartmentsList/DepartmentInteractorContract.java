@@ -16,5 +16,6 @@ public interface DepartmentInteractorContract {
 
     void getDepartments(@NonNull final GetListCallback callback, @NonNull boolean firstLoad);
     void setProgressListener(@NonNull ProgressContract listener);
+    void clearCredentials();
     void refreshDepartments();
 }

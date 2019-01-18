@@ -11,19 +11,20 @@ import java.util.List;
 public interface RepositoryContract {
 
     interface LoadDepartmentsCallback extends BaseCallback.BaseLoadDepartmentsCallback, BaseCallback.BaseErrorCallback {
-        void onMapListLoaded(List<RecyclerModel> list);
+        void onMapListLoaded(@NonNull List<RecyclerModel> list);
     }
     interface LoadSuccessCallback extends BaseCallback.BaseErrorCallback{
         void onSuccess(boolean success);
     }
     interface LoadPhotoCallback extends BaseCallback.BaseErrorCallback {
-        void onResponse(Bitmap photo);
+        void onResponse(@NonNull Bitmap photo);
     }
     interface LoadItemCallback extends BaseCallback.BaseGetItemCallback{
     }
     void isAuth(@NonNull final LoadSuccessCallback callback, @NonNull String login,@NonNull String password, @NonNull boolean firstLoad);
     void getDepartments(@NonNull final LoadDepartmentsCallback callback, boolean refreshCache, @NonNull boolean firstLoad);
-    void getItem(@NonNull final LoadItemCallback callback, @NonNull int id );
-    void getPhoto(@NonNull final LoadPhotoCallback callback, @NonNull int id);
+    void getItem(@NonNull final LoadItemCallback callback, @NonNull String id );
+    void getPhoto(@NonNull final LoadPhotoCallback callback, @NonNull String id);
     void refreshCache(@NonNull List<RecyclerModel> mapList);
+    void clearCredentials();
 }

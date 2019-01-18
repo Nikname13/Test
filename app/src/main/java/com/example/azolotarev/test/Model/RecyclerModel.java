@@ -8,12 +8,14 @@ public class RecyclerModel {
     private int mLevel;
     private boolean mVisible;
     private boolean mSelected;
+    private String mId;
 
-    public RecyclerModel(@NonNull BaseModel model, @NonNull int level, @NonNull boolean visible){
+    public RecyclerModel(@NonNull BaseModel model,int level, @NonNull boolean visible){
         mModel=model;
         mLevel=level;
         mVisible=visible;
         mSelected=false;
+        mId=String.valueOf(this.hashCode());
     }
 
     public BaseModel getModel() {
@@ -46,5 +48,9 @@ public class RecyclerModel {
 
     public void setSelected(boolean selected) {
         mSelected = selected;
+    }
+
+    public String getId() {
+        return mId;
     }
 }

@@ -4,12 +4,12 @@ import android.support.annotation.NonNull;
 
 public class BaseModel {
 
-    private int mId;
+    private String mId;
     private String mName;
     private DepartmentModel mParent;
 
 
-    public BaseModel(@NonNull int id,@NonNull String name) {
+    public BaseModel(@NonNull String id,@NonNull String name) {
         mId = id;
         mName = name;
     }
@@ -17,11 +17,11 @@ public class BaseModel {
     public BaseModel() {
     }
 
-    public int getId() {
+    public String getId() {
         return mId;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         mId = id;
     }
 

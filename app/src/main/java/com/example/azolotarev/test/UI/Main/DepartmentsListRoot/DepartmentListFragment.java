@@ -5,23 +5,25 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.RelativeLayout;
+import android.view.*;
 import com.example.azolotarev.test.Data.Local.PersistentStorage;
 import com.example.azolotarev.test.Data.Net.Connect;
 import com.example.azolotarev.test.Data.Net.Net;
+import com.example.azolotarev.test.Domain.Authorization.AuthorizationInteractor;
 import com.example.azolotarev.test.Domain.EmployeePage.EmployeeInteractor;
-import com.example.azolotarev.test.Model.EmployeeModel;
 import com.example.azolotarev.test.Model.RecyclerModel;
 import com.example.azolotarev.test.R;
 import com.example.azolotarev.test.Repository.Repository;
+import com.example.azolotarev.test.UI.Authorization.AuthorizationFragment;
+import com.example.azolotarev.test.UI.Authorization.AuthorizationPresenter;
 import com.example.azolotarev.test.UI.Main.EmployeePage.EmployeeFragment;
 import com.example.azolotarev.test.UI.Main.EmployeePage.EmployeePresenter;
 import com.example.azolotarev.test.UI.Main.RecyclerListAdapter;
@@ -33,8 +35,8 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     private DepartmentListContract.Presenter mPresenter;
     private RecyclerView mRecyclerViewRoot;
     private RecyclerListAdapter mDepartmentsAdapter;
-    private RelativeLayout mRelativeLayout;
-    private int mRecyclerPosition;
+    private CoordinatorLayout mCoordinatorLayout;
+    private Toolbar mToolbar;
 
     public static DepartmentListFragment newInstance() {
         return new DepartmentListFragment();
@@ -43,15 +45,18 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v=inflater.inflate(R.layout.fragment_list,container,false);
+        mToolbar=v.findViewById(R.id.main_toolbar);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(mToolbar);
         mRecyclerViewRoot =v.findViewById(R.id.departments_recycler_view);
         mRecyclerViewRoot.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRelativeLayout=v.findViewById(R.id.departments_layout);
+        mCoordinatorLayout =v.findViewById(R.id.departments_layout);
         return v;
     }
 
@@ -75,7 +80,9 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
 
     @Override
     public void showAuthorization() {
-
+        AuthorizationFragment fragment=AuthorizationFragment.newInstance();
+        new AuthorizationPresenter(fragment,new AuthorizationInteractor(new Repository(PersistentStorage.init(getActivity().getApplicationContext()),new Net(new Connect(),(ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE)))));
+        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,fragment).commit();
     }
 
     @Override
@@ -91,9 +98,8 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     }
 
     @Override
-    public void showEmployeeDetail(@NonNull EmployeeModel model) {
-        //запилить создание фрагмента EmployeePage
-        EmployeeFragment fragment=EmployeeFragment.newInstance(model);
+    public void showEmployeeDetail(@NonNull String id) {
+        EmployeeFragment fragment=EmployeeFragment.newInstance(id);
         new EmployeePresenter(fragment,new EmployeeInteractor(
                 new Repository(PersistentStorage.init(getActivity().getApplicationContext()),
                         new Net(new Connect(),(ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE)))));
@@ -138,7 +144,7 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     public void scrollToPosition(@NonNull int position) {
        // mRecyclerViewRoot.scrollToPosition(position);
         Log.d("TAG","scrollToPosition "+position);
-        mRecyclerPosition=position;
+        //mRecyclerPosition=position;
     }
 
     @Override
@@ -169,6 +175,24 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     public void scrollTo(@NonNull int position) {
         Log.e("TAG","scrollTo position= "+position);
         mRecyclerViewRoot.scrollBy(0,position*15);
+    }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_main,menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_log_out:
+                mPresenter.logOut();
+                return true;
+            case R.id.action_lo:
+                return true;
+                default:
+                    return super.onOptionsItemSelected(item);
+        }
     }
 }

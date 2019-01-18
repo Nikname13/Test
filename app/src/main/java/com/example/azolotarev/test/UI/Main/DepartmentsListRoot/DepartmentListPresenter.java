@@ -87,7 +87,7 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
     @Override
     public void openElementDetail(@NonNull RecyclerModel selectedElement) {
         if(selectedElement.getModel() instanceof EmployeeModel){
-            mDepartmentView.showEmployeeDetail((EmployeeModel) selectedElement.getModel());
+            mDepartmentView.showEmployeeDetail(String.valueOf(selectedElement.getId()));
         }else if(mRecyclerModelList.size()-1>mRecyclerModelList.indexOf(selectedElement)){
             openElement(
                     mRecyclerModelList.indexOf(selectedElement),
@@ -96,6 +96,12 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
             mDepartmentView.updateList(getPositionList());
         }
         setSelectedItem(selectedElement);
+    }
+
+    @Override
+    public void logOut() {
+        mInteractor.clearCredentials();
+        mDepartmentView.showAuthorization();
     }
 
     private void openElement(int startPosition, int lvl, boolean visible){

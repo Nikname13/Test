@@ -28,9 +28,9 @@ public class EmployeeFragment extends Fragment implements EmployeePageContract.V
     private LinearLayout mTitleContainer, mNameContainer, mPhoneContainer, mEmailContainer;
     private FrameLayout mFrameLayout;
 
-    public static EmployeeFragment newInstance(@NonNull int id){
+    public static EmployeeFragment newInstance(@NonNull String id){
         Bundle arg=new Bundle();
-        arg.putInt(ARG_EMPLOYEE,id);
+        arg.putString(ARG_EMPLOYEE,id);
         EmployeeFragment fragment=new EmployeeFragment();
         fragment.setArguments(arg);
         return fragment;
@@ -68,7 +68,7 @@ public class EmployeeFragment extends Fragment implements EmployeePageContract.V
     @Override
     public void onResume() {
         super.onResume();
-        mPresenter.start();
+        mPresenter.start(getArguments().getString(ARG_EMPLOYEE));
     }
 
     @Override
@@ -133,11 +133,6 @@ public class EmployeeFragment extends Fragment implements EmployeePageContract.V
     @Override
     public void hideEmail() {
         mEmailContainer.setVisibility(View.GONE);
-    }
-
-    @Override
-    public EmployeeModel getEmployee() {
-        return (EmployeeModel) getArguments().getSerializable(ARG_EMPLOYEE);
     }
 
     @Override

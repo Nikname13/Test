@@ -11,11 +11,11 @@ public class EmployeeModel extends BaseModel implements Serializable {
     private String mPhone;
 
 
-    public EmployeeModel(@NonNull int id,@NonNull String name) {
+    public EmployeeModel(@NonNull String id,@NonNull String name) {
         super(id, name);
     }
 
-    public EmployeeModel(@NonNull int id, @NonNull String name, String title, String email, String phone) {
+    public EmployeeModel(@NonNull String id, @NonNull String name, String title, String email, String phone) {
         super(id, name);
         mTitle = title;
         mEmail = email;

@@ -20,13 +20,13 @@ public class EmployeeInteractor implements EmployeeInteractorContract {
     }
 
     @Override
-    public void getItem(@NonNull int id, @NonNull GetItemCallback callback) {
+    public void getItem(String id, @NonNull GetItemCallback callback) {
         new AsyncItem(callback).execute(id);
     }
 
     @Override
-    public void loadPhoto(@NonNull getPhotoCallback callback, @NonNull int id) {
-        new AsyncEmployeePhoto(callback,4647).execute();
+    public void loadPhoto(@NonNull getPhotoCallback callback, @NonNull String id) {
+        new AsyncEmployeePhoto(callback).execute(id);
     }
 
     @Override
@@ -34,13 +34,11 @@ public class EmployeeInteractor implements EmployeeInteractorContract {
         mProgress=listener;
     }
 
-    private class AsyncEmployeePhoto extends AsyncTask<Boolean,Void, Void> {
+    private class AsyncEmployeePhoto extends AsyncTask<String,Void, Void> {
         private getPhotoCallback mCallback;
-        private int mId;
 
-        public AsyncEmployeePhoto(getPhotoCallback callback, int id) {
+        public AsyncEmployeePhoto(getPhotoCallback callback) {
             mCallback = callback;
-            mId=id;
         }
 
         @Override
@@ -49,7 +47,7 @@ public class EmployeeInteractor implements EmployeeInteractorContract {
         }
 
         @Override
-        protected Void doInBackground(Boolean... booleans) {
+        protected Void doInBackground(String... id) {
             mRepository.getPhoto(new RepositoryContract.LoadPhotoCallback() {
 
                                      @Override
@@ -67,7 +65,7 @@ public class EmployeeInteractor implements EmployeeInteractorContract {
                                          mConnectionError=errorMessage;
                                      }
                                  },
-                    mId);
+                    id[0]);
             return null;
         }
 
@@ -81,7 +79,7 @@ public class EmployeeInteractor implements EmployeeInteractorContract {
         }
     }
 
-    private class AsyncItem extends AsyncTask<Integer,Void,Void>{
+    private class AsyncItem extends AsyncTask<String,Void,Void>{
         private GetItemCallback mCallback;
 
         public AsyncItem(GetItemCallback callback) {
@@ -94,7 +92,7 @@ public class EmployeeInteractor implements EmployeeInteractorContract {
         }
 
         @Override
-        protected Void doInBackground(Integer... integers) {
+        protected Void doInBackground(String... id) {
             mRepository.getItem(new RepositoryContract.LoadItemCallback() {
                                     @Override
                                     public void onItemLoaded(@NonNull RecyclerModel item) {
@@ -103,10 +101,10 @@ public class EmployeeInteractor implements EmployeeInteractorContract {
 
                                     @Override
                                     public void notAvailable(String errorMessage) {
-
+                                        mNotAvailable=errorMessage;
                                     }
                                 },
-                    integers[0]
+                    id[0]
             );
             return null;
         }
@@ -116,6 +114,7 @@ public class EmployeeInteractor implements EmployeeInteractorContract {
         protected void onPostExecute(Void aVoid) {
             mProgress.hideProgress();
             if(mItem!=null) mCallback.onItemLoaded(mItem);
+            else if(mNotAvailable!=null) mCallback.notAvailable(mNotAvailable);
         }
 
     }

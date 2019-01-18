@@ -38,6 +38,11 @@ public class DepartmentInteractor implements DepartmentInteractorContract {
     }
 
     @Override
+    public void clearCredentials() {
+        mRepository.clearCredentials();
+    }
+
+    @Override
     public void refreshDepartments() {
         Log.e("TAG","department interacrot refreshDepartments");
         mRefreshCache=true;
@@ -63,7 +68,6 @@ public class DepartmentInteractor implements DepartmentInteractorContract {
         if(department.getEmployeeList()!=null){
             for(EmployeeModel employeeModel:department.getEmployeeList()){
                 mMapList.add(new RecyclerModel(employeeModel,lvl+1, false));
-
             }
         }
     }
