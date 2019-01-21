@@ -15,5 +15,6 @@ public interface AuthorizationContract {
 
     interface Presenter extends BasePresenter,ProgressContract{
         void logIn(@NonNull String login,@NonNull String password);
+        void destroy();
     }
 }

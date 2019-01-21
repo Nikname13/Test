@@ -4,16 +4,17 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import com.example.azolotarev.test.Domain.Authorization.AuthorizationInteractorContract;
+import com.example.azolotarev.test.Service.PresenterManager;
+import com.example.azolotarev.test.UI.BaseView;
 
 public class AuthorizationPresenter implements AuthorizationContract.Presenter {
 
-    private final AuthorizationContract.View mAuthorizationView;
-    private final AuthorizationInteractorContract mAuthorizationInteractor;
+    private AuthorizationContract.View mAuthorizationView;
+    private AuthorizationInteractorContract mAuthorizationInteractor;
 
-    public AuthorizationPresenter(@NonNull AuthorizationContract.View authorizationView, @NonNull AuthorizationInteractorContract authorizationInteractor) {
-        mAuthorizationView = authorizationView;
+    public AuthorizationPresenter(@NonNull AuthorizationInteractorContract authorizationInteractor) {
+        Log.e("TAG", "AuthorizationPresenter");
         mAuthorizationInteractor = authorizationInteractor;
-        mAuthorizationView.setPresenter(this);
         mAuthorizationInteractor.setProgressListener(this);
     }
 
@@ -45,8 +46,24 @@ public class AuthorizationPresenter implements AuthorizationContract.Presenter {
     }
 
     @Override
+    public void destroy() {
+        PresenterManager.removePresenter(mAuthorizationView.getClass().getName());
+        mAuthorizationInteractor=null;
+    }
+
+    @Override
     public void start() {
         mAuthorizationView.hideProgress();
+    }
+
+    @Override
+    public void bindView(@NonNull BaseView view) {
+        mAuthorizationView = (AuthorizationContract.View) view;
+    }
+
+    @Override
+    public void unbindView() {
+        mAuthorizationView=null;
     }
 
 

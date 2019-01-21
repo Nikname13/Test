@@ -1,8 +1,8 @@
 package com.example.azolotarev.test.UI.Authorization;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
-import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,6 +11,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,18 +22,18 @@ import android.widget.FrameLayout;
 import com.example.azolotarev.test.Data.Local.PersistentStorage;
 import com.example.azolotarev.test.Data.Net.Connect;
 import com.example.azolotarev.test.Data.Net.Net;
-import com.example.azolotarev.test.Domain.Authorization.AuthorizationInteractor;
 import com.example.azolotarev.test.Domain.DepartmentsList.DepartmentInteractor;
 import com.example.azolotarev.test.R;
 import com.example.azolotarev.test.Repository.Repository;
-import com.example.azolotarev.test.UI.Start.StartFragment;
-import com.example.azolotarev.test.UI.Start.StartPresenter;
+import com.example.azolotarev.test.Service.PresenterManager;
+import com.example.azolotarev.test.UI.Main.DepartmentsListRoot.DepartmentListFragment;
+import com.example.azolotarev.test.UI.Main.DepartmentsListRoot.DepartmentListPresenter;
 
 
 public class AuthorizationFragment extends Fragment implements AuthorizationContract.View {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PRESENTER = "presenter";
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
@@ -58,24 +59,27 @@ public class AuthorizationFragment extends Fragment implements AuthorizationCont
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setPresenter((AuthorizationContract.Presenter) PresenterManager.getPresenter(this.getClass().getName()));
+        Log.d("TAG","onCreate auth ragment");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        setRetainInstance(false);
+        Log.d("TAG","onCreateView auth ragment");
         View v=inflater.inflate(R.layout.fragment_authorization, container, false);
-
-        mLoginField=(EditText)v.findViewById(R.id.login_field);
-        mPasswordField=(EditText)v.findViewById(R.id.password_field);
-        mFrameLayout=(FrameLayout)v.findViewById(R.id.frameLayout);
-        mProgress=(CardView)v.findViewById(R.id.progress_card);
+        mLoginField=v.findViewById(R.id.login_field);
+        mPasswordField=v.findViewById(R.id.password_field);
+        mFrameLayout=v.findViewById(R.id.frameLayout);
+        mProgress=v.findViewById(R.id.progress_card);
         initLogInButton(v);
+        mPresenter.bindView(this);
         return v;
     }
 
     private void initLogInButton( View v) {
-        mLogInButton=(Button)v.findViewById(R.id.button_log_in);
+        mLogInButton=v.findViewById(R.id.button_log_in);
         mLogInButton.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("WrongConstant")
             @RequiresApi(api = Build.VERSION_CODES.O)
@@ -117,21 +121,54 @@ public class AuthorizationFragment extends Fragment implements AuthorizationCont
 
     @Override
     public void showDepartmentsList() {
-        StartFragment fragment=StartFragment.newInstance(true);
-        new StartPresenter(fragment,new AuthorizationInteractor(
-                new Repository(PersistentStorage.init(getActivity().getApplicationContext()),
-                        new Net(new Connect(),
-                                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE)))),
-                new DepartmentInteractor(new Repository(PersistentStorage.init(getActivity().getApplicationContext()),
-                        new Net(new Connect(),
-                                (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE)))));
+        DepartmentListFragment fragment=DepartmentListFragment.newInstance();
+        PresenterManager.addPresenter(new DepartmentListPresenter(new DepartmentInteractor(
+                                new Repository(PersistentStorage.get(),new Net(new Connect())))),
+                fragment.getClass().getName());
         FragmentTransaction transaction=getActivity().getSupportFragmentManager().beginTransaction();
-       // transaction.addToBackStack(null);
         transaction.replace(R.id.fragmentContainer,fragment).commit();
+        mPresenter.destroy();
     }
 
     @Override
     public void setPresenter(@NonNull AuthorizationContract.Presenter presenter) {
         mPresenter=presenter;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("TAG","onResume auth");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d("TAG","onPause auth");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d("TAG","onStop auth");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d("TAG","onDestroy auth");
+        mPresenter.unbindView();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.d("TAG","onDetach auth");
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Log.d("TAG","onAttach auth");
     }
 }

@@ -13,7 +13,7 @@ public interface StartContract {
         void showAuthorization();
     }
 
-    interface Presenter extends ProgressContract{
+    interface Presenter extends ProgressContract, BasePresenter{
         void start(boolean success);
         void showConnectionError();
     }

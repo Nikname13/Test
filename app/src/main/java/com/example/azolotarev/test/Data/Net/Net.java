@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import com.example.azolotarev.test.Service.ContextManager;
 
 public class Net implements NetContract {
 
@@ -17,9 +18,9 @@ public class Net implements NetContract {
     private ConnectivityManager mConnectivityManager;
     private String mLogin,mPassword;
 
-    public Net(ConnectContract connect, ConnectivityManager connectivityManager) {
+    public Net(ConnectContract connect) {
         mConnect = connect;
-        mConnectivityManager=connectivityManager;
+        mConnectivityManager=ContextManager.getConnectivityManager();
     }
 
     @Override

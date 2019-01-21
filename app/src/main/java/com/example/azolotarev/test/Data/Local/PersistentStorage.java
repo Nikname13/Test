@@ -3,7 +3,7 @@ package com.example.azolotarev.test.Data.Local;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
-import com.example.azolotarev.test.Service.ErrorLab;
+import com.example.azolotarev.test.Service.ContextManager;
 
 public class PersistentStorage {
     public static final String CREDENTIALS="credentials";
@@ -15,9 +15,9 @@ public class PersistentStorage {
     private static Context sContext=null;
     private static PersistentStorage mPersistentStorage;
 
-    public static PersistentStorage init(Context context){
+    public static PersistentStorage get(){
         if(mPersistentStorage==null) mPersistentStorage=new PersistentStorage();
-        sContext =context;
+        sContext = ContextManager.getContext();
         return mPersistentStorage;
     }
 

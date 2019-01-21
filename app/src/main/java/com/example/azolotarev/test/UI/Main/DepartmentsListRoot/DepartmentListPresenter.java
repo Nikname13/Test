@@ -5,6 +5,7 @@ import android.util.Log;
 import com.example.azolotarev.test.Domain.DepartmentsList.DepartmentInteractorContract;
 import com.example.azolotarev.test.Model.EmployeeModel;
 import com.example.azolotarev.test.Model.RecyclerModel;
+import com.example.azolotarev.test.UI.BaseView;
 import com.example.azolotarev.test.UI.Main.RecyclerItemContract;
 
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import java.util.List;
 
 public class DepartmentListPresenter implements DepartmentListContract.Presenter {
 
-    private final DepartmentListContract.View mDepartmentView;
+    private DepartmentListContract.View mDepartmentView;
     private final DepartmentInteractorContract mInteractor;
     private boolean mFirstLoad=false;
     private boolean mFreshUpdate=true;
@@ -21,9 +22,8 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
     private List<RecyclerModel> mRecyclerModelList;
     private List<RecyclerModel> mListOfSelected;
 
-    public DepartmentListPresenter(@NonNull DepartmentListContract.View departmentView,@NonNull DepartmentInteractorContract interactor) {
-        mDepartmentView = departmentView;
-        mDepartmentView.setPresenter(this);
+    public DepartmentListPresenter(@NonNull DepartmentInteractorContract interactor) {
+
         mInteractor = interactor;
         mInteractor.setProgressListener(this);
     }
@@ -33,6 +33,16 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
         Log.e("TAG", "start department");
         loadList(mFreshUpdate, mFirstLoad);
         mFreshUpdate=false;
+    }
+
+    @Override
+    public void bindView(@NonNull BaseView view) {
+        mDepartmentView = (DepartmentListContract.View) view;
+    }
+
+    @Override
+    public void unbindView() {
+
     }
 
     @Override

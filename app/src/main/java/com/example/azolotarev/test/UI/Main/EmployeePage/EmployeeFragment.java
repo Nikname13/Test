@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.example.azolotarev.test.Model.EmployeeModel;
 import com.example.azolotarev.test.R;
+import com.example.azolotarev.test.Service.PresenterManager;
 
 public class EmployeeFragment extends Fragment implements EmployeePageContract.View {
 
@@ -27,6 +28,12 @@ public class EmployeeFragment extends Fragment implements EmployeePageContract.V
     private TextView mTitle, mName, mPhone, mEmail;
     private LinearLayout mTitleContainer, mNameContainer, mPhoneContainer, mEmailContainer;
     private FrameLayout mFrameLayout;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setPresenter((EmployeePageContract.Presenter) PresenterManager.getPresenter(this.getClass().getName()));
+    }
 
     public static EmployeeFragment newInstance(@NonNull String id){
         Bundle arg=new Bundle();
@@ -62,6 +69,7 @@ public class EmployeeFragment extends Fragment implements EmployeePageContract.V
                 mPresenter.sendEmail(mEmail.getText().toString());
             }
         });
+        mPresenter.bindView(this);
         return v;
     }
 
@@ -176,6 +184,7 @@ public class EmployeeFragment extends Fragment implements EmployeePageContract.V
     public void onDestroy() {
         super.onDestroy();
         Log.e("TAG","employee onDestroy");
+        mPresenter.unbindView();
     }
 
     @Override

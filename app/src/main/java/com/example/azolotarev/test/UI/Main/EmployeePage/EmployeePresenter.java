@@ -1,21 +1,21 @@
 package com.example.azolotarev.test.UI.Main.EmployeePage;
 
 import android.graphics.Bitmap;
+import android.os.Parcel;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import com.example.azolotarev.test.Domain.EmployeePage.EmployeeInteractorContract;
 import com.example.azolotarev.test.Model.EmployeeModel;
 import com.example.azolotarev.test.Model.RecyclerModel;
+import com.example.azolotarev.test.UI.BaseView;
 
 public class EmployeePresenter implements EmployeePageContract.Presenter {
 
-    private final EmployeePageContract.View mView;
+    private EmployeePageContract.View mView;
     private final EmployeeInteractorContract mInteractorContract;
     private boolean mLoadPhoto,mLoadEmployee;
 
-    public EmployeePresenter(@NonNull EmployeePageContract.View view,@NonNull EmployeeInteractorContract interactorContract) {
-        mView = view;
-        mView.setPresenter(this);
+    public EmployeePresenter(@NonNull EmployeeInteractorContract interactorContract) {
         mInteractorContract = interactorContract;
         mInteractorContract.setProgressListener(this);
     }
@@ -82,6 +82,16 @@ public class EmployeePresenter implements EmployeePageContract.Presenter {
 
     @Override
     public void start() {
+
+    }
+
+    @Override
+    public void bindView(@NonNull BaseView view) {
+        mView= (EmployeePageContract.View) view;
+    }
+
+    @Override
+    public void unbindView() {
 
     }
 

@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import com.example.azolotarev.test.Domain.Authorization.AuthorizationInteractor;
 import com.example.azolotarev.test.Domain.DepartmentsList.DepartmentInteractor;
 import com.example.azolotarev.test.R;
 import com.example.azolotarev.test.Repository.Repository;
+import com.example.azolotarev.test.Service.PresenterManager;
 import com.example.azolotarev.test.UI.Authorization.AuthorizationFragment;
 import com.example.azolotarev.test.UI.Authorization.AuthorizationPresenter;
 import com.example.azolotarev.test.UI.Main.DepartmentsListRoot.DepartmentListFragment;
@@ -77,7 +79,9 @@ public class StartFragment extends Fragment implements StartContract.View {
     @Override
     public void showDepartmentsList() {
         DepartmentListFragment fragment=DepartmentListFragment.newInstance();
-        new DepartmentListPresenter(fragment, new DepartmentInteractor(new Repository(PersistentStorage.init(getActivity().getApplicationContext()),new Net(new Connect(),(ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE)))));
+        PresenterManager.addPresenter(new DepartmentListPresenter(new DepartmentInteractor(
+                        new Repository(PersistentStorage.get(),new Net(new Connect())))),
+                fragment.getClass().getName());
         FragmentTransaction transaction=getActivity().getSupportFragmentManager().beginTransaction();
        // transaction.addToBackStack(null);
         transaction.replace(R.id.fragmentContainer,fragment).commit();
@@ -85,8 +89,10 @@ public class StartFragment extends Fragment implements StartContract.View {
 
     @Override
     public void showAuthorization() {
+        Log.d("TAG", "start showAuthorization");
         AuthorizationFragment fragment=AuthorizationFragment.newInstance();
-        new AuthorizationPresenter(fragment,new AuthorizationInteractor(new Repository(PersistentStorage.init(getActivity().getApplicationContext()),new Net(new Connect(),(ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE)))));
+        PresenterManager.addPresenter(new AuthorizationPresenter(new AuthorizationInteractor(new Repository(PersistentStorage.get(),new Net(new Connect())))),
+                fragment.getClass().getName());
         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,fragment).commit();
     }
 
@@ -103,5 +109,36 @@ public class StartFragment extends Fragment implements StartContract.View {
     @Override
     public void setPresenter(@NonNull StartContract.Presenter presenter) {
         mPresenter=presenter;
+    }
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d("TAG","onPause start fragment");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d("TAG","onStop start fragment");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d("TAG","onDestroy start fragment");
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.d("TAG","onDetach start fragment");
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Log.d("TAG","onAttach start fragment");
     }
 }

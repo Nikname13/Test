@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import com.example.azolotarev.test.Domain.Authorization.AuthorizationInteractorContract;
 import com.example.azolotarev.test.Domain.DepartmentsList.DepartmentInteractorContract;
+import com.example.azolotarev.test.UI.BaseView;
 
 public class StartPresenter implements StartContract.Presenter {
 
@@ -82,5 +83,19 @@ public class StartPresenter implements StartContract.Presenter {
     public void start(boolean success) {
         Log.e("TAG", "start");
         logIn(success);
+    }
+
+    @Override
+    public void start() {
+    }
+
+    @Override
+    public void bindView(@NonNull BaseView view) {
+
+    }
+
+    @Override
+    public void unbindView() {
+
     }
 }

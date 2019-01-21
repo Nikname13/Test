@@ -22,6 +22,7 @@ import com.example.azolotarev.test.Domain.EmployeePage.EmployeeInteractor;
 import com.example.azolotarev.test.Model.RecyclerModel;
 import com.example.azolotarev.test.R;
 import com.example.azolotarev.test.Repository.Repository;
+import com.example.azolotarev.test.Service.PresenterManager;
 import com.example.azolotarev.test.UI.Authorization.AuthorizationFragment;
 import com.example.azolotarev.test.UI.Authorization.AuthorizationPresenter;
 import com.example.azolotarev.test.UI.Main.EmployeePage.EmployeeFragment;
@@ -46,6 +47,7 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        setPresenter((DepartmentListContract.Presenter) PresenterManager.getPresenter(this.getClass().getName()));
     }
 
     @Nullable
@@ -53,10 +55,12 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v=inflater.inflate(R.layout.fragment_list,container,false);
         mToolbar=v.findViewById(R.id.main_toolbar);
+        mToolbar.setTitle("");
         ((AppCompatActivity)getActivity()).setSupportActionBar(mToolbar);
         mRecyclerViewRoot =v.findViewById(R.id.departments_recycler_view);
         mRecyclerViewRoot.setLayoutManager(new LinearLayoutManager(getActivity()));
         mCoordinatorLayout =v.findViewById(R.id.departments_layout);
+        mPresenter.bindView(this);
         return v;
     }
 
@@ -81,7 +85,8 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     @Override
     public void showAuthorization() {
         AuthorizationFragment fragment=AuthorizationFragment.newInstance();
-        new AuthorizationPresenter(fragment,new AuthorizationInteractor(new Repository(PersistentStorage.init(getActivity().getApplicationContext()),new Net(new Connect(),(ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE)))));
+        PresenterManager.addPresenter(new AuthorizationPresenter(new AuthorizationInteractor(new Repository(PersistentStorage.get(),new Net(new Connect())))),
+        fragment.getClass().getName());
         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,fragment).commit();
     }
 
@@ -100,9 +105,12 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     @Override
     public void showEmployeeDetail(@NonNull String id) {
         EmployeeFragment fragment=EmployeeFragment.newInstance(id);
-        new EmployeePresenter(fragment,new EmployeeInteractor(
-                new Repository(PersistentStorage.init(getActivity().getApplicationContext()),
-                        new Net(new Connect(),(ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE)))));
+        if(PresenterManager.getPresenter(fragment.getClass().getName())==null) {
+            PresenterManager.addPresenter(new EmployeePresenter(new EmployeeInteractor(
+                            new Repository(PersistentStorage.get(),
+                                    new Net(new Connect())))),
+                    fragment.getClass().getName());
+        }
         FragmentTransaction transaction=getActivity().getSupportFragmentManager().beginTransaction();
         transaction.addToBackStack(null);
         transaction.replace(R.id.fragmentContainer, fragment).commit();
@@ -169,6 +177,7 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     public void onDetach() {
         super.onDetach();
         Log.e("TAG","onDetach rootdepartment");
+        mPresenter.unbindView();
     }
 
     @Override
