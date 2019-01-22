@@ -18,4 +18,6 @@
 
     <string name="action_log_out">Выход</string>
 
+    <string name="search_hint">Отдел,ФИО сотрудника,email,номер телефона,должность</string>
+
 </resources>

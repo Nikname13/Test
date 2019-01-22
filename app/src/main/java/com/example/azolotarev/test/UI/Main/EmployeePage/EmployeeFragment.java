@@ -6,19 +6,25 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.view.*;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.example.azolotarev.test.Model.EmployeeModel;
+import com.example.azolotarev.test.Data.Local.PersistentStorage;
+import com.example.azolotarev.test.Data.Net.Connect;
+import com.example.azolotarev.test.Data.Net.Net;
+import com.example.azolotarev.test.Domain.Authorization.AuthorizationInteractor;
 import com.example.azolotarev.test.R;
+import com.example.azolotarev.test.Repository.Repository;
 import com.example.azolotarev.test.Service.PresenterManager;
+import com.example.azolotarev.test.UI.Authorization.AuthorizationFragment;
+import com.example.azolotarev.test.UI.Authorization.AuthorizationPresenter;
 
 public class EmployeeFragment extends Fragment implements EmployeePageContract.View {
 
@@ -26,8 +32,8 @@ public class EmployeeFragment extends Fragment implements EmployeePageContract.V
     private static final String ARG_EMPLOYEE ="employee_id";
     private ImageView mAvatar;
     private TextView mTitle, mName, mPhone, mEmail;
-    private LinearLayout mTitleContainer, mNameContainer, mPhoneContainer, mEmailContainer;
-    private FrameLayout mFrameLayout;
+    private LinearLayout mTitleContainer, mNameContainer, mPhoneContainer, mEmailContainer, mEmployeeContainer;
+    private Toolbar mToolbar;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,7 +53,10 @@ public class EmployeeFragment extends Fragment implements EmployeePageContract.V
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v=inflater.inflate(R.layout.employee_detail,container,false);
-        mFrameLayout=v.findViewById(R.id.employee_detail_container);
+      //  mToolbar=v.findViewById(R.id.main_toolbar);
+        //mToolbar.setTitle("");
+        //((AppCompatActivity)getActivity()).setSupportActionBar(mToolbar);
+        mEmployeeContainer =v.findViewById(R.id.employee_detail_container);
         mAvatar =v.findViewById(R.id.employee_avatar);
         mTitle=v.findViewById(R.id.employee_title_textView);
         mTitleContainer=v.findViewById(R.id.employee_title);
@@ -149,7 +158,7 @@ public class EmployeeFragment extends Fragment implements EmployeePageContract.V
         if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
             startActivity(intent);
         }else{
-            Snackbar snackbar=Snackbar.make(mFrameLayout,"Нет необходимого приложения",Snackbar.LENGTH_SHORT);
+            Snackbar snackbar=Snackbar.make(mEmployeeContainer,"Нет необходимого приложения",Snackbar.LENGTH_SHORT);
             snackbar.show();
         }
     }
@@ -162,8 +171,33 @@ public class EmployeeFragment extends Fragment implements EmployeePageContract.V
         if (sendIntent.resolveActivity(getActivity().getPackageManager()) != null) {
             startActivity(sendIntent);
         }else{
-            Snackbar snackbar=Snackbar.make(mFrameLayout,"Нет необходимого приложения",Snackbar.LENGTH_SHORT);
+            Snackbar snackbar=Snackbar.make(mEmployeeContainer,"Нет необходимого приложения",Snackbar.LENGTH_SHORT);
             snackbar.show();
+        }
+    }
+
+    @Override
+    public void showAuthorization() {
+        AuthorizationFragment fragment=AuthorizationFragment.newInstance();
+        PresenterManager.addPresenter(new AuthorizationPresenter(new AuthorizationInteractor(new Repository(PersistentStorage.get(),new Net(new Connect())))),
+                fragment.getClass().getName());
+        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,fragment).commit();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_employee,menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_log_out:
+                mPresenter.logOut();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 

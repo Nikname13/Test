@@ -34,6 +34,11 @@ public class EmployeeInteractor implements EmployeeInteractorContract {
         mProgress=listener;
     }
 
+    @Override
+    public void clearCredentials() {
+        mRepository.clearCredentials();
+    }
+
     private class AsyncEmployeePhoto extends AsyncTask<String,Void, Void> {
         private getPhotoCallback mCallback;
 

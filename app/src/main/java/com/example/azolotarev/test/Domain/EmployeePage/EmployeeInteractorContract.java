@@ -14,4 +14,5 @@ public interface EmployeeInteractorContract {
     void getItem(@NonNull String id,@NonNull final GetItemCallback callback );
     void loadPhoto(@NonNull final getPhotoCallback callback, @NonNull String id);
     void setProgressListener(@NonNull ProgressContract listener);
+    void clearCredentials();
 }

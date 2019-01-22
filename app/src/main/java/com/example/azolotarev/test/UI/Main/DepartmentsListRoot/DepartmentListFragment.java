@@ -1,7 +1,5 @@
 package com.example.azolotarev.test.UI.Main.DepartmentsListRoot;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -198,7 +196,7 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
             case R.id.action_log_out:
                 mPresenter.logOut();
                 return true;
-            case R.id.action_lo:
+            case R.id.action_search:
                 return true;
                 default:
                     return super.onOptionsItemSelected(item);

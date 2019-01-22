@@ -13,12 +13,10 @@ import java.util.List;
 
 public class DepartmentListPresenter implements DepartmentListContract.Presenter {
 
-    private DepartmentListContract.View mDepartmentView;
+    private DepartmentListContract.View mView;
     private final DepartmentInteractorContract mInteractor;
     private boolean mFirstLoad=false;
     private boolean mFreshUpdate=true;
-    private static final int sDepartmentType =0;
-    private static final int sEmployeeType =1;
     private List<RecyclerModel> mRecyclerModelList;
     private List<RecyclerModel> mListOfSelected;
 
@@ -37,12 +35,12 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
 
     @Override
     public void bindView(@NonNull BaseView view) {
-        mDepartmentView = (DepartmentListContract.View) view;
+        mView = (DepartmentListContract.View) view;
     }
 
     @Override
     public void unbindView() {
-
+        mView=null;
     }
 
     @Override
@@ -67,12 +65,12 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
 
             @Override
             public void logOut(String errorMessage) {
-                mDepartmentView.showSuccessError(errorMessage);
+                mView.showSuccessError(errorMessage);
             }
 
             @Override
             public void connectionError(String errorMessage) {
-                mDepartmentView.showConnectionError(errorMessage);
+                mView.showConnectionError(errorMessage);
             }
         },
         firstLoad);
@@ -97,13 +95,13 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
     @Override
     public void openElementDetail(@NonNull RecyclerModel selectedElement) {
         if(selectedElement.getModel() instanceof EmployeeModel){
-            mDepartmentView.showEmployeeDetail(String.valueOf(selectedElement.getId()));
+            mView.showEmployeeDetail(String.valueOf(selectedElement.getId()));
         }else if(mRecyclerModelList.size()-1>mRecyclerModelList.indexOf(selectedElement)){
             openElement(
                     mRecyclerModelList.indexOf(selectedElement),
                     selectedElement.getLevel(),
                     !mRecyclerModelList.get(mRecyclerModelList.indexOf(selectedElement) + 1).isVisible());
-            mDepartmentView.updateList(getPositionList());
+            mView.updateList(getPositionList());
         }
         setSelectedItem(selectedElement);
     }
@@ -111,7 +109,7 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
     @Override
     public void logOut() {
         mInteractor.clearCredentials();
-        mDepartmentView.showAuthorization();
+        mView.showAuthorization();
     }
 
     private void openElement(int startPosition, int lvl, boolean visible){
@@ -140,7 +138,7 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
                openElement(mRecyclerModelList.indexOf(model),mRecyclerModelList.get(mRecyclerModelList.indexOf(model)).getLevel(),true);
             }
         }
-        mDepartmentView.showList(getPositionList());
+        mView.showList(getPositionList());
     }
 
     private List<Integer> getPositionList(){

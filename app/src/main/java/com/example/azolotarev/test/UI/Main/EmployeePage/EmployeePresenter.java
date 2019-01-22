@@ -1,7 +1,6 @@
 package com.example.azolotarev.test.UI.Main.EmployeePage;
 
 import android.graphics.Bitmap;
-import android.os.Parcel;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import com.example.azolotarev.test.Domain.EmployeePage.EmployeeInteractorContract;
@@ -12,12 +11,12 @@ import com.example.azolotarev.test.UI.BaseView;
 public class EmployeePresenter implements EmployeePageContract.Presenter {
 
     private EmployeePageContract.View mView;
-    private final EmployeeInteractorContract mInteractorContract;
+    private final EmployeeInteractorContract mInteractor;
     private boolean mLoadPhoto,mLoadEmployee;
 
     public EmployeePresenter(@NonNull EmployeeInteractorContract interactorContract) {
-        mInteractorContract = interactorContract;
-        mInteractorContract.setProgressListener(this);
+        mInteractor = interactorContract;
+        mInteractor.setProgressListener(this);
     }
 
     @Override
@@ -29,7 +28,7 @@ public class EmployeePresenter implements EmployeePageContract.Presenter {
     private void loadMapEmployee(final String id) {
         if (id != null && !id.isEmpty()) {
             mLoadEmployee=true;
-            mInteractorContract.getItem(id, new EmployeeInteractorContract.GetItemCallback() {
+            mInteractor.getItem(id, new EmployeeInteractorContract.GetItemCallback() {
                 @Override
                 public void logOut(String errorMessage) {
 
@@ -61,7 +60,7 @@ public class EmployeePresenter implements EmployeePageContract.Presenter {
         if(model.getEmail()!=null)mView.setEmail(model.getEmail());
         else mView.hideEmail();
         mLoadPhoto=true;
-        mInteractorContract.loadPhoto(new EmployeeInteractorContract.getPhotoCallback() {
+        mInteractor.loadPhoto(new EmployeeInteractorContract.getPhotoCallback() {
                                           @Override
                                           public void onPhoto(Bitmap photo) {
                                               mView.setAvatar(photo);
@@ -121,5 +120,11 @@ public class EmployeePresenter implements EmployeePageContract.Presenter {
     @Override
     public void sendEmail(String email) {
         mView.sendEmail(email);
+    }
+
+    @Override
+    public void logOut() {
+        mInteractor.clearCredentials();
+        mView.showAuthorization();
     }
 }
