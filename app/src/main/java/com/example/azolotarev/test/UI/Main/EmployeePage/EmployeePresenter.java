@@ -5,12 +5,12 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import com.example.azolotarev.test.Domain.EmployeePage.EmployeeInteractorContract;
 import com.example.azolotarev.test.Model.EmployeeModel;
-import com.example.azolotarev.test.Model.RecyclerModel;
+import com.example.azolotarev.test.Model.MapModel;
 import com.example.azolotarev.test.UI.BaseView;
 
-public class EmployeePresenter implements EmployeePageContract.Presenter {
+public class EmployeePresenter implements EmployeeContract.Presenter {
 
-    private EmployeePageContract.View mView;
+    private EmployeeContract.View mView;
     private final EmployeeInteractorContract mInteractor;
     private boolean mLoadPhoto,mLoadEmployee;
 
@@ -40,7 +40,7 @@ public class EmployeePresenter implements EmployeePageContract.Presenter {
                 }
 
                 @Override
-                public void onItemLoaded(@NonNull RecyclerModel item) {
+                public void onItemLoaded(@NonNull MapModel item) {
                      setDataEmployee((EmployeeModel) item.getModel());
                 }
 
@@ -60,7 +60,7 @@ public class EmployeePresenter implements EmployeePageContract.Presenter {
         if(model.getEmail()!=null)mView.setEmail(model.getEmail());
         else mView.hideEmail();
         mLoadPhoto=true;
-        mInteractor.loadPhoto(new EmployeeInteractorContract.getPhotoCallback() {
+        mInteractor.loadPhoto(new EmployeeInteractorContract.PhotoCallback() {
                                           @Override
                                           public void onPhoto(Bitmap photo) {
                                               mView.setAvatar(photo);
@@ -86,7 +86,7 @@ public class EmployeePresenter implements EmployeePageContract.Presenter {
 
     @Override
     public void bindView(@NonNull BaseView view) {
-        mView= (EmployeePageContract.View) view;
+        mView= (EmployeeContract.View) view;
     }
 
     @Override

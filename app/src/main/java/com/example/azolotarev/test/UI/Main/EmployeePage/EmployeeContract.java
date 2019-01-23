@@ -7,7 +7,7 @@ import com.example.azolotarev.test.UI.BasePresenter;
 import com.example.azolotarev.test.UI.BaseView;
 import com.example.azolotarev.test.UI.ProgressContract;
 
-public interface EmployeePageContract {
+public interface EmployeeContract {
     interface View extends BaseView<Presenter>, ProgressContract {
         void setTitle(String title);
         void setName(String name);

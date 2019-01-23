@@ -1,20 +1,24 @@
 package com.example.azolotarev.test.Model;
 
 import android.support.annotation.NonNull;
-
-public class RecyclerModel {
+/*
+@mGroupPosition стартовая позиция уровня, в которой находится элемент
+* */
+public class MapModel {
 
     private BaseModel mModel;
     private int mLevel;
     private boolean mVisible;
     private boolean mSelected;
     private String mId;
+    private int mGroupPosition;
 
-    public RecyclerModel(@NonNull BaseModel model,int level, @NonNull boolean visible){
+    public MapModel(@NonNull BaseModel model, int level, @NonNull boolean visible, int groupPosition){
         mModel=model;
         mLevel=level;
         mVisible=visible;
         mSelected=false;
+        mGroupPosition=groupPosition;
         mId=String.valueOf(this.hashCode());
     }
 
@@ -52,5 +56,9 @@ public class RecyclerModel {
 
     public String getId() {
         return mId;
+    }
+
+    public int getGroupPosition() {
+        return mGroupPosition;
     }
 }

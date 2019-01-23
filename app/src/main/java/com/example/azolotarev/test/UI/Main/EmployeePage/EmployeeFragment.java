@@ -6,10 +6,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.*;
@@ -26,9 +24,9 @@ import com.example.azolotarev.test.Service.PresenterManager;
 import com.example.azolotarev.test.UI.Authorization.AuthorizationFragment;
 import com.example.azolotarev.test.UI.Authorization.AuthorizationPresenter;
 
-public class EmployeeFragment extends Fragment implements EmployeePageContract.View {
+public class EmployeeFragment extends Fragment implements EmployeeContract.View {
 
-    private EmployeePageContract.Presenter mPresenter;
+    private EmployeeContract.Presenter mPresenter;
     private static final String ARG_EMPLOYEE ="employee_id";
     private ImageView mAvatar;
     private TextView mTitle, mName, mPhone, mEmail;
@@ -38,7 +36,7 @@ public class EmployeeFragment extends Fragment implements EmployeePageContract.V
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setPresenter((EmployeePageContract.Presenter) PresenterManager.getPresenter(this.getClass().getName()));
+        setPresenter((EmployeeContract.Presenter) PresenterManager.getPresenter(this.getClass().getName()));
     }
 
     public static EmployeeFragment newInstance(@NonNull String id){
@@ -89,7 +87,7 @@ public class EmployeeFragment extends Fragment implements EmployeePageContract.V
     }
 
     @Override
-    public void setPresenter(@NonNull EmployeePageContract.Presenter presenter) {
+    public void setPresenter(@NonNull EmployeeContract.Presenter presenter) {
         mPresenter=presenter;
     }
 

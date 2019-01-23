@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import com.example.azolotarev.test.Model.DepartmentModel;
 import com.example.azolotarev.test.Model.EmployeeModel;
-import com.example.azolotarev.test.Model.RecyclerModel;
+import com.example.azolotarev.test.Model.MapModel;
 import com.example.azolotarev.test.Repository.RepositoryContract;
 import com.example.azolotarev.test.UI.ProgressContract;
 
@@ -19,16 +19,16 @@ public class DepartmentInteractor implements DepartmentInteractorContract {
     private boolean mRefreshCache=false;
     private List<DepartmentModel> mDepartmentModels;
     private String mConnectionError,mSuccessError,mNotAvailable;
-    private List<RecyclerModel> mMapList;
+    private List<MapModel> mMapList;
 
     public DepartmentInteractor(RepositoryContract repository) {
         mRepository = repository;
     }
 
     @Override
-    public void getDepartments(@NonNull final GetListCallback callback, @NonNull boolean firstLoad) {
-        Log.e("TAG","department interacrot getDepartments refreshCache= "+mRefreshCache);
-        new AsyncDepartments(callback).execute(mRefreshCache,firstLoad);
+    public void loadList(@NonNull final GetListCallback callback, @NonNull boolean firstLoad) {
+        Log.e("TAG","department interacrot loadList refreshCache= "+mRefreshCache);
+        new AsyncLoadList(callback).execute(mRefreshCache,firstLoad);
         mRefreshCache=false;
     }
 
@@ -43,15 +43,51 @@ public class DepartmentInteractor implements DepartmentInteractorContract {
     }
 
     @Override
-    public void refreshDepartments() {
-        Log.e("TAG","department interacrot refreshDepartments");
+    public void refreshList() {
+        Log.e("TAG","department interacrot refreshList");
         mRefreshCache=true;
+    }
+
+    protected RepositoryContract getRepository() {
+        return mRepository;
+    }
+
+    protected ProgressContract getProgress() {
+        return mProgress;
+    }
+
+    protected String getConnectionError() {
+        return mConnectionError;
+    }
+
+    protected String getSuccessError() {
+        return mSuccessError;
+    }
+
+    protected String getNotAvailable() {
+        return mNotAvailable;
+    }
+
+    protected List<MapModel> getMapList() {
+        return mMapList;
+    }
+
+    protected void setConnectionError(String connectionError) {
+        mConnectionError = connectionError;
+    }
+
+    protected void setSuccessError(String successError) {
+        mSuccessError = successError;
+    }
+
+    protected void setNotAvailable(String notAvailable) {
+        mNotAvailable = notAvailable;
     }
 
     private void setMapList(){
         mMapList=new ArrayList<>();
         for(DepartmentModel departmentModel:mDepartmentModels){
-            mMapList.add(new RecyclerModel(departmentModel,0, true));
+            mMapList.add(new MapModel(departmentModel,0, true, 0));
             mapToRecyclerModel(departmentModel,0);
         }
         mRepository.refreshCache(mMapList);
@@ -59,24 +95,25 @@ public class DepartmentInteractor implements DepartmentInteractorContract {
     }
 
     private void mapToRecyclerModel(DepartmentModel department, int lvl){
+        int groupPosition=mMapList.size();
         if(department.getDepartmentsList()!=null){
             for(DepartmentModel departmentModel:department.getDepartmentsList()){
-                mMapList.add(new RecyclerModel(departmentModel,lvl+1, false));
+                mMapList.add(new MapModel(departmentModel,lvl+1, false, groupPosition));
                 mapToRecyclerModel(departmentModel,lvl+1);
             }
         }
         if(department.getEmployeeList()!=null){
             for(EmployeeModel employeeModel:department.getEmployeeList()){
-                mMapList.add(new RecyclerModel(employeeModel,lvl+1, false));
+                mMapList.add(new MapModel(employeeModel,lvl+1, false, groupPosition));
             }
         }
     }
 
-    private class AsyncDepartments extends AsyncTask<Boolean,Void, Void>{
-        private GetListCallback mCallback;
+    private class AsyncLoadList extends AsyncTask<Boolean,Void, Void>{
+        private GetListCallback callback;
 
-        public AsyncDepartments(GetListCallback callback) {
-            mCallback = callback;
+        public AsyncLoadList(GetListCallback callback) {
+            this.callback = callback;
         }
 
         @Override
@@ -88,7 +125,7 @@ public class DepartmentInteractor implements DepartmentInteractorContract {
         protected Void doInBackground(Boolean... booleans) {
             mRepository.getDepartments(new RepositoryContract.LoadDepartmentsCallback() {
                                            @Override
-                                           public void onMapListLoaded(List<RecyclerModel> list) {
+                                           public void onMapListLoaded(List<MapModel> list) {
                                                mMapList =list;
                                            }
 
@@ -120,14 +157,18 @@ public class DepartmentInteractor implements DepartmentInteractorContract {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            mProgress.hideProgress();
-            if(mSuccessError!=null && !mSuccessError.isEmpty()) mCallback.logOut(mSuccessError);
-            if(mConnectionError!=null && !mConnectionError.isEmpty()) mCallback.connectionError(mConnectionError);
-            if(mNotAvailable!=null && !mNotAvailable.isEmpty()) mCallback.notAvailable(mNotAvailable);
-            if(mMapList!=null) mCallback.onMapListLoaded(mMapList);
-            Log.d("TAG","onPostExecute");
-
+            onPostLoadList(callback);
         }
+    }
+
+    protected void onPostLoadList(@NonNull final GetListCallback callback){
+        mProgress.hideProgress();
+        if(mSuccessError!=null && !mSuccessError.isEmpty()) callback.logOut(mSuccessError);
+        if(mConnectionError!=null && !mConnectionError.isEmpty()) callback.connectionError(mConnectionError);
+        if(mNotAvailable!=null && !mNotAvailable.isEmpty()) callback.notAvailable(mNotAvailable);
+        if(mMapList!=null) callback.onMapListLoaded(mMapList);
+        Log.d("TAG","onPostExecute");
+
     }
 
 }

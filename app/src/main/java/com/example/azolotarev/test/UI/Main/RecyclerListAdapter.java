@@ -12,9 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.example.azolotarev.test.Model.BaseModel;
-import com.example.azolotarev.test.Model.EmployeeModel;
-import com.example.azolotarev.test.Model.RecyclerModel;
+import com.example.azolotarev.test.Model.MapModel;
 import com.example.azolotarev.test.R;
 
 import java.util.List;
@@ -51,7 +49,6 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         LayoutInflater layoutInflater=LayoutInflater.from(mContext);
         switch (mViewType){
             case 0:return new ItemDepartmentHolder(layoutInflater.inflate(R.layout.departments_row_item,viewGroup,false),mClickListener,container,mContext);
-            case 1:return new ItemEmployeeHolder(layoutInflater.inflate(R.layout.employee_row_item,viewGroup,false),mClickListener,mContext);
         }
         return null;
     }
@@ -86,7 +83,7 @@ class ItemDepartmentHolder extends RecyclerView.ViewHolder implements View.OnCli
 
     private TextView mTextView;
     private RecyclerItemContract mClickListener;
-    private RecyclerModel mDepartment;
+    private MapModel mDepartment;
     private CardView mCardViewRoot;
     private static final int sMarginStart=50;
 
@@ -103,7 +100,7 @@ class ItemDepartmentHolder extends RecyclerView.ViewHolder implements View.OnCli
     public void onBindViewHolder(int position){
         mClickListener.itemInPosition(new RecyclerItemContract.itemInPositionCallback() {
             @Override
-            public void onItem(@NonNull RecyclerModel model) {
+            public void onItem(@NonNull MapModel model) {
                 mDepartment=model;
             }
         },
@@ -125,7 +122,7 @@ class ItemDepartmentHolder extends RecyclerView.ViewHolder implements View.OnCli
 class ItemEmployeeHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     private TextView mTextView;
     private RecyclerItemContract mClickListener;
-    private RecyclerModel mModel;
+    private MapModel mModel;
     private CardView mRootCardView;
 
     public ItemEmployeeHolder(@NonNull View itemView, @NonNull RecyclerItemContract clickListener, Context context) {

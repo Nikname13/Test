@@ -3,57 +3,86 @@ package com.example.azolotarev.test.Domain.EmployeePage;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-import com.example.azolotarev.test.Model.RecyclerModel;
+import com.example.azolotarev.test.Domain.DepartmentsList.DepartmentInteractor;
+import com.example.azolotarev.test.Model.BaseModel;
+import com.example.azolotarev.test.Model.MapModel;
 import com.example.azolotarev.test.Repository.RepositoryContract;
-import com.example.azolotarev.test.UI.ProgressContract;
 
-public class EmployeeInteractor implements EmployeeInteractorContract {
+import java.util.ArrayList;
+import java.util.List;
 
-    private final RepositoryContract mRepository;
-    private ProgressContract mProgress;
-    private String mConnectionError,mSuccessError,mNotAvailable;
+public class EmployeeInteractor extends DepartmentInteractor implements EmployeeInteractorContract {
+
     private Bitmap mPhoto;
-    private RecyclerModel mItem;
+    private MapModel mItem;
 
     public EmployeeInteractor(RepositoryContract repository) {
-        mRepository = repository;
+        super(repository);
     }
 
     @Override
-    public void getItem(String id, @NonNull GetItemCallback callback) {
+    public void loadList(final int position, @NonNull final GetListCallback callback) {
+        loadList(new GetListCallback() {
+            @Override
+            public void onMapListLoaded(List<MapModel> list) {
+                onEmployeeList(callback,list, position);
+            }
+
+            @Override
+            public void notAvailable(String errorMessage) {
+                callback.notAvailable(errorMessage);
+            }
+
+            @Override
+            public void logOut(String errorMessage) {
+
+            }
+
+            @Override
+            public void connectionError(String errorMessage) {
+
+            }
+        },
+                false
+        );
+    }
+
+    @Override
+    public void getItem(@NonNull String id, @NonNull GetItemCallback callback) {
         new AsyncItem(callback).execute(id);
     }
 
     @Override
-    public void loadPhoto(@NonNull getPhotoCallback callback, @NonNull String id) {
+    public void loadPhoto(@NonNull PhotoCallback callback, @NonNull String id) {
         new AsyncEmployeePhoto(callback).execute(id);
     }
 
-    @Override
-    public void setProgressListener(@NonNull ProgressContract listener) {
-        mProgress=listener;
-    }
-
-    @Override
-    public void clearCredentials() {
-        mRepository.clearCredentials();
+    private void onEmployeeList(@NonNull final GetListCallback callback, @NonNull List<MapModel> mapModelList, int position){
+        List<MapModel> employeeList=new ArrayList<>();
+        MapModel mapModel=mapModelList.get(position);
+        int group=mapModel.getGroupPosition();
+        for(int i=group;i<mapModelList.size();i++){
+            MapModel model=mapModelList.get(i);
+            if(model.getGroupPosition()==group) employeeList.add(model);
+        }
+        callback.onMapListLoaded(employeeList);
     }
 
     private class AsyncEmployeePhoto extends AsyncTask<String,Void, Void> {
-        private getPhotoCallback mCallback;
+        private PhotoCallback callback;
 
-        public AsyncEmployeePhoto(getPhotoCallback callback) {
-            mCallback = callback;
+        public AsyncEmployeePhoto(PhotoCallback callback) {
+            this.callback = callback;
         }
 
         @Override
         protected void onPreExecute() {
-            mProgress.showProgress();
+            getProgress().showProgress();
         }
 
         @Override
         protected Void doInBackground(String... id) {
-            mRepository.getPhoto(new RepositoryContract.LoadPhotoCallback() {
+            getRepository().getPhoto(new RepositoryContract.LoadPhotoCallback() {
 
                                      @Override
                                      public void onResponse(Bitmap photo) {
@@ -62,12 +91,12 @@ public class EmployeeInteractor implements EmployeeInteractorContract {
 
                                      @Override
                                      public void logOut(String errorMessage) {
-                                         mSuccessError=errorMessage;
+                                         setSuccessError(errorMessage);
                                      }
 
                                      @Override
                                      public void connectionError(String errorMessage) {
-                                         mConnectionError=errorMessage;
+                                         setConnectionError(errorMessage);
                                      }
                                  },
                     id[0]);
@@ -76,37 +105,37 @@ public class EmployeeInteractor implements EmployeeInteractorContract {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            mProgress.hideProgress();
-            if(mPhoto!=null) mCallback.onPhoto(mPhoto);
-            if(mConnectionError!=null)mCallback.connectionError(mConnectionError);
-            if(mSuccessError!=null)mCallback.logOut(mSuccessError);
+            getProgress().hideProgress();
+            if(mPhoto!=null) callback.onPhoto(mPhoto);
+            if(getConnectionError()!=null) callback.connectionError(getConnectionError());
+            if(getSuccessError()!=null) callback.logOut(getSuccessError());
 
         }
     }
 
     private class AsyncItem extends AsyncTask<String,Void,Void>{
-        private GetItemCallback mCallback;
+        private GetItemCallback callback;
 
         public AsyncItem(GetItemCallback callback) {
-            mCallback = callback;
+            this.callback = callback;
         }
 
         @Override
         protected void onPreExecute() {
-            mProgress.showProgress();
+            getProgress().showProgress();
         }
 
         @Override
         protected Void doInBackground(String... id) {
-            mRepository.getItem(new RepositoryContract.LoadItemCallback() {
+            getRepository().getItem(new RepositoryContract.LoadItemCallback() {
                                     @Override
-                                    public void onItemLoaded(@NonNull RecyclerModel item) {
+                                    public void onItemLoaded(@NonNull MapModel item) {
                                         mItem=item;
                                     }
 
                                     @Override
                                     public void notAvailable(String errorMessage) {
-                                        mNotAvailable=errorMessage;
+                                        setNotAvailable(errorMessage);
                                     }
                                 },
                     id[0]
@@ -114,14 +143,11 @@ public class EmployeeInteractor implements EmployeeInteractorContract {
             return null;
         }
 
-
         @Override
         protected void onPostExecute(Void aVoid) {
-            mProgress.hideProgress();
-            if(mItem!=null) mCallback.onItemLoaded(mItem);
-            else if(mNotAvailable!=null) mCallback.notAvailable(mNotAvailable);
+            getProgress().hideProgress();
+            if(mItem!=null) callback.onItemLoaded(mItem);
+            else if(getNotAvailable()!=null) callback.notAvailable(getNotAvailable());//допилить вызов метода для загрузки списка
         }
-
     }
-
 }

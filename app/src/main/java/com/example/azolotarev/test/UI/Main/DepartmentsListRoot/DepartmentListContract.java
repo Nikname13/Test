@@ -1,10 +1,7 @@
 package com.example.azolotarev.test.UI.Main.DepartmentsListRoot;
 
 import android.support.annotation.NonNull;
-import com.example.azolotarev.test.Model.BaseModel;
-import com.example.azolotarev.test.Model.DepartmentModel;
-import com.example.azolotarev.test.Model.EmployeeModel;
-import com.example.azolotarev.test.Model.RecyclerModel;
+import com.example.azolotarev.test.Model.MapModel;
 import com.example.azolotarev.test.UI.Main.RecyclerItemContract;
 import com.example.azolotarev.test.UI.ProgressContract;
 import com.example.azolotarev.test.UI.BasePresenter;
@@ -20,16 +17,16 @@ public interface DepartmentListContract {
         void showAuthorization();
         void showList(@NonNull List<Integer> recyclerModelList);
         void updateList(@NonNull List<Integer> recyclerModelList);
-        void showEmployeeDetail(@NonNull String id);
+        void showEmployeeDetail(@NonNull String position);
     }
 
     interface Presenter extends BasePresenter,ProgressContract{
         interface ItemInPositionCallback {
-            void onItem(@NonNull RecyclerModel model);
+            void onItem(@NonNull MapModel model);
         }
         void itemInPosition(@NonNull final RecyclerItemContract.itemInPositionCallback callback, int position);
         void loadList(@NonNull boolean freshUpdate, @NonNull boolean firstLoad);
-        void openElementDetail(@NonNull RecyclerModel model);
+        void openElementDetail(@NonNull MapModel model);
         void logOut();
     }
 }

@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import com.example.azolotarev.test.Domain.DepartmentsList.DepartmentInteractorContract;
 import com.example.azolotarev.test.Model.EmployeeModel;
-import com.example.azolotarev.test.Model.RecyclerModel;
+import com.example.azolotarev.test.Model.MapModel;
 import com.example.azolotarev.test.UI.BaseView;
 import com.example.azolotarev.test.UI.Main.RecyclerItemContract;
 
@@ -17,8 +17,8 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
     private final DepartmentInteractorContract mInteractor;
     private boolean mFirstLoad=false;
     private boolean mFreshUpdate=true;
-    private List<RecyclerModel> mRecyclerModelList;
-    private List<RecyclerModel> mListOfSelected;
+    private List<MapModel> mRecyclerModelList;
+    private List<MapModel> mListOfSelected;
 
     public DepartmentListPresenter(@NonNull DepartmentInteractorContract interactor) {
 
@@ -50,10 +50,10 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
 
     @Override
     public void loadList(boolean freshUpdate, boolean firstLoad) {
-        if(freshUpdate) mInteractor.refreshDepartments();
-        mInteractor.getDepartments(new DepartmentInteractorContract.GetListCallback() {
+        if(freshUpdate) mInteractor.refreshList();
+        mInteractor.loadList(new DepartmentInteractorContract.GetListCallback() {
             @Override
-            public void onMapListLoaded(List<RecyclerModel> list) {
+            public void onMapListLoaded(List<MapModel> list) {
                 mRecyclerModelList=list;
                showList();
             }
@@ -76,10 +76,10 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
         firstLoad);
     }
 
-    private void setSelectedItem(@NonNull RecyclerModel item){
+    private void setSelectedItem(@NonNull MapModel item){
         if(mListOfSelected==null)mListOfSelected=new ArrayList<>();
         if(mListOfSelected.contains(item)) {
-            for (RecyclerModel model : mListOfSelected) {
+            for (MapModel model : mListOfSelected) {
                 if (model.getModel().getId() != model.getModel().getId()) mListOfSelected.remove(model);
                 else {
                     mListOfSelected.remove(model);
@@ -87,15 +87,15 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
                 }
             }
         }else mListOfSelected.add(item);
-        for (RecyclerModel model : mListOfSelected) {
+        for (MapModel model : mListOfSelected) {
             Log.d("TAG", " item "+model.getModel().getName() +" lvl "+mListOfSelected.indexOf(model));
         }
     }
 
     @Override
-    public void openElementDetail(@NonNull RecyclerModel selectedElement) {
+    public void openElementDetail(@NonNull MapModel selectedElement) {
         if(selectedElement.getModel() instanceof EmployeeModel){
-            mView.showEmployeeDetail(String.valueOf(selectedElement.getId()));
+            mView.showEmployeeDetail(String.valueOf(mRecyclerModelList.indexOf(selectedElement)));
         }else if(mRecyclerModelList.size()-1>mRecyclerModelList.indexOf(selectedElement)){
             openElement(
                     mRecyclerModelList.indexOf(selectedElement),
@@ -134,7 +134,7 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
 
     private void showList() {
         if(mListOfSelected!=null){
-            for(RecyclerModel model:mListOfSelected){
+            for(MapModel model:mListOfSelected){
                openElement(mRecyclerModelList.indexOf(model),mRecyclerModelList.get(mRecyclerModelList.indexOf(model)).getLevel(),true);
             }
         }
@@ -143,7 +143,7 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
 
     private List<Integer> getPositionList(){
         List<Integer> positionList = new ArrayList<>();
-        for (RecyclerModel model : mRecyclerModelList) {
+        for (MapModel model : mRecyclerModelList) {
             if (model.isVisible()){
                 positionList.add(mRecyclerModelList.indexOf(model));
                 model.setSelected(false);

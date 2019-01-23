@@ -8,12 +8,10 @@ import com.example.azolotarev.test.Data.Local.ListCache;
 import com.example.azolotarev.test.Data.Local.PersistentStorage;
 import com.example.azolotarev.test.Data.Net.NetContract;
 import com.example.azolotarev.test.Model.DepartmentModel;
-import com.example.azolotarev.test.Model.RecyclerModel;
+import com.example.azolotarev.test.Model.MapModel;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 public  class Repository implements RepositoryContract {
 
@@ -63,7 +61,7 @@ public  class Repository implements RepositoryContract {
     @Override
     public void getItem(@NonNull LoadItemCallback callback, @NonNull String id) {
         if(ListCache.getCachedList() !=null && !ListCache.getCachedList().isEmpty()){
-            RecyclerModel recyclerModel=ListCache.getCachedList().get(id);
+            MapModel recyclerModel=ListCache.getCachedList().get(id);
             callback.onItemLoaded(recyclerModel);
         }else callback.notAvailable("No item");
     }
@@ -78,7 +76,7 @@ public  class Repository implements RepositoryContract {
     }
 
     @Override
-    public void refreshCache(List<RecyclerModel> mapList) {
+    public void refreshCache(List<MapModel> mapList) {
         ListCache.setCachedList(mapList);
     }
 

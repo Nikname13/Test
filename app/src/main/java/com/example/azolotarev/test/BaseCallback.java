@@ -2,7 +2,7 @@ package com.example.azolotarev.test;
 
 import android.support.annotation.NonNull;
 import com.example.azolotarev.test.Model.DepartmentModel;
-import com.example.azolotarev.test.Model.RecyclerModel;
+import com.example.azolotarev.test.Model.MapModel;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ public interface BaseCallback {
     }
 
     interface BaseGetItemCallback{
-        void onItemLoaded(@NonNull RecyclerModel item);
+        void onItemLoaded(@NonNull MapModel item);
         void notAvailable(String errorMessage);
     }
 

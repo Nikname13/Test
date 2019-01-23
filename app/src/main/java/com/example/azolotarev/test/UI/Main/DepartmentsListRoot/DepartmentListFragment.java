@@ -17,7 +17,7 @@ import com.example.azolotarev.test.Data.Net.Connect;
 import com.example.azolotarev.test.Data.Net.Net;
 import com.example.azolotarev.test.Domain.Authorization.AuthorizationInteractor;
 import com.example.azolotarev.test.Domain.EmployeePage.EmployeeInteractor;
-import com.example.azolotarev.test.Model.RecyclerModel;
+import com.example.azolotarev.test.Model.MapModel;
 import com.example.azolotarev.test.R;
 import com.example.azolotarev.test.Repository.Repository;
 import com.example.azolotarev.test.Service.PresenterManager;
@@ -25,6 +25,9 @@ import com.example.azolotarev.test.UI.Authorization.AuthorizationFragment;
 import com.example.azolotarev.test.UI.Authorization.AuthorizationPresenter;
 import com.example.azolotarev.test.UI.Main.EmployeePage.EmployeeFragment;
 import com.example.azolotarev.test.UI.Main.EmployeePage.EmployeePresenter;
+import com.example.azolotarev.test.UI.Main.EmployeeViewPager.EmployeePagerContract;
+import com.example.azolotarev.test.UI.Main.EmployeeViewPager.EmployeePagerFragment;
+import com.example.azolotarev.test.UI.Main.EmployeeViewPager.EmployeePagerPresenter;
 import com.example.azolotarev.test.UI.Main.RecyclerListAdapter;
 
 import java.util.List;
@@ -101,10 +104,10 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     }
 
     @Override
-    public void showEmployeeDetail(@NonNull String id) {
-        EmployeeFragment fragment=EmployeeFragment.newInstance(id);
+    public void showEmployeeDetail(@NonNull String position) {
+        EmployeePagerFragment fragment=EmployeePagerFragment.newInstance(position);
         if(PresenterManager.getPresenter(fragment.getClass().getName())==null) {
-            PresenterManager.addPresenter(new EmployeePresenter(new EmployeeInteractor(
+            PresenterManager.addPresenter(new EmployeePagerPresenter(new EmployeeInteractor(
                             new Repository(PersistentStorage.get(),
                                     new Net(new Connect())))),
                     fragment.getClass().getName());
@@ -130,7 +133,7 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     }
 
     @Override
-    public void onClickItem(@NonNull RecyclerModel model) {
+    public void onClickItem(@NonNull MapModel model) {
         Log.d("TAG","departments list fragment onClickItem scroll(Y)= ");
         mPresenter.openElementDetail(model);
     }
@@ -139,7 +142,7 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     public void itemInPosition(@NonNull final itemInPositionCallback callback, @NonNull int position) {
         mPresenter.itemInPosition(new itemInPositionCallback() {
             @Override
-            public void onItem(@NonNull RecyclerModel model) {
+            public void onItem(@NonNull MapModel model) {
                 callback.onItem(model);
             }
         },
