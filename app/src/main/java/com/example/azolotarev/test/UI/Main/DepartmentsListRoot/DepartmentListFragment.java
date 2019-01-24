@@ -47,7 +47,7 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
+         setHasOptionsMenu(true);
         setPresenter((DepartmentListContract.Presenter) PresenterManager.getPresenter(this.getClass().getName()));
     }
 
@@ -104,8 +104,8 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     }
 
     @Override
-    public void showEmployeeDetail(@NonNull String position) {
-        EmployeePagerFragment fragment=EmployeePagerFragment.newInstance(position);
+    public void showEmployeeDetail(@NonNull String positionInTree, @NonNull String id) {
+        EmployeePagerFragment fragment=EmployeePagerFragment.newInstance(positionInTree,id);
         if(PresenterManager.getPresenter(fragment.getClass().getName())==null) {
             PresenterManager.addPresenter(new EmployeePagerPresenter(new EmployeeInteractor(
                             new Repository(PersistentStorage.get(),

@@ -95,7 +95,7 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
     @Override
     public void openElementDetail(@NonNull MapModel selectedElement) {
         if(selectedElement.getModel() instanceof EmployeeModel){
-            mView.showEmployeeDetail(String.valueOf(mRecyclerModelList.indexOf(selectedElement)));
+            mView.showEmployeeDetail(String.valueOf(mRecyclerModelList.indexOf(selectedElement)),selectedElement.getId());
         }else if(mRecyclerModelList.size()-1>mRecyclerModelList.indexOf(selectedElement)){
             openElement(
                     mRecyclerModelList.indexOf(selectedElement),

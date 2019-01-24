@@ -17,7 +17,7 @@ public interface DepartmentListContract {
         void showAuthorization();
         void showList(@NonNull List<Integer> recyclerModelList);
         void updateList(@NonNull List<Integer> recyclerModelList);
-        void showEmployeeDetail(@NonNull String position);
+        void showEmployeeDetail(@NonNull String positionInTree, @NonNull String id);
     }
 
     interface Presenter extends BasePresenter,ProgressContract{

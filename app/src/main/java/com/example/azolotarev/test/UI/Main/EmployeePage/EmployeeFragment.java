@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.*;
@@ -27,16 +28,18 @@ import com.example.azolotarev.test.UI.Authorization.AuthorizationPresenter;
 public class EmployeeFragment extends Fragment implements EmployeeContract.View {
 
     private EmployeeContract.Presenter mPresenter;
-    private static final String ARG_EMPLOYEE ="employee_id";
+    public static final String ARG_EMPLOYEE ="employee_id";
     private ImageView mAvatar;
     private TextView mTitle, mName, mPhone, mEmail;
     private LinearLayout mTitleContainer, mNameContainer, mPhoneContainer, mEmailContainer, mEmployeeContainer;
-    private Toolbar mToolbar;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setPresenter((EmployeeContract.Presenter) PresenterManager.getPresenter(this.getClass().getName()));
+        Log.d("TAG","Employee fragment create"+savedInstanceState);
+
+        setPresenter((EmployeeContract.Presenter) PresenterManager.getPresenter(this.getClass().getName()+getArguments().getString(ARG_EMPLOYEE)));
     }
 
     public static EmployeeFragment newInstance(@NonNull String id){
@@ -51,9 +54,6 @@ public class EmployeeFragment extends Fragment implements EmployeeContract.View 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v=inflater.inflate(R.layout.employee_detail,container,false);
-      //  mToolbar=v.findViewById(R.id.main_toolbar);
-        //mToolbar.setTitle("");
-        //((AppCompatActivity)getActivity()).setSupportActionBar(mToolbar);
         mEmployeeContainer =v.findViewById(R.id.employee_detail_container);
         mAvatar =v.findViewById(R.id.employee_avatar);
         mTitle=v.findViewById(R.id.employee_title_textView);
@@ -77,12 +77,14 @@ public class EmployeeFragment extends Fragment implements EmployeeContract.View 
             }
         });
         mPresenter.bindView(this);
+        Log.d("TAG","onCreateView onResume "+getArguments().getString(ARG_EMPLOYEE));
         return v;
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        Log.e("TAG","employee onResume");
         mPresenter.start(getArguments().getString(ARG_EMPLOYEE));
     }
 
@@ -171,31 +173,6 @@ public class EmployeeFragment extends Fragment implements EmployeeContract.View 
         }else{
             Snackbar snackbar=Snackbar.make(mEmployeeContainer,"Нет необходимого приложения",Snackbar.LENGTH_SHORT);
             snackbar.show();
-        }
-    }
-
-    @Override
-    public void showAuthorization() {
-        AuthorizationFragment fragment=AuthorizationFragment.newInstance();
-        PresenterManager.addPresenter(new AuthorizationPresenter(new AuthorizationInteractor(new Repository(PersistentStorage.get(),new Net(new Connect())))),
-                fragment.getClass().getName());
-        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,fragment).commit();
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_employee,menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.action_log_out:
-                mPresenter.logOut();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
         }
     }
 

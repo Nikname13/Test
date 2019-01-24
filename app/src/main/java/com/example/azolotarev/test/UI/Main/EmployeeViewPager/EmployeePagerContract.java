@@ -10,9 +10,11 @@ import java.util.List;
 
 public interface EmployeePagerContract {
     interface View extends BaseView<Presenter>, ProgressContract {
-        void initViewPager(@NonNull List<MapModel> mapModelList);
+        void initViewPager(@NonNull List<MapModel> mapModelList, int startPosition);
+        void showAuthorization();
     }
     interface Presenter extends BasePresenter,ProgressContract {
-        void start(String string);
+        void start(@NonNull String positionInTree,@NonNull String id);
+        void logOut();
     }
 }

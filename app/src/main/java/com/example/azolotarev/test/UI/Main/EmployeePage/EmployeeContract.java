@@ -20,13 +20,13 @@ public interface EmployeeContract {
         void hideEmail();
         void callNumber(String number);
         void sendEmail(String email);
-        void showAuthorization();
+
     }
 
     interface Presenter extends BasePresenter,ProgressContract{
         void start(String id);
         void callNumber(String number);
         void sendEmail(String email);
-        void logOut();
+
     }
 }

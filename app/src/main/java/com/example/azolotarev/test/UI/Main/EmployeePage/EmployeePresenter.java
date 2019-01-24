@@ -122,9 +122,4 @@ public class EmployeePresenter implements EmployeeContract.Presenter {
         mView.sendEmail(email);
     }
 
-    @Override
-    public void logOut() {
-        mInteractor.clearCredentials();
-        mView.showAuthorization();
-    }
 }

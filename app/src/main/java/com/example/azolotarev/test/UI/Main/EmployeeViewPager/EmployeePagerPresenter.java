@@ -1,6 +1,7 @@
 package com.example.azolotarev.test.UI.Main.EmployeeViewPager;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 import com.example.azolotarev.test.Domain.DepartmentsList.DepartmentInteractorContract;
 import com.example.azolotarev.test.Domain.EmployeePage.EmployeeInteractorContract;
 import com.example.azolotarev.test.Model.MapModel;
@@ -19,11 +20,14 @@ public class EmployeePagerPresenter implements EmployeePagerContract.Presenter {
     }
 
     @Override
-    public void start(String position) {
-        mInteractor.loadList(Integer.valueOf(position), new DepartmentInteractorContract.GetListCallback() {
+    public void start(String positionInTree, final String id) {
+        mInteractor.loadList(Integer.valueOf(positionInTree), new DepartmentInteractorContract.GetListCallback() {
             @Override
             public void onMapListLoaded(List<MapModel> list) {
-                mView.initViewPager(list);
+                Log.e("TAG","onMapListLoaded");
+                for(MapModel mapModel:list){
+                    if(mapModel.getId().equals(id)) mView.initViewPager(list,list.indexOf(mapModel));
+                }
             }
 
             @Override
@@ -43,6 +47,13 @@ public class EmployeePagerPresenter implements EmployeePagerContract.Presenter {
         });
 
     }
+
+    @Override
+    public void logOut() {
+        mInteractor.clearCredentials();
+        mView.showAuthorization();
+    }
+
     @Override
     public void start() {
 
