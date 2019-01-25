@@ -44,8 +44,26 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
     }
 
     @Override
-    public void itemInPosition(@NonNull RecyclerItemContract.itemInPositionCallback callback, @NonNull int position) {
+    public void onFilter(@NonNull String filterString, @NonNull RecyclerItemContract.RecyclerFilterCallback callback) {
+        List<Integer> filteredList=new ArrayList<>();
+        for (MapModel model : mRecyclerModelList) {
+            if(model.getModel() instanceof EmployeeModel){
+                EmployeeModel employee= (EmployeeModel) model.getModel();
+                if((employee.getName()!=null && employee.getName().toLowerCase().contains(filterString.toLowerCase())) ||
+                        (employee.getTitle()!=null && employee.getTitle().toLowerCase().contains(filterString.toLowerCase())) ||
+                        (employee.getPhone()!=null && employee.getPhone().toLowerCase().contains(filterString.toLowerCase())) ||
+                        (employee.getEmail()!=null && employee.getEmail().toLowerCase().contains(filterString.toLowerCase()))){
+                    filteredList.add(mRecyclerModelList.indexOf(model));
+                }
+            }
+        }
+        callback.onResult(filteredList);
+    }
+
+    @Override
+    public void itemInPosition(@NonNull RecyclerItemContract.ItemInPositionCallback callback, @NonNull int position) {
         callback.onItem(mRecyclerModelList.get(position));
+
     }
 
     @Override
@@ -104,6 +122,11 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
             mView.updateList(getPositionList());
         }
         setSelectedItem(selectedElement);
+    }
+
+    @Override
+    public void applyFilter(@NonNull String query) {
+        mView.applyFilter(query);
     }
 
     @Override

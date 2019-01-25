@@ -1,5 +1,6 @@
 package com.example.azolotarev.test.UI.Main.DepartmentsListRoot;
 
+import android.app.SearchManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,6 +10,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.*;
@@ -20,12 +22,10 @@ import com.example.azolotarev.test.Domain.EmployeePage.EmployeeInteractor;
 import com.example.azolotarev.test.Model.MapModel;
 import com.example.azolotarev.test.R;
 import com.example.azolotarev.test.Repository.Repository;
+import com.example.azolotarev.test.Service.ContextManager;
 import com.example.azolotarev.test.Service.PresenterManager;
 import com.example.azolotarev.test.UI.Authorization.AuthorizationFragment;
 import com.example.azolotarev.test.UI.Authorization.AuthorizationPresenter;
-import com.example.azolotarev.test.UI.Main.EmployeePage.EmployeeFragment;
-import com.example.azolotarev.test.UI.Main.EmployeePage.EmployeePresenter;
-import com.example.azolotarev.test.UI.Main.EmployeeViewPager.EmployeePagerContract;
 import com.example.azolotarev.test.UI.Main.EmployeeViewPager.EmployeePagerFragment;
 import com.example.azolotarev.test.UI.Main.EmployeeViewPager.EmployeePagerPresenter;
 import com.example.azolotarev.test.UI.Main.RecyclerListAdapter;
@@ -118,6 +118,11 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     }
 
     @Override
+    public void applyFilter(@NonNull String query) {
+        mDepartmentsAdapter.getFilter().filter(query);
+    }
+
+    @Override
     public void showProgress() {
 
     }
@@ -139,8 +144,18 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     }
 
     @Override
-    public void itemInPosition(@NonNull final itemInPositionCallback callback, @NonNull int position) {
-        mPresenter.itemInPosition(new itemInPositionCallback() {
+    public void onFilter(@NonNull String filterString, @NonNull final RecyclerFilterCallback callback) {
+        mPresenter.onFilter(filterString, new RecyclerFilterCallback() {
+            @Override
+            public void onResult(List<Integer> filteredList) {
+                callback.onResult(filteredList);
+            }
+        });
+    }
+
+    @Override
+    public void itemInPosition(@NonNull final ItemInPositionCallback callback, @NonNull int position) {
+        mPresenter.itemInPosition(new ItemInPositionCallback() {
             @Override
             public void onItem(@NonNull MapModel model) {
                 callback.onItem(model);
@@ -189,8 +204,29 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_main,menu);
+       // super.onCreateOptionsMenu(menu, inflater);
+        getActivity().getMenuInflater().inflate(R.menu.menu_main, menu);
+        //inflater.inflate(R.menu.menu_main,menu);
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(ContextManager.getContext().SEARCH_SERVICE);
+       SearchView searchView = (SearchView) menu.findItem(R.id.action_search)
+                .getActionView();
+        searchView.setSearchableInfo(searchManager
+                .getSearchableInfo(getActivity().getComponentName()));
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                mPresenter.applyFilter(s);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                mPresenter.applyFilter(s);
+                return false;
+            }
+        });
     }
 
     @Override
@@ -205,4 +241,5 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
                     return super.onOptionsItemSelected(item);
         }
     }
+
 }

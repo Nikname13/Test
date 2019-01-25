@@ -18,15 +18,21 @@ public interface DepartmentListContract {
         void showList(@NonNull List<Integer> recyclerModelList);
         void updateList(@NonNull List<Integer> recyclerModelList);
         void showEmployeeDetail(@NonNull String positionInTree, @NonNull String id);
+        void applyFilter(@NonNull String query);
     }
 
     interface Presenter extends BasePresenter,ProgressContract{
         interface ItemInPositionCallback {
             void onItem(@NonNull MapModel model);
         }
-        void itemInPosition(@NonNull final RecyclerItemContract.itemInPositionCallback callback, int position);
+        interface RecyclerFilterCallback{
+            void onResult(List<Integer> filteredList);
+        }
+        void onFilter(@NonNull String filterString, @NonNull final RecyclerItemContract.RecyclerFilterCallback callback);
+        void itemInPosition(@NonNull final RecyclerItemContract.ItemInPositionCallback callback, int position);
         void loadList(@NonNull boolean freshUpdate, @NonNull boolean firstLoad);
         void openElementDetail(@NonNull MapModel model);
+        void applyFilter(@NonNull String query);
         void logOut();
     }
 }

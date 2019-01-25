@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.example.azolotarev.test.Model.MapModel;
@@ -17,23 +19,23 @@ import com.example.azolotarev.test.R;
 
 import java.util.List;
 
-public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements Filterable {
 
-    private List<Integer> mModels;
+    private List<Integer> mPositions;
+    private List<Integer> mFilteredPositions;
     private Context mContext;
+    private boolean mFiltered;
     private RecyclerItemContract mClickListener;
-    private int mViewType;
 
     public RecyclerListAdapter(@NonNull List<Integer> models, @NonNull Context context, @NonNull RecyclerItemContract listener) {
-       // Log.d("TAG","recycler adapter constructor "+viewType);
         mClickListener=listener;
         mContext=context;
-        mViewType=0;
         setList(models);
     }
 
-    public void setList(List<Integer> models) {
-        mModels = models;
+    public void setList(List<Integer> positions) {
+        mPositions = positions;
+        mFilteredPositions=positions;
     }
 
     @Override
@@ -47,24 +49,13 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         Log.e("TAG","departmentsadapter oncreateviewholder "+i);
         LinearLayout container=new LinearLayout(mContext);
         LayoutInflater layoutInflater=LayoutInflater.from(mContext);
-        switch (mViewType){
-            case 0:return new ItemDepartmentHolder(layoutInflater.inflate(R.layout.departments_row_item,viewGroup,false),mClickListener,container,mContext);
-        }
-        return null;
+        return new ItemDepartmentHolder(layoutInflater.inflate(R.layout.departments_row_item,viewGroup,false),mClickListener,mContext);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-            switch (mViewType) {
-                case 0:
                     ItemDepartmentHolder holderD = (ItemDepartmentHolder) viewHolder;
-                    holderD.onBindViewHolder(mModels.get(i));
-                    break;
-                case 1:
-                    ItemEmployeeHolder holderE = (ItemEmployeeHolder) viewHolder;
-                    holderE.onBindViewHolder(mModels.get(i));
-                    break;
-            }
+                    holderD.onBindViewHolder(mFilteredPositions.get(i),mFiltered);
     }
 
     @Override
@@ -74,10 +65,37 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public int getItemCount() {
-        return mModels.size();
+        return mFilteredPositions.size();
     }
 
 
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override protected FilterResults performFiltering(CharSequence constraint) {
+                String sequenceString=constraint.toString();
+                if(sequenceString.isEmpty()){
+                    mFilteredPositions=mPositions;
+                    mFiltered=false;
+                }
+                else {
+                    mClickListener.onFilter(sequenceString, new RecyclerItemContract.RecyclerFilterCallback() {
+                        @Override
+                        public void onResult(List<Integer> filteredList) {
+                            mFilteredPositions=filteredList;
+                        }
+                    });
+                    mFiltered=true;
+                }
+                return null;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                notifyDataSetChanged();
+            }
+        };
+    }
 }
 class ItemDepartmentHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
@@ -87,7 +105,7 @@ class ItemDepartmentHolder extends RecyclerView.ViewHolder implements View.OnCli
     private CardView mCardViewRoot;
     private static final int sMarginStart=50;
 
-    public ItemDepartmentHolder(@NonNull View itemView, @NonNull RecyclerItemContract listener, @NonNull LinearLayout childrenContainer, Context context) {
+    public ItemDepartmentHolder(@NonNull View itemView, @NonNull RecyclerItemContract listener, Context context) {
         super(itemView);
         mClickListener=listener;
         mTextView=itemView.findViewById(R.id.title_text_view);
@@ -97,8 +115,8 @@ class ItemDepartmentHolder extends RecyclerView.ViewHolder implements View.OnCli
     }
 
     @SuppressLint("ResourceAsColor")
-    public void onBindViewHolder(int position){
-        mClickListener.itemInPosition(new RecyclerItemContract.itemInPositionCallback() {
+    public void onBindViewHolder(int position, @NonNull boolean filtered){
+        mClickListener.itemInPosition(new RecyclerItemContract.ItemInPositionCallback() {
             @Override
             public void onItem(@NonNull MapModel model) {
                 mDepartment=model;
@@ -107,49 +125,17 @@ class ItemDepartmentHolder extends RecyclerView.ViewHolder implements View.OnCli
         position);
         Log.d("TAG","itemholder onBindView "+mDepartment.getModel().getName());
         mTextView.setText(mDepartment.getModel().getName());
-        ViewGroup.MarginLayoutParams layoutParams= (ViewGroup.MarginLayoutParams) mCardViewRoot.getLayoutParams();
-        layoutParams.setMarginStart(mDepartment.getLevel()*sMarginStart);
-        mCardViewRoot.requestLayout();
+        if(!filtered) {
+            ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) mCardViewRoot.getLayoutParams();
+            layoutParams.setMarginStart(mDepartment.getLevel() * sMarginStart);
+            mCardViewRoot.requestLayout();
+        }
         if(mDepartment.isSelected()) mCardViewRoot.setCardBackgroundColor(R.color.cardview_dark_background);
     }
 
     @Override
     public void onClick(View v) {
         mClickListener.onClickItem(mDepartment);
-    }
-}
-
-class ItemEmployeeHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-    private TextView mTextView;
-    private RecyclerItemContract mClickListener;
-    private MapModel mModel;
-    private CardView mRootCardView;
-
-    public ItemEmployeeHolder(@NonNull View itemView, @NonNull RecyclerItemContract clickListener, Context context) {
-        super(itemView);
-        itemView.setOnClickListener(this);
-        mTextView=itemView.findViewById(R.id.title_text_view);
-        mClickListener=clickListener;
-        mRootCardView=itemView.findViewById(R.id.root_card_view);
-        mRootCardView.setBackground(ContextCompat.getDrawable(context,R.drawable.ripple_list));
-       // Log.d("TAG","itemholder ItemEmployeeHolder create");
-    }
-
-    @SuppressLint("ResourceAsColor")
-    public void onBindViewHolder(int entity){
-/*        if(mModel==null && RecyclerLvl.elementIsOpen(entity)){
-            mRootCardView.setBackgroundColor(R.color.colorPrimaryDark);
-        }
-        //Log.d("TAG","itemholderEmployee onBindView "+entity.getName()+ " - "+entity.hashCode());
-        mModel= entity;
-       // Log.e("TAG","itemholder onBindView "+entity.getName()+ " - "+entity.hashCode()+" id ");*/
-        //mTextView.setText(mModel.getModel().getName());
-    }
-
-    @Override
-    public void onClick(View v) {
-/*        RecyclerLvl.setRecyclerLvl(mModel);
-        mClickListener.onClickItem(mModel,R.id.fragmentContainer,getAdapterPosition());*/
     }
 }
 

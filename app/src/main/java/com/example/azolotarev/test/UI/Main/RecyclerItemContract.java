@@ -3,12 +3,18 @@ package com.example.azolotarev.test.UI.Main;
 import android.support.annotation.NonNull;
 import com.example.azolotarev.test.Model.MapModel;
 
+import java.util.List;
+
 public interface RecyclerItemContract {
 
-    interface itemInPositionCallback{
+    interface ItemInPositionCallback {
         void onItem(@NonNull MapModel model);
     }
-    void itemInPosition(@NonNull final itemInPositionCallback callback,int position);
+    interface RecyclerFilterCallback{
+        void onResult(List<Integer> filteredList);
+    }
+    void onFilter(@NonNull String filterString, @NonNull final RecyclerFilterCallback callback);
+    void itemInPosition(@NonNull final ItemInPositionCallback callback, int position);
     void scrollToPosition(int position);
     void onClickItem(@NonNull MapModel model);
     interface scroll{
