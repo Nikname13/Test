@@ -14,7 +14,7 @@ public interface EmployeePagerContract {
         void showAuthorization();
     }
     interface Presenter extends BasePresenter,ProgressContract {
-        void start(@NonNull String positionInTree,@NonNull String id);
+        void start(@NonNull String positionInTree,@NonNull String id, @NonNull String filterString);
         void logOut();
     }
 }

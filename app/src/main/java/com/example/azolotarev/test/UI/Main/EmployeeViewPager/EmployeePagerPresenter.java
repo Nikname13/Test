@@ -20,32 +20,48 @@ public class EmployeePagerPresenter implements EmployeePagerContract.Presenter {
     }
 
     @Override
-    public void start(String positionInTree, final String id) {
-        mInteractor.loadList(Integer.valueOf(positionInTree), new DepartmentInteractorContract.GetListCallback() {
-            @Override
-            public void onMapListLoaded(List<MapModel> list) {
-                Log.e("TAG","onMapListLoaded");
-                for(MapModel mapModel:list){
-                    if(mapModel.getId().equals(id)) mView.initViewPager(list,list.indexOf(mapModel));
+    public void start(String positionInTree, final String id, String filterString) {
+        if(filterString==null || filterString.isEmpty()) {
+            mInteractor.loadList(Integer.valueOf(positionInTree), new DepartmentInteractorContract.GetListCallback() {
+                @Override
+                public void onMapListLoaded(List<MapModel> list) {
+                    Log.e("TAG", "onMapListLoaded");
+                   initViewPager(list,id);
                 }
+
+                @Override
+                public void notAvailable(String errorMessage) {
+
+                }
+
+                @Override
+                public void logOut(String errorMessage) {
+
+                }
+
+                @Override
+                public void connectionError(String errorMessage) {
+
+                }
+            });
+        }else{
+            mInteractor.filteredList(filterString, new DepartmentInteractorContract.FilteredCallback() {
+                @Override
+                public void onFilteredList(List<MapModel> list) {
+                    initViewPager(list,id);
+                }
+            });
+        }
+
+    }
+
+    private void initViewPager(@NonNull List<MapModel> list,@NonNull String id){
+        for (MapModel mapModel : list) {
+            if (mapModel.getId().equals(id)) {
+                mView.initViewPager(list, list.indexOf(mapModel));
+                break;
             }
-
-            @Override
-            public void notAvailable(String errorMessage) {
-
-            }
-
-            @Override
-            public void logOut(String errorMessage) {
-
-            }
-
-            @Override
-            public void connectionError(String errorMessage) {
-
-            }
-        });
-
+        }
     }
 
     @Override

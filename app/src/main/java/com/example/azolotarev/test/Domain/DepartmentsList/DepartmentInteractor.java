@@ -33,6 +33,53 @@ public class DepartmentInteractor implements DepartmentInteractorContract {
     }
 
     @Override
+    public void filteredList(@NonNull final String filterString, @NonNull final FilteredCallback callback) {
+        if(mMapList!=null)
+        applyFilter(filterString, callback, mMapList);
+        else {
+            loadList(new GetListCallback() {
+                @Override
+                public void onMapListLoaded(List<MapModel> list) {
+                    applyFilter(filterString, callback, list);
+                }
+
+                @Override
+                public void notAvailable(String errorMessage) {
+
+                }
+
+                @Override
+                public void logOut(String errorMessage) {
+
+                }
+
+                @Override
+                public void connectionError(String errorMessage) {
+
+                }
+            },
+            false);
+        }
+    }
+
+    private void applyFilter(String filterString, FilteredCallback callback, List<MapModel> mapList) {
+        List<MapModel> filteredList=new ArrayList<>();
+        for (MapModel model : mapList) {
+            if(model.getModel() instanceof EmployeeModel){
+                EmployeeModel employee= (EmployeeModel) model.getModel();
+                if((employee.getName()!=null && employee.getName().toLowerCase().contains(filterString.toLowerCase())) ||
+                        (employee.getTitle()!=null && employee.getTitle().toLowerCase().contains(filterString.toLowerCase())) ||
+                        (employee.getPhone()!=null && employee.getPhone().toLowerCase().contains(filterString.toLowerCase())) ||
+                        (employee.getEmail()!=null && employee.getEmail().toLowerCase().contains(filterString.toLowerCase()))){
+                    filteredList.add(model);
+                }
+            }
+        }
+        callback.onFilteredList(filteredList);
+    }
+
+
+    @Override
     public void setProgressListener(@NonNull ProgressContract listener) {
         mProgress=listener;
     }

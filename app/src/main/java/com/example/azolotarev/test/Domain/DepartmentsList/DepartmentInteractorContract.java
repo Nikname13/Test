@@ -13,7 +13,10 @@ public interface DepartmentInteractorContract {
         void onMapListLoaded(List<MapModel> list);
         void notAvailable(String errorMessage);
     }
-
+    interface FilteredCallback{
+        void onFilteredList(List<MapModel> list);
+    }
+    void filteredList(@NonNull String filterString, @NonNull final FilteredCallback callback);
     void loadList(@NonNull final GetListCallback callback, @NonNull boolean firstLoad);
     void setProgressListener(@NonNull ProgressContract listener);
     void clearCredentials();

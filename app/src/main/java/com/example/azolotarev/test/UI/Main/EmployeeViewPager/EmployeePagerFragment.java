@@ -32,13 +32,15 @@ public class EmployeePagerFragment extends Fragment implements EmployeePagerCont
     private ViewPager mViewPager;
     private static final String ARG_EMPLOYEE_POSITION ="employee_position";
     private static final String ARG_EMPLOYEE_ID ="employee_id";
+    private static final String ARG_FILTER ="employee_filter";
     private Toolbar mToolbar;
 
 
-    public static EmployeePagerFragment newInstance(@NonNull String position, @NonNull String id){
+    public static EmployeePagerFragment newInstance(@NonNull String position, @NonNull String id, @NonNull String filterString){
         Bundle arg=new Bundle();
         arg.putString(ARG_EMPLOYEE_POSITION,position);
         arg.putString(ARG_EMPLOYEE_ID,id);
+        arg.putString(ARG_FILTER,filterString);
         EmployeePagerFragment fragment=new EmployeePagerFragment();
         fragment.setArguments(arg);
         return fragment;
@@ -55,7 +57,7 @@ public class EmployeePagerFragment extends Fragment implements EmployeePagerCont
     public void onResume() {
         super.onResume();
         Log.d("TAG","onResume pager");
-        mPresenter.start(getArguments().getString(ARG_EMPLOYEE_POSITION),getArguments().getString(ARG_EMPLOYEE_ID));
+        mPresenter.start(getArguments().getString(ARG_EMPLOYEE_POSITION),getArguments().getString(ARG_EMPLOYEE_ID),getArguments().getString(ARG_FILTER));
     }
 
     @Nullable
@@ -74,7 +76,6 @@ public class EmployeePagerFragment extends Fragment implements EmployeePagerCont
 
     @Override
     public void initViewPager(@NonNull final List<MapModel> mapModelList, int startPosition) {
-        mPresenter.hashCode();
         mViewPager.setAdapter(new FragmentStatePagerAdapter(getActivity().getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int i) {
@@ -90,7 +91,6 @@ public class EmployeePagerFragment extends Fragment implements EmployeePagerCont
                 }
                 return fragment;
             }
-
             @Override
             public int getCount() {
                 return mapModelList.size();

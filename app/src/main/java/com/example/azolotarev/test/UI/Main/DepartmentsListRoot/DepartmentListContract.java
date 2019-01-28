@@ -15,9 +15,10 @@ public interface DepartmentListContract {
         void showConnectionError(String errorMessage);
         void showSuccessError(String errorMessage);
         void showAuthorization();
+        void showMessage(String message);
         void showList(@NonNull List<Integer> recyclerModelList);
         void updateList(@NonNull List<Integer> recyclerModelList);
-        void showEmployeeDetail(@NonNull String positionInTree, @NonNull String id);
+        void showEmployeeDetail(@NonNull String positionInTree, @NonNull String id, String filterString);
         void applyFilter(@NonNull String query);
     }
 

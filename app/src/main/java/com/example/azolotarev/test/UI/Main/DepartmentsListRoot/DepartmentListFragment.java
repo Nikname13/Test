@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -92,6 +93,12 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     }
 
     @Override
+    public void showMessage(String message) {
+        Snackbar snackbar=Snackbar.make(mCoordinatorLayout,message,Snackbar.LENGTH_SHORT);
+        snackbar.show();
+    }
+
+    @Override
     public void showList(@NonNull List<Integer> list) {
             mDepartmentsAdapter = new RecyclerListAdapter(list, getActivity(), this);
             mRecyclerViewRoot.setAdapter(mDepartmentsAdapter);
@@ -104,8 +111,8 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     }
 
     @Override
-    public void showEmployeeDetail(@NonNull String positionInTree, @NonNull String id) {
-        EmployeePagerFragment fragment=EmployeePagerFragment.newInstance(positionInTree,id);
+    public void showEmployeeDetail(@NonNull String positionInTree, @NonNull String id, String filter) {
+        EmployeePagerFragment fragment=EmployeePagerFragment.newInstance(positionInTree,id,filter);
         if(PresenterManager.getPresenter(fragment.getClass().getName())==null) {
             PresenterManager.addPresenter(new EmployeePagerPresenter(new EmployeeInteractor(
                             new Repository(PersistentStorage.get(),

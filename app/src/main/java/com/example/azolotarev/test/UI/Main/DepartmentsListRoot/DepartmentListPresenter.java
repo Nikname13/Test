@@ -19,6 +19,7 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
     private boolean mFreshUpdate=true;
     private List<MapModel> mRecyclerModelList;
     private List<MapModel> mListOfSelected;
+    private String mFilterString;
 
     public DepartmentListPresenter(@NonNull DepartmentInteractorContract interactor) {
 
@@ -45,18 +46,15 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
 
     @Override
     public void onFilter(@NonNull String filterString, @NonNull RecyclerItemContract.RecyclerFilterCallback callback) {
-        List<Integer> filteredList=new ArrayList<>();
-        for (MapModel model : mRecyclerModelList) {
-            if(model.getModel() instanceof EmployeeModel){
-                EmployeeModel employee= (EmployeeModel) model.getModel();
-                if((employee.getName()!=null && employee.getName().toLowerCase().contains(filterString.toLowerCase())) ||
-                        (employee.getTitle()!=null && employee.getTitle().toLowerCase().contains(filterString.toLowerCase())) ||
-                        (employee.getPhone()!=null && employee.getPhone().toLowerCase().contains(filterString.toLowerCase())) ||
-                        (employee.getEmail()!=null && employee.getEmail().toLowerCase().contains(filterString.toLowerCase()))){
+        final List<Integer> filteredList=new ArrayList<>();
+        mInteractor.filteredList(filterString, new DepartmentInteractorContract.FilteredCallback() {
+            @Override
+            public void onFilteredList(List<MapModel> list) {
+                for(MapModel model :list){
                     filteredList.add(mRecyclerModelList.indexOf(model));
                 }
             }
-        }
+        });
         callback.onResult(filteredList);
     }
 
@@ -113,13 +111,16 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
     @Override
     public void openElementDetail(@NonNull MapModel selectedElement) {
         if(selectedElement.getModel() instanceof EmployeeModel){
-            mView.showEmployeeDetail(String.valueOf(mRecyclerModelList.indexOf(selectedElement)),selectedElement.getId());
-        }else if(mRecyclerModelList.size()-1>mRecyclerModelList.indexOf(selectedElement)){
-            openElement(
-                    mRecyclerModelList.indexOf(selectedElement),
-                    selectedElement.getLevel(),
-                    !mRecyclerModelList.get(mRecyclerModelList.indexOf(selectedElement) + 1).isVisible());
-            mView.updateList(getPositionList());
+            mView.showEmployeeDetail(String.valueOf(mRecyclerModelList.indexOf(selectedElement)),selectedElement.getId(),mFilterString);
+        }else if(mRecyclerModelList.size()-1>mRecyclerModelList.indexOf(selectedElement) &&
+                mRecyclerModelList.get(mRecyclerModelList.indexOf(selectedElement)).getLevel()!=mRecyclerModelList.get(mRecyclerModelList.indexOf(selectedElement)+1).getLevel()){
+                openElement(
+                        mRecyclerModelList.indexOf(selectedElement),
+                        selectedElement.getLevel(),
+                        !mRecyclerModelList.get(mRecyclerModelList.indexOf(selectedElement) + 1).isVisible());
+                mView.updateList(getPositionList());
+        }else{
+            mView.showMessage("Пустой список");
         }
         setSelectedItem(selectedElement);
     }
@@ -127,6 +128,7 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
     @Override
     public void applyFilter(@NonNull String query) {
         mView.applyFilter(query);
+        mFilterString=query;
     }
 
     @Override
@@ -137,7 +139,7 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
 
     private void openElement(int startPosition, int lvl, boolean visible){
         for(int i=startPosition+1;mRecyclerModelList.size()!=i && mRecyclerModelList.get(i).getLevel()!=lvl;i++){
-            Log.e("TAG","departments list presenter openElementDetail "+i);
+            Log.d("TAG","departments list presenter openElementDetail "+i);
             if(mRecyclerModelList.get(i).getLevel()==lvl+1) {
                 if(mRecyclerModelList.get(i).isVisible()) openElement(i,mRecyclerModelList.get(i).getLevel(),!mRecyclerModelList.get(i).isVisible());
                 mRecyclerModelList.get(i).setVisible(visible);
