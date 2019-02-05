@@ -19,6 +19,7 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
     private boolean mFreshUpdate=true;
     private List<MapModel> mRecyclerModelList;
     private List<MapModel> mListOfSelected;
+    private List<Integer> mFilteredList;
     private String mFilterString;
 
     public DepartmentListPresenter(@NonNull DepartmentInteractorContract interactor) {
@@ -46,16 +47,16 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
 
     @Override
     public void onFilter(@NonNull String filterString, @NonNull RecyclerItemContract.RecyclerFilterCallback callback) {
-        final List<Integer> filteredList=new ArrayList<>();
+        mFilteredList=new ArrayList<>();
         mInteractor.filteredList(filterString, new DepartmentInteractorContract.FilteredCallback() {
             @Override
             public void onFilteredList(List<MapModel> list) {
                 for(MapModel model :list){
-                    filteredList.add(mRecyclerModelList.indexOf(model));
+                    mFilteredList.add(mRecyclerModelList.indexOf(model));
                 }
             }
         });
-        callback.onResult(filteredList);
+        callback.onResult(mFilteredList);
     }
 
     @Override
@@ -163,7 +164,8 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
                openElement(mRecyclerModelList.indexOf(model),mRecyclerModelList.get(mRecyclerModelList.indexOf(model)).getLevel(),true);
             }
         }
-        mView.showList(getPositionList());
+        if(mFilteredList!=null) mView.showList(mFilteredList);
+        else mView.showList(getPositionList());
     }
 
     private List<Integer> getPositionList(){

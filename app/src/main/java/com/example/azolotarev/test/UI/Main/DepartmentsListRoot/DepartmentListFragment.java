@@ -8,6 +8,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -40,6 +41,9 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     private RecyclerListAdapter mDepartmentsAdapter;
     private CoordinatorLayout mCoordinatorLayout;
     private Toolbar mToolbar;
+    private SearchView mSearchView;
+    private String mFilteredString;
+    private static final String SEARCH_KEY="search_key";
 
     public static DepartmentListFragment newInstance() {
         return new DepartmentListFragment();
@@ -50,6 +54,7 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
         super.onCreate(savedInstanceState);
          setHasOptionsMenu(true);
         setPresenter((DepartmentListContract.Presenter) PresenterManager.getPresenter(this.getClass().getName()));
+        if(savedInstanceState!=null)mFilteredString=savedInstanceState.getString(SEARCH_KEY);
     }
 
     @Nullable
@@ -100,8 +105,10 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
 
     @Override
     public void showList(@NonNull List<Integer> list) {
+        Log.d("TAG","showList -----");
             mDepartmentsAdapter = new RecyclerListAdapter(list, getActivity(), this);
             mRecyclerViewRoot.setAdapter(mDepartmentsAdapter);
+           // mSearchView.setQuery("менеджер",true);
     }
 
     @Override
@@ -146,7 +153,6 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
 
     @Override
     public void onClickItem(@NonNull MapModel model) {
-        Log.d("TAG","departments list fragment onClickItem scroll(Y)= ");
         mPresenter.openElementDetail(model);
     }
 
@@ -188,6 +194,7 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     public void onStop() {
         super.onStop();
         Log.e("TAG","onStop rootdepartment");
+       // mFilteredString=null;
     }
 
     @Override
@@ -211,17 +218,16 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-       // super.onCreateOptionsMenu(menu, inflater);
+        Log.d("TAG","onCreateOptionsMenu rootdepartment");
         getActivity().getMenuInflater().inflate(R.menu.menu_main, menu);
         //inflater.inflate(R.menu.menu_main,menu);
+        MenuItem searchItem=menu.findItem(R.id.action_search);
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(ContextManager.getContext().SEARCH_SERVICE);
-       SearchView searchView = (SearchView) menu.findItem(R.id.action_search)
-                .getActionView();
-        searchView.setSearchableInfo(searchManager
+        mSearchView = (SearchView) searchItem.getActionView();
+        mSearchView.setSearchableInfo(searchManager
                 .getSearchableInfo(getActivity().getComponentName()));
-        searchView.setMaxWidth(Integer.MAX_VALUE);
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        mSearchView.setMaxWidth(Integer.MAX_VALUE);
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
                 mPresenter.applyFilter(s);
@@ -234,6 +240,12 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
                 return false;
             }
         });
+        if(mFilteredString!=null && !mFilteredString.isEmpty()){
+            Log.d("TAG","if(mFilteredString!=null && !mFilteredString.isEmpty() rootdepartment");
+            searchItem.expandActionView();
+            mSearchView.setQuery(mFilteredString,true);
+            mSearchView.requestFocus();
+        }
     }
 
     @Override
@@ -249,4 +261,9 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
         }
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(SEARCH_KEY,mSearchView.getQuery().toString());
+    }
 }

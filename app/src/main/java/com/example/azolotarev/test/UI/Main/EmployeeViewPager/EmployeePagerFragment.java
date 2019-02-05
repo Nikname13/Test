@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -56,7 +57,7 @@ public class EmployeePagerFragment extends Fragment implements EmployeePagerCont
     @Override
     public void onResume() {
         super.onResume();
-        Log.d("TAG","onResume pager");
+        Log.d("TAG","onResume pager position "+getArguments().getString(ARG_EMPLOYEE_POSITION)+" id "+getArguments().getString(ARG_EMPLOYEE_ID)+" filter "+getArguments().getString(ARG_FILTER));
         mPresenter.start(getArguments().getString(ARG_EMPLOYEE_POSITION),getArguments().getString(ARG_EMPLOYEE_ID),getArguments().getString(ARG_FILTER));
     }
 
@@ -76,7 +77,9 @@ public class EmployeePagerFragment extends Fragment implements EmployeePagerCont
 
     @Override
     public void initViewPager(@NonNull final List<MapModel> mapModelList, int startPosition) {
-        mViewPager.setAdapter(new FragmentStatePagerAdapter(getActivity().getSupportFragmentManager()) {
+        FragmentManager fm=getActivity().getSupportFragmentManager();
+        Log.d("TAG"," fm ");
+        mViewPager.setAdapter(new FragmentStatePagerAdapter(fm) {
             @Override
             public Fragment getItem(int i) {
                 Log.d("TAG","initViewPager getItem "+i);

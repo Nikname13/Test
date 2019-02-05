@@ -13,6 +13,7 @@ public class EmployeePresenter implements EmployeeContract.Presenter {
     private EmployeeContract.View mView;
     private final EmployeeInteractorContract mInteractor;
     private boolean mLoadPhoto,mLoadEmployee;
+    private String mIdModel;
 
     public EmployeePresenter(@NonNull EmployeeInteractorContract interactorContract) {
         mInteractor = interactorContract;
@@ -53,6 +54,7 @@ public class EmployeePresenter implements EmployeeContract.Presenter {
     }
 
     private void setDataEmployee(@NonNull EmployeeModel model){
+        mIdModel=model.getId();
         if (model.getTitle() != null) mView.setTitle(model.getTitle());
         if (model.getName() != null) mView.setName(model.getName());
         if (model.getPhone() != null) mView.setPhone(model.getPhone());
@@ -76,7 +78,7 @@ public class EmployeePresenter implements EmployeeContract.Presenter {
 
                                           }
                                       },
-                model.getId());
+                mIdModel);
     }
 
     @Override
@@ -120,6 +122,11 @@ public class EmployeePresenter implements EmployeeContract.Presenter {
     @Override
     public void sendEmail(String email) {
         mView.sendEmail(email);
+    }
+
+    @Override
+    public void showLargeImage() {
+        mView.showLargeImage(mIdModel);
     }
 
 }

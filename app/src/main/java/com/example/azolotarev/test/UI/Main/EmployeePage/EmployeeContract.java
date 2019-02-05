@@ -20,6 +20,7 @@ public interface EmployeeContract {
         void hideEmail();
         void callNumber(String number);
         void sendEmail(String email);
+        void showLargeImage(@NonNull String id);
 
     }
 
@@ -27,6 +28,7 @@ public interface EmployeeContract {
         void start(String id);
         void callNumber(String number);
         void sendEmail(String email);
+        void showLargeImage();
 
     }
 }

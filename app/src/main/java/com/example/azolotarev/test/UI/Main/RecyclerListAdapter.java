@@ -46,8 +46,7 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        Log.e("TAG","departmentsadapter oncreateviewholder "+i);
-        LinearLayout container=new LinearLayout(mContext);
+        //Log.e("TAG","departmentsadapter oncreateviewholder "+i);
         LayoutInflater layoutInflater=LayoutInflater.from(mContext);
         return new ItemDepartmentHolder(layoutInflater.inflate(R.layout.departments_row_item,viewGroup,false),mClickListener,mContext);
     }
@@ -123,7 +122,7 @@ class ItemDepartmentHolder extends RecyclerView.ViewHolder implements View.OnCli
             }
         },
         position);
-        Log.d("TAG","itemholder onBindView "+mDepartment.getModel().getName());
+       // Log.d("TAG","itemholder onBindView "+mDepartment.getModel().getName());
         mTextView.setText(mDepartment.getModel().getName());
         if(!filtered) {
             ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) mCardViewRoot.getLayoutParams();
