@@ -3,6 +3,7 @@ package com.example.azolotarev.test.UI.Start;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.MenuItem;
 import com.example.azolotarev.test.Data.Local.PersistentStorage;
@@ -36,8 +37,10 @@ public class StartActivity extends GenericFragmentActivity {
         if(count==0){
             super.onBackPressed();
         }else {
-
             getSupportFragmentManager().popBackStack();
+        }
+        for(Fragment fragment:getSupportFragmentManager().getFragments()){
+            Log.d("TAG", "!!! fragment "+fragment);
         }
     }
 

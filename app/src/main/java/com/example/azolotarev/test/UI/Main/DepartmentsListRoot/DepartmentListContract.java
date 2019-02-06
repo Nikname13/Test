@@ -20,6 +20,7 @@ public interface DepartmentListContract {
         void updateList(@NonNull List<Integer> recyclerModelList);
         void showEmployeeDetail(@NonNull String positionInTree, @NonNull String id, String filterString);
         void applyFilter(@NonNull String query);
+        void setFilterString(@NonNull String filterString);
     }
 
     interface Presenter extends BasePresenter,ProgressContract{

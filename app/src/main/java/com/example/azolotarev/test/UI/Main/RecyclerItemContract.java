@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface RecyclerItemContract {
 
+
+
     interface ItemInPositionCallback {
         void onItem(@NonNull MapModel model);
     }

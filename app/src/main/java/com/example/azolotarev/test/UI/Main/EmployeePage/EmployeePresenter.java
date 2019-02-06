@@ -93,6 +93,7 @@ public class EmployeePresenter implements EmployeeContract.Presenter {
 
     @Override
     public void unbindView() {
+        mView=null;
 
     }
 

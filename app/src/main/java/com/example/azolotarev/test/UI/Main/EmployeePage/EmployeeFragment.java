@@ -215,12 +215,18 @@ public class EmployeeFragment extends Fragment implements EmployeeContract.View 
     public void onDestroy() {
         super.onDestroy();
         Log.e("TAG","employee onDestroy");
-        mPresenter.unbindView();
+       // mPresenter.unbindView();
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         Log.e("TAG","employee onDetach");
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.e("TAG","employee onDestroyView");
     }
 }

@@ -74,18 +74,17 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             @Override protected FilterResults performFiltering(CharSequence constraint) {
                 String sequenceString=constraint.toString();
                 if(sequenceString.isEmpty()){
-                    mFilteredPositions=mPositions;
                     mFiltered=false;
                 }
                 else {
-                    mClickListener.onFilter(sequenceString, new RecyclerItemContract.RecyclerFilterCallback() {
-                        @Override
-                        public void onResult(List<Integer> filteredList) {
-                            mFilteredPositions=filteredList;
-                        }
-                    });
                     mFiltered=true;
                 }
+                mClickListener.onFilter(sequenceString, new RecyclerItemContract.RecyclerFilterCallback() {
+                    @Override
+                    public void onResult(List<Integer> filteredList) {
+                        mFilteredPositions=filteredList;
+                    }
+                });
                 return null;
             }
 
@@ -122,13 +121,17 @@ class ItemDepartmentHolder extends RecyclerView.ViewHolder implements View.OnCli
             }
         },
         position);
-       // Log.d("TAG","itemholder onBindView "+mDepartment.getModel().getName());
+
         mTextView.setText(mDepartment.getModel().getName());
+        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) mCardViewRoot.getLayoutParams();
+
         if(!filtered) {
-            ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) mCardViewRoot.getLayoutParams();
+            Log.d("TAG","itemholder onBindView "+mDepartment.getModel().getName());
             layoutParams.setMarginStart(mDepartment.getLevel() * sMarginStart);
-            mCardViewRoot.requestLayout();
+        }else{
+            layoutParams.setMarginStart(0);
         }
+        //mCardViewRoot.requestLayout();
         if(mDepartment.isSelected()) mCardViewRoot.setCardBackgroundColor(R.color.cardview_dark_background);
     }
 

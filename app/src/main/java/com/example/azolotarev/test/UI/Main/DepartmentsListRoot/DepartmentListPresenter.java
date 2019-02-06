@@ -31,6 +31,7 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
     @Override
     public void start() {
         Log.e("TAG", "start department");
+        mView.setFilterString(mFilterString);
         loadList(mFreshUpdate, mFirstLoad);
         mFreshUpdate=false;
     }
@@ -47,18 +48,22 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
 
     @Override
     public void onFilter(@NonNull String filterString, @NonNull RecyclerItemContract.RecyclerFilterCallback callback) {
-        mFilteredList=new ArrayList<>();
-        mInteractor.filteredList(filterString, new DepartmentInteractorContract.FilteredCallback() {
-            @Override
-            public void onFilteredList(List<MapModel> list) {
-                for(MapModel model :list){
-                    mFilteredList.add(mRecyclerModelList.indexOf(model));
+        if(!filterString.isEmpty()) {
+            mFilteredList = new ArrayList<>();
+            mInteractor.filteredList(filterString, new DepartmentInteractorContract.FilteredCallback() {
+                @Override
+                public void onFilteredList(List<MapModel> list) {
+                    for (MapModel model : list) {
+                        mFilteredList.add(mRecyclerModelList.indexOf(model));
+                    }
                 }
-            }
-        });
-        callback.onResult(mFilteredList);
+            });
+            callback.onResult(mFilteredList);
+        }else {
+            callback.onResult(getPositionList());
+            mFilteredList=null;
+        }
     }
-
     @Override
     public void itemInPosition(@NonNull RecyclerItemContract.ItemInPositionCallback callback, @NonNull int position) {
         callback.onItem(mRecyclerModelList.get(position));
@@ -140,7 +145,7 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
 
     private void openElement(int startPosition, int lvl, boolean visible){
         for(int i=startPosition+1;mRecyclerModelList.size()!=i && mRecyclerModelList.get(i).getLevel()!=lvl;i++){
-            Log.d("TAG","departments list presenter openElementDetail "+i);
+            //Log.d("TAG","departments list presenter openElementDetail "+i);
             if(mRecyclerModelList.get(i).getLevel()==lvl+1) {
                 if(mRecyclerModelList.get(i).isVisible()) openElement(i,mRecyclerModelList.get(i).getLevel(),!mRecyclerModelList.get(i).isVisible());
                 mRecyclerModelList.get(i).setVisible(visible);
