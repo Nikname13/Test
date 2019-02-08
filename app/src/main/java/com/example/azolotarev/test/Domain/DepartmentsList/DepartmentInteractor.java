@@ -26,10 +26,9 @@ public class DepartmentInteractor implements DepartmentInteractorContract {
     }
 
     @Override
-    public void loadList(@NonNull final GetListCallback callback, @NonNull boolean firstLoad) {
+    public void loadList(@NonNull final GetListCallback callback) {
         Log.e("TAG","department interacrot loadList refreshCache= "+mRefreshCache);
-        new AsyncLoadList(callback).execute(mRefreshCache,firstLoad);
-        mRefreshCache=false;
+        new AsyncLoadList(callback).execute();
     }
 
     @Override
@@ -57,8 +56,7 @@ public class DepartmentInteractor implements DepartmentInteractorContract {
                 public void connectionError(String errorMessage) {
 
                 }
-            },
-            false);
+            });
         }
     }
 
@@ -77,7 +75,6 @@ public class DepartmentInteractor implements DepartmentInteractorContract {
         }
         callback.onFilteredList(filteredList);
     }
-
 
     @Override
     public void setProgressListener(@NonNull ProgressContract listener) {
@@ -138,6 +135,7 @@ public class DepartmentInteractor implements DepartmentInteractorContract {
             mapToRecyclerModel(departmentModel,0);
         }
         mRepository.refreshCache(mMapList);
+        mRefreshCache=false;
         Log.d("TAG","set Recycler list done!");
     }
 
@@ -156,7 +154,7 @@ public class DepartmentInteractor implements DepartmentInteractorContract {
         }
     }
 
-    private class AsyncLoadList extends AsyncTask<Boolean,Void, Void>{
+    private class AsyncLoadList extends AsyncTask<Void, Void, Void>{
         private GetListCallback callback;
 
         public AsyncLoadList(GetListCallback callback) {
@@ -169,7 +167,7 @@ public class DepartmentInteractor implements DepartmentInteractorContract {
         }
 
         @Override
-        protected Void doInBackground(Boolean... booleans) {
+        protected Void doInBackground(Void... voids) {
             mRepository.getDepartments(new RepositoryContract.LoadDepartmentsCallback() {
                                            @Override
                                            public void onMapListLoaded(List<MapModel> list) {
@@ -197,8 +195,8 @@ public class DepartmentInteractor implements DepartmentInteractorContract {
                                                mNotAvailable=errorMessage;
                                            }
                                        }
-                    ,booleans[0],booleans[1]);
-            if(mMapList==null && mDepartmentModels!=null) setMapList();
+                    ,mRefreshCache,false);
+            if(mMapList==null || mRefreshCache && mDepartmentModels!=null) setMapList();
             return null;
         }
 

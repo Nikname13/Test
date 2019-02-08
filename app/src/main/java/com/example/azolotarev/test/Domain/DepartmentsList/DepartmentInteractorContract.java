@@ -17,7 +17,7 @@ public interface DepartmentInteractorContract {
         void onFilteredList(List<MapModel> list);
     }
     void filteredList(@NonNull String filterString, @NonNull final FilteredCallback callback);
-    void loadList(@NonNull final GetListCallback callback, @NonNull boolean firstLoad);
+    void loadList(@NonNull final GetListCallback callback);
     void setProgressListener(@NonNull ProgressContract listener);
     void clearCredentials();
     void refreshList();

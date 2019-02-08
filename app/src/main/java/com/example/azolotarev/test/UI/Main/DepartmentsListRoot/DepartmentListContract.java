@@ -32,7 +32,7 @@ public interface DepartmentListContract {
         }
         void onFilter(@NonNull String filterString, @NonNull final RecyclerItemContract.RecyclerFilterCallback callback);
         void itemInPosition(@NonNull final RecyclerItemContract.ItemInPositionCallback callback, int position);
-        void loadList(@NonNull boolean freshUpdate, @NonNull boolean firstLoad);
+        void loadList(@NonNull boolean freshUpdate);
         void openElementDetail(@NonNull MapModel model);
         void applyFilter(@NonNull String query);
         void logOut();

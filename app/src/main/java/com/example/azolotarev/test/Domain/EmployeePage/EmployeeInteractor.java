@@ -42,9 +42,7 @@ public class EmployeeInteractor extends DepartmentInteractor implements Employee
             public void connectionError(String errorMessage) {
 
             }
-        },
-                false
-        );
+        });
     }
 
     @Override

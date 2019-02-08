@@ -8,7 +8,8 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.MenuItemCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,7 +33,6 @@ import com.example.azolotarev.test.UI.Main.EmployeeViewPager.EmployeePagerFragme
 import com.example.azolotarev.test.UI.Main.EmployeeViewPager.EmployeePagerPresenter;
 import com.example.azolotarev.test.UI.Main.RecyclerListAdapter;
 
-import java.io.Serializable;
 import java.util.List;
 
 public class DepartmentListFragment extends Fragment implements DepartmentListContract.View {
@@ -41,6 +41,7 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     private RecyclerView mRecyclerViewRoot;
     private RecyclerListAdapter mDepartmentsAdapter;
     private CoordinatorLayout mCoordinatorLayout;
+    private ScrollChildSwipeRefreshLayout mSwipeRefreshLayout;
     private Toolbar mToolbar;
     private SearchView mSearchView;
     private MenuItem mSearchItem;
@@ -69,7 +70,16 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
         ((AppCompatActivity)getActivity()).setSupportActionBar(mToolbar);
         mRecyclerViewRoot =v.findViewById(R.id.departments_recycler_view);
         mRecyclerViewRoot.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mCoordinatorLayout =v.findViewById(R.id.departments_layout);
+        mCoordinatorLayout =v.findViewById(R.id.department_layout);
+        mSwipeRefreshLayout=v.findViewById(R.id.refresh_layout);
+        mSwipeRefreshLayout.setScrollUpChild(mRecyclerViewRoot);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Log.d("TAG","!!!ScrollChildSwipeRefreshLayout!!!");
+                mPresenter.loadList(true);
+            }
+        });
         mPresenter.bindView(this);
         return v;
     }
@@ -114,7 +124,7 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
             mRecyclerViewRoot.setAdapter(mDepartmentsAdapter);
         }else{
             mRecyclerViewRoot.setAdapter(mDepartmentsAdapter);
-            mDepartmentsAdapter.notifyDataSetChanged();
+            updateList(list);
         }
        if(mSearchItem!=null)expandFilter();
     }
@@ -152,12 +162,12 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
 
     @Override
     public void showProgress() {
-
+        mSwipeRefreshLayout.setRefreshing(true);
     }
 
     @Override
     public void hideProgress() {
-
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     @Override

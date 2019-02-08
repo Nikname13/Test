@@ -38,7 +38,7 @@ public  class Repository implements RepositoryContract {
           isAuth(callback,firstLoad);
         }else {
             Log.e("TAG", "repository not Empty");
-            getSuccessFromNet(callback,login,password, firstLoad);
+            getSuccessFromNet(callback,login,password,firstLoad);
        checkStorage(mSuccess,login,password);
         }
     }
