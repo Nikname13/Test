@@ -99,9 +99,4 @@ public class EmployeePagerPresenter implements EmployeePagerContract.Presenter {
     public void hideProgress() {
 
     }
-
-    @Override
-    public void setPageTitle(@NonNull String title, int position) {
-        mView.setPageTitle(title, position);
-    }
 }

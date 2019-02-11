@@ -98,8 +98,7 @@ public class EmployeePagerFragment extends Fragment implements EmployeePagerCont
                     Log.d("TAG","initViewPager fragment.getClass().getName() "+fragment.getClass().getName());
                     PresenterManager.addPresenter(new EmployeePresenter(new EmployeeInteractor(
                                     new Repository(PersistentStorage.get(),
-                                            new Net(new Connect()))),
-                                    mPresenter),
+                                            new Net(new Connect())))),
                             fragment.getClass().getName()+mapModelList.get(i).getId());
                 }
                 return fragment;
@@ -111,6 +110,23 @@ public class EmployeePagerFragment extends Fragment implements EmployeePagerCont
             }
         });
         mViewPager.setCurrentItem(startPosition);
+        mToolbar.setTitle(mapModelList.get(startPosition).getModel().getParent().getName());
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i1) {
+
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+                mToolbar.setTitle(mapModelList.get(i).getModel().getParent().getName());
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
     }
 
 
@@ -193,10 +209,5 @@ public class EmployeePagerFragment extends Fragment implements EmployeePagerCont
         super.onDetach();
         Log.e("TAG","onDetach pager");
         mPresenter.unbindView();
-    }
-
-    @Override
-    public void setPageTitle(@NonNull String title, int position) {
-        Log.e("TAG","-----setPageTitle--------- "+mViewPager.getCurrentItem()+" "+position);
     }
 }
