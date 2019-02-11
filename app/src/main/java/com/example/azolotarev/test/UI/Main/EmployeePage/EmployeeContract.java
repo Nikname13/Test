@@ -2,7 +2,6 @@ package com.example.azolotarev.test.UI.Main.EmployeePage;
 
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
-import com.example.azolotarev.test.Model.EmployeeModel;
 import com.example.azolotarev.test.UI.BasePresenter;
 import com.example.azolotarev.test.UI.BaseView;
 import com.example.azolotarev.test.UI.ProgressContract;
@@ -22,13 +21,16 @@ public interface EmployeeContract {
         void sendEmail(String email);
         void showLargeImage(@NonNull String id);
 
+
+
     }
 
-    interface Presenter extends BasePresenter,ProgressContract{
-        void start(String id);
+    interface Presenter extends BasePresenter,ProgressContract {
+        void start(String id, int position);
         void callNumber(String number);
         void sendEmail(String email);
         void showLargeImage();
+
 
     }
 }

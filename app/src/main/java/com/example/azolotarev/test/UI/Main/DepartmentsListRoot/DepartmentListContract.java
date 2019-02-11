@@ -14,7 +14,8 @@ public interface DepartmentListContract {
     interface View extends BaseView<Presenter>,ProgressContract,RecyclerItemContract,RecyclerItemContract.scroll {
         void showConnectionError(String errorMessage);
         void showSuccessError(String errorMessage);
-        void showAuthorization();
+        void logOut();
+        void showLogOutMessage();
         void showMessage(String message);
         void showList(@NonNull List<Integer> recyclerModelList);
         void updateList(@NonNull List<Integer> recyclerModelList);
@@ -35,6 +36,7 @@ public interface DepartmentListContract {
         void loadList(@NonNull boolean freshUpdate);
         void openElementDetail(@NonNull MapModel model);
         void applyFilter(@NonNull String query);
+        void showLogOutMessage();
         void logOut();
     }
 }

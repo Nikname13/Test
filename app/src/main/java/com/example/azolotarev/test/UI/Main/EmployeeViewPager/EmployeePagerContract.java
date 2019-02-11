@@ -9,12 +9,15 @@ import com.example.azolotarev.test.UI.ProgressContract;
 import java.util.List;
 
 public interface EmployeePagerContract {
-    interface View extends BaseView<Presenter>, ProgressContract {
+    interface View extends BaseView<Presenter>, ProgressContract,PageTitle {
         void initViewPager(@NonNull List<MapModel> mapModelList, int startPosition);
-        void showAuthorization();
+        void logOut();
+        void showLogOutMessage();
     }
-    interface Presenter extends BasePresenter,ProgressContract {
+    interface Presenter extends BasePresenter,ProgressContract,PageTitle {
         void start(@NonNull String positionInTree,@NonNull String id, @NonNull String filterString);
         void logOut();
+        void showLogOutMessage();
     }
+
 }

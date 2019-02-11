@@ -1,5 +1,7 @@
 package com.example.azolotarev.test.UI.Main.EmployeePage;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -9,8 +11,11 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -19,10 +24,13 @@ import android.widget.TextView;
 import com.example.azolotarev.test.Data.Local.PersistentStorage;
 import com.example.azolotarev.test.Data.Net.Connect;
 import com.example.azolotarev.test.Data.Net.Net;
+import com.example.azolotarev.test.Domain.Authorization.AuthorizationInteractor;
 import com.example.azolotarev.test.Domain.EmployeePage.EmployeeInteractor;
 import com.example.azolotarev.test.R;
 import com.example.azolotarev.test.Repository.Repository;
 import com.example.azolotarev.test.Service.PresenterManager;
+import com.example.azolotarev.test.UI.Authorization.AuthorizationFragment;
+import com.example.azolotarev.test.UI.Authorization.AuthorizationPresenter;
 import com.example.azolotarev.test.UI.Main.EmployeePage.LargeImage.LargeImageFragment;
 import com.example.azolotarev.test.UI.Main.EmployeePage.LargeImage.LargeImagePresenter;
 
@@ -30,26 +38,34 @@ public class EmployeeFragment extends Fragment implements EmployeeContract.View 
 
     private EmployeeContract.Presenter mPresenter;
     public static final String ARG_EMPLOYEE ="employee_id";
+    public static final String ARG_EMPLOYEE_POSITION ="employee_position";
     private ImageView mAvatar;
     private TextView mTitle, mName, mPhone, mEmail;
     private LinearLayout mTitleContainer, mNameContainer, mPhoneContainer, mEmailContainer, mEmployeeContainer;
-    private boolean mIsImageFitToScreen;
+
 
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("TAG","Employee fragment create"+savedInstanceState);
-
+        setHasOptionsMenu(true);
         setPresenter((EmployeeContract.Presenter) PresenterManager.getPresenter(this.getClass().getName()+getArguments().getString(ARG_EMPLOYEE)));
     }
 
-    public static EmployeeFragment newInstance(@NonNull String id){
+    public static EmployeeFragment newInstance(@NonNull String id, int position){
         Bundle arg=new Bundle();
         arg.putString(ARG_EMPLOYEE,id);
+        arg.putInt(ARG_EMPLOYEE_POSITION,position);
         EmployeeFragment fragment=new EmployeeFragment();
         fragment.setArguments(arg);
         return fragment;
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        Log.d("TAG","!!setUserVisibleHint "+isVisibleToUser+" "+getArguments().getInt(ARG_EMPLOYEE_POSITION));
     }
 
     @Nullable
@@ -85,15 +101,15 @@ public class EmployeeFragment extends Fragment implements EmployeeContract.View 
             }
         });
         mPresenter.bindView(this);
-        Log.d("TAG","onCreateView onResume "+getArguments().getString(ARG_EMPLOYEE));
+        Log.d("TAG","!!onCreateView employee "+getArguments().getString(ARG_EMPLOYEE));
         return v;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.e("TAG","employee onResume");
-        mPresenter.start(getArguments().getString(ARG_EMPLOYEE));
+        Log.e("TAG","!!employee onResume");
+        mPresenter.start(getArguments().getString(ARG_EMPLOYEE),getArguments().getInt(ARG_EMPLOYEE_POSITION));
     }
 
     @Override

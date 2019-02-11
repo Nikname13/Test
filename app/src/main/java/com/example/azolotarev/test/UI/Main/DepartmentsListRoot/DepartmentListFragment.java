@@ -1,6 +1,8 @@
 package com.example.azolotarev.test.UI.Main.DepartmentsListRoot;
 
+import android.app.AlertDialog;
 import android.app.SearchManager;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -103,11 +105,31 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     }
 
     @Override
-    public void showAuthorization() {
+    public void logOut() {
         AuthorizationFragment fragment=AuthorizationFragment.newInstance();
         PresenterManager.addPresenter(new AuthorizationPresenter(new AuthorizationInteractor(new Repository(PersistentStorage.get(),new Net(new Connect())))),
         fragment.getClass().getName());
         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,fragment).commit();
+    }
+
+    @Override
+    public void showLogOutMessage() {
+        new AlertDialog.Builder(getActivity())
+                .setTitle(R.string.log_out_title)
+                .setMessage(R.string.log_out_message)
+                .setPositiveButton(R.string.positive_button, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mPresenter.logOut();
+                    }
+                })
+                .setNegativeButton(R.string.negative_button, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                })
+                .show();
     }
 
     @Override
@@ -279,7 +301,7 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_log_out:
-                mPresenter.logOut();
+                mPresenter.showLogOutMessage();
                 return true;
             case R.id.action_search:
                 return true;

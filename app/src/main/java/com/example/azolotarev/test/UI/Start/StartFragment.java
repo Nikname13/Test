@@ -89,7 +89,7 @@ public class StartFragment extends Fragment implements StartContract.View {
 
     @Override
     public void showAuthorization() {
-        Log.d("TAG", "start showAuthorization");
+        Log.d("TAG", "start logOut");
         AuthorizationFragment fragment=AuthorizationFragment.newInstance();
         PresenterManager.addPresenter(new AuthorizationPresenter(new AuthorizationInteractor(new Repository(PersistentStorage.get(),new Net(new Connect())))),
                 fragment.getClass().getName());

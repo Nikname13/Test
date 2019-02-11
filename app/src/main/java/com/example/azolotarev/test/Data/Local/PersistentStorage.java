@@ -9,6 +9,7 @@ public class PersistentStorage {
     public static final String CREDENTIALS="credentials";
     public static final String LOGIN="login";
     public static final String PASSWORD="password";
+    public static final String FIRST_LAUNCH="first_launch";
 
     private static SharedPreferences sSettings=null;
     private static SharedPreferences.Editor sEditor=null;
@@ -44,6 +45,20 @@ public class PersistentStorage {
         return getCredentials(PASSWORD);
     }
 
+    public static Boolean isFirstLaunch(){
+        return getFirstLaunch(FIRST_LAUNCH);
+    }
+
+    public static void setFirstLaunch(){
+        if(sSettings==null)init();
+        sEditor.putBoolean(FIRST_LAUNCH,false);
+    }
+
+    private static Boolean getFirstLaunch(String key) {
+        if(sSettings == null) init();
+        return sSettings.getBoolean(key,true);
+    }
+
     private static String getCredentials(String key) {
         if (sSettings == null) init();
         String s = sSettings.getString(key, "");
@@ -56,7 +71,8 @@ public class PersistentStorage {
 
     public static void clearCredentials(){
         if(sSettings==null) init();
-        sEditor.clear();
+        sEditor.remove(LOGIN);
+        sEditor.remove(PASSWORD);
         sEditor.commit();
     }
 }

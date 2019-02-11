@@ -20,4 +20,9 @@
 
     <string name="search_hint">Отдел,ФИО сотрудника,email,номер телефона,должность</string>
 
+    <string name="log_out_title">Выход</string>
+    <string name="log_out_message">Вы уверены, что хотите выйти?</string>
+    <string name="positive_button">выход</string>
+    <string name="negative_button">отмена</string>
+
 </resources>

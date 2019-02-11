@@ -67,7 +67,12 @@ public class EmployeePagerPresenter implements EmployeePagerContract.Presenter {
     @Override
     public void logOut() {
         mInteractor.clearCredentials();
-        mView.showAuthorization();
+        mView.logOut();
+    }
+
+    @Override
+    public void showLogOutMessage(){
+        mView.showLogOutMessage();
     }
 
     @Override
@@ -95,4 +100,8 @@ public class EmployeePagerPresenter implements EmployeePagerContract.Presenter {
 
     }
 
+    @Override
+    public void setPageTitle(@NonNull String title, int position) {
+        mView.setPageTitle(title, position);
+    }
 }

@@ -1,9 +1,6 @@
 package com.example.azolotarev.test.UI.Start;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.MenuItem;
 import com.example.azolotarev.test.Data.Local.PersistentStorage;

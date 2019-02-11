@@ -141,9 +141,14 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
     }
 
     @Override
+    public void showLogOutMessage() {
+        mView.showLogOutMessage();
+    }
+
+    @Override
     public void logOut() {
         mInteractor.clearCredentials();
-        mView.showAuthorization();
+        mView.logOut();
     }
 
     private void openElement(int startPosition, int lvl, boolean visible){

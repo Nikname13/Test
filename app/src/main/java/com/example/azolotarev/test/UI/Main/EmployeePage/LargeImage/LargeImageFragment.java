@@ -72,4 +72,5 @@ public class LargeImageFragment extends Fragment implements LargeImageContract.V
     public void hideProgress() {
 
     }
+
 }
