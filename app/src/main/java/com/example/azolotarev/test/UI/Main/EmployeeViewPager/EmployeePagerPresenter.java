@@ -55,6 +55,11 @@ public class EmployeePagerPresenter implements EmployeePagerContract.Presenter {
 
     }
 
+    @Override
+    public void setTitlePage(@NonNull String name) {
+        mView.setTitlePage(name);
+    }
+
     private void initViewPager(@NonNull List<MapModel> list,@NonNull String id){
         for (MapModel mapModel : list) {
             if (mapModel.getId().equals(id)) {

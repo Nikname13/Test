@@ -1,13 +1,10 @@
 package com.example.azolotarev.test.Data.Net;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
-import android.support.v4.net.ConnectivityManagerCompat;
 import android.util.Log;
 import com.example.azolotarev.test.Service.ErrorLab;
+import com.example.azolotarev.test.Service.ScaledBitmap;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -18,14 +15,14 @@ public class Connect implements ConnectContract {
 
 
     @Override
-    public void GET(@NonNull GETCallback callback, @NonNull String url, @NonNull NetworkInfo networkInfo) {
+    public void GET(@NonNull String url,@NonNull NetworkInfo networkInfo, @NonNull final GETCallback callback) {
         if(checkNetwork(networkInfo)) getJSONString(callback,connection(url, "GET"));
         else callback.connectionError("Отсутствует подключение к интернету");
     }
 
     @Override
-    public void GETPhoto(@NonNull GETPhotoCallback callback, @NonNull String url, @NonNull NetworkInfo networkInfo) {
-        if(checkNetwork(networkInfo)) getPhotoBitmap(callback,connection(url, "GET"));
+    public void GETPhoto(int imageWidth, int imageHeight, @NonNull String url, @NonNull NetworkInfo networkInfo, @NonNull final GETPhotoCallback callback) {
+        if(checkNetwork(networkInfo)) getPhotoBitmap(callback,connection(url, "GET"), imageWidth, imageHeight);
         else callback.connectionError("Отсутствует подключение к интернету");
     }
 
@@ -34,13 +31,6 @@ public class Connect implements ConnectContract {
         try {
             URL url = new URL(uri);
             HttpURLConnection connect = (HttpURLConnection) url.openConnection();
-/*            connect.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-            connect.setUseCaches(true);
-            connect.setAllowUserInteraction(true);
-            connect.setDoOutput(true);
-            connect.setDoInput(true);
-            connect.setRequestMethod(method);*/
-
             return connect;
         } catch (IOException ex) {
             Log.e("TAG", "Connect exception connection"+ex);
@@ -65,6 +55,7 @@ public class Connect implements ConnectContract {
                 br.close();
                 ErrorLab.errorMessage(sb.toString());
                 connect.disconnect();
+                br.close();
                 callback.onResponse(sb.toString());
             }else{
                 Log.e("TAG", "connect ошибка подключения getJSON"+connect.getResponseCode());
@@ -76,14 +67,31 @@ public class Connect implements ConnectContract {
         }
     }
 
-    private void getPhotoBitmap(@NonNull GETPhotoCallback callback, HttpURLConnection connect) {
+    private void getPhotoBitmap(@NonNull GETPhotoCallback callback, HttpURLConnection connect, int reqW, int reqH) {
         Log.e("TAG", "Connect getPhotoBitmap");
         try {
             int cod=connect.getResponseCode();
             Log.e("TAG", "connect response cod getPhotoBitmap"+connect.getResponseCode());
             if(cod==HttpURLConnection.HTTP_OK){
                 InputStream inputStream=connect.getInputStream();
-                callback.onResponse(BitmapFactory.decodeStream(inputStream));
+                ByteArrayOutputStream outputStream=new ByteArrayOutputStream();
+                try {
+                    int n;
+                    byte[] buffer=new byte[1024];
+                    while ((n = inputStream.read(buffer))>0){
+                        outputStream.write(buffer, 0, n);
+                    }
+                    callback.onResponse(ScaledBitmap.decodeSampleBitmapFromByteArray(outputStream.toByteArray(), reqW, reqH));
+                }catch (IOException ex){
+                    ex.printStackTrace();
+                }finally {
+                    try {
+                        inputStream.close();
+                        outputStream.close();
+                    }catch (IOException ex){
+                        ex.printStackTrace();
+                    }
+                }
             }else{
                 Log.e("TAG", "connect ошибка подключения getPhotoBitmap"+connect.getResponseCode());
                 callback.connectionError("Ошибка подключения "+connect.getResponseCode());

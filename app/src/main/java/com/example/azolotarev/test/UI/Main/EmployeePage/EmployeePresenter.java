@@ -2,7 +2,6 @@ package com.example.azolotarev.test.UI.Main.EmployeePage;
 
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import com.example.azolotarev.test.Domain.EmployeePage.EmployeeInteractorContract;
 import com.example.azolotarev.test.Model.EmployeeModel;
 import com.example.azolotarev.test.Model.MapModel;
@@ -13,7 +12,7 @@ public class EmployeePresenter implements EmployeeContract.Presenter {
     private EmployeeContract.View mView;
     private final EmployeeInteractorContract mInteractor;
     private boolean mLoadPhoto,mLoadEmployee;
-    private String mIdModel;
+    private String mPhotoId, mIdMapModel;
 
     public EmployeePresenter(@NonNull EmployeeInteractorContract interactorContract) {
         mInteractor = interactorContract;
@@ -21,14 +20,14 @@ public class EmployeePresenter implements EmployeeContract.Presenter {
     }
 
     @Override
-    public void start(String id, int position) {
-        loadMapEmployee(id,position);
+    public void start() {
+        loadMapEmployee();
     }
 
-    private void loadMapEmployee(final String id, final int position) {
-        if (id != null && !id.isEmpty()) {
+    private void loadMapEmployee() {
+        if (mIdMapModel != null && !mIdMapModel.isEmpty()) {
             mLoadEmployee=true;
-            mInteractor.getItem(id, new EmployeeInteractorContract.GetItemCallback() {
+            mInteractor.getItem(mIdMapModel, new EmployeeInteractorContract.GetItemCallback() {
                 @Override
                 public void logOut(String errorMessage) {
 
@@ -41,7 +40,7 @@ public class EmployeePresenter implements EmployeeContract.Presenter {
 
                 @Override
                 public void onItemLoaded(@NonNull MapModel item) {
-                     setDataEmployee((EmployeeModel) item.getModel(), position);
+                     setDataEmployee((EmployeeModel) item.getModel());
                 }
 
                 @Override
@@ -52,36 +51,13 @@ public class EmployeePresenter implements EmployeeContract.Presenter {
         }
     }
 
-    private void setDataEmployee(@NonNull EmployeeModel model, int position){
-        mIdModel=model.getId();
+    private void setDataEmployee(@NonNull EmployeeModel model){
         if (model.getTitle() != null) mView.setTitle(model.getTitle() + model.getParent().getName());
         if (model.getName() != null) mView.setName(model.getName());
         if (model.getPhone() != null) mView.setPhone(model.getPhone());
         else mView.hidePhone();
         if(model.getEmail()!=null)mView.setEmail(model.getEmail());
         else mView.hideEmail();
-        mLoadPhoto=true;
-        mInteractor.loadPhoto(new EmployeeInteractorContract.PhotoCallback() {
-                                          @Override
-                                          public void onPhoto(Bitmap photo) {
-                                              mView.setAvatar(photo);
-                                          }
-
-                                          @Override
-                                          public void logOut(String errorMessage) {
-
-                                          }
-
-                                          @Override
-                                          public void connectionError(String errorMessage) {
-
-                                          }
-                                      },
-                mIdModel);
-    }
-
-    @Override
-    public void start() {
 
     }
 
@@ -98,20 +74,20 @@ public class EmployeePresenter implements EmployeeContract.Presenter {
 
     @Override
     public void showProgress() {
-        if(mLoadEmployee)Log.d("TAG","loadEmloyee");
-        if(mLoadPhoto)Log.d("TAG","load photo");
+/*        if(mLoadEmployee)Log.d("TAG","loadEmloyee");
+        if(mLoadPhoto)Log.d("TAG","load photo");*/
     }
 
     @Override
     public void hideProgress() {
-        if(mLoadEmployee){
+/*        if(mLoadEmployee){
             Log.d("TAG","loadEmloyee stop");
             mLoadEmployee=false;
         }
         if(mLoadPhoto){
             Log.d("TAG","load photo stop");
             mLoadPhoto=false;
-        }
+        }*/
     }
 
     @Override
@@ -126,7 +102,42 @@ public class EmployeePresenter implements EmployeeContract.Presenter {
 
     @Override
     public void showLargeImage() {
-        mView.showLargeImage(mIdModel);
+        mView.showLargeImage(mPhotoId);
+    }
+
+    @Override
+    public void loadPhoto(int width, int height) {
+        mInteractor.loadPhoto(
+                mPhotoId,
+                width,
+                height,
+                new EmployeeInteractorContract.PhotoCallback() {
+                    @Override
+                    public void onPhoto(Bitmap photo) {
+                        mView.setAvatarView(photo);
+                        mLoadPhoto=true;
+                    }
+
+                    @Override
+                    public void logOut(String errorMessage) {
+
+                    }
+
+                    @Override
+                    public void connectionError(String errorMessage) {
+
+                    }
+                });
+    }
+
+    @Override
+    public void setPhotoId(@NonNull String id) {
+        mPhotoId=id;
+    }
+
+    @Override
+    public void setItemId(@NonNull String id) {
+        mIdMapModel=id;
     }
 
 }

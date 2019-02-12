@@ -12,6 +12,7 @@ public interface LargeImageContract {
     }
 
     interface Presenter extends BasePresenter,ProgressContract{
-        void start(String id);
+        void setPhotoId(@NonNull String id);
+        void loadPhoto(int width, int height);
     }
 }

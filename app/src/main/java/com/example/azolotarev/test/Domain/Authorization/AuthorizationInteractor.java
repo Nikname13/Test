@@ -45,7 +45,11 @@ public class AuthorizationInteractor implements AuthorizationInteractorContract{
 
         @Override
         protected Void doInBackground(String... strings) {
-             mRepository.isAuth(new RepositoryContract.LoadSuccessCallback() {
+             mRepository.isAuth(
+                     strings[0],
+                     strings[1],
+                     mFirstLoad,
+            new RepositoryContract.LoadSuccessCallback() {
                  @Override
                  public void onSuccess(boolean success) {
                      Log.e("TAG", "auth interactor onSuccess");
@@ -63,7 +67,7 @@ public class AuthorizationInteractor implements AuthorizationInteractorContract{
                      Log.e("TAG", "auth interactor connectionError");
                      mConnectionError=errorMessage;
                  }
-             }, strings[0], strings[1], mFirstLoad);
+             });
             return null;
         }
 

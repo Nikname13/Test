@@ -9,7 +9,7 @@ import com.example.azolotarev.test.Service.ContextManager;
 public class Net implements NetContract {
 
     private static final String URI_HELLO="Hello";
-    private static final String URI_GETALL="GetAll";
+    private static final String URI_GET_ALL ="GetAll";
     private static final String URI_PHOTO="GetWPhoto";
     private static final String PARAM_LOGIN="login";
     private static final String PARAM_PASSWORD="password";
@@ -27,6 +27,8 @@ public class Net implements NetContract {
     public void isAuth(@NonNull final LoadSuccessCallback callback) {
         Log.e("TAG", "Net isAuth");
         mConnect.GET(
+                new URLBuilder(URI_HELLO).withParam(PARAM_LOGIN, mLogin).withParam(PARAM_PASSWORD, mPassword).build(),
+                mConnectivityManager.getActiveNetworkInfo(),
                 new ConnectContract.GETCallback() {
             @Override
             public void onResponse(String response) {
@@ -39,15 +41,16 @@ public class Net implements NetContract {
                 Log.e("TAG", "Net GET connectionError");
                 callback.connectionError(errorMessage);
             }
-        },
-                new URLBuilder(URI_HELLO).withParam(PARAM_LOGIN, mLogin).withParam(PARAM_PASSWORD, mPassword).build(),
-                mConnectivityManager.getActiveNetworkInfo());
+        });
     }
 
     @Override
     public void getDepartments(@NonNull final LoadDepartmentsCallback callback, boolean refreshCache) {
         Log.e("TAG", "Net isAuth");
-        mConnect.GET(new ConnectContract.GETCallback() {
+        mConnect.GET(
+                new URLBuilder(URI_GET_ALL).withParam(PARAM_LOGIN, mLogin).withParam(PARAM_PASSWORD, mPassword).build(),
+                mConnectivityManager.getActiveNetworkInfo(),
+                new ConnectContract.GETCallback() {
             @Override
             public void onResponse(String response) {
                 callback.onResponse(response);
@@ -57,15 +60,22 @@ public class Net implements NetContract {
             public void connectionError(String errorMessage) {
                 callback.connectionError(errorMessage);
             }
-        },
-                new URLBuilder(URI_GETALL).withParam(PARAM_LOGIN, mLogin).withParam(PARAM_PASSWORD, mPassword).build(),
-                mConnectivityManager.getActiveNetworkInfo());
+        });
     }
 
     @Override
-    public void getPhoto(@NonNull final LoadPhotoCallback callback, @NonNull String id) {
-        Log.e("TAG", "Net getPhoto");
-        mConnect.GETPhoto(new ConnectContract.GETPhotoCallback() {
+    public void getPhoto(@NonNull String id, int imageWidth, int imageHeight, @NonNull final LoadPhotoCallback callback) {
+        Log.e("TAG", "Net loadPhoto");
+        mConnect.GETPhoto(
+                imageWidth,
+                imageHeight,
+                new URLBuilder(URI_PHOTO)
+                        .withParam(PARAM_LOGIN, mLogin)
+                        .withParam(PARAM_PASSWORD, mPassword)
+                        .withParam(PARAM_ID, id)
+                        .build(),
+                mConnectivityManager.getActiveNetworkInfo(),
+                new ConnectContract.GETPhotoCallback() {
             @Override
             public void onResponse(Bitmap response) {
                 callback.onResponse(response);
@@ -75,13 +85,7 @@ public class Net implements NetContract {
             public void connectionError(String errorMessage) {
 
             }
-        },
-                new URLBuilder(URI_PHOTO)
-                        .withParam(PARAM_LOGIN, mLogin)
-                        .withParam(PARAM_PASSWORD, mPassword)
-                        .withParam(PARAM_ID, id)
-                        .build(),
-                mConnectivityManager.getActiveNetworkInfo());
+        });
     }
 
     @Override

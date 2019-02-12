@@ -11,8 +11,8 @@ public interface EmployeeInteractorContract extends DepartmentInteractorContract
     interface PhotoCallback extends BaseCallback.BaseErrorCallback{
         void onPhoto(Bitmap photo);
     }
-    void loadList(int position, @NonNull final DepartmentInteractorContract.GetListCallback callback);
     interface GetItemCallback extends BaseCallback.BaseGetItemCallback, BaseCallback.BaseErrorCallback{}
+    void loadList(int position, @NonNull final DepartmentInteractorContract.GetListCallback callback);
     void getItem(@NonNull String id,@NonNull final GetItemCallback callback );
-    void loadPhoto(@NonNull final PhotoCallback callback, @NonNull String id);
+    void loadPhoto( @NonNull String id, int imageWidth, int imageHeight, @NonNull final PhotoCallback callback);
 }

@@ -19,6 +19,6 @@ public interface NetContract {
     }
     void isAuth(@NonNull final LoadSuccessCallback callback);
     void getDepartments(@NonNull final LoadDepartmentsCallback callback, boolean refreshCache);
-    void getPhoto(@NonNull final LoadPhotoCallback callback, @NonNull String id);
+    void getPhoto(@NonNull String id, int imageWidth, int imageHeight, @NonNull final LoadPhotoCallback callback);
     void setCredentials(@NonNull String login, @NonNull String password);
 }

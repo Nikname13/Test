@@ -31,7 +31,7 @@ public  class Repository implements RepositoryContract {
     }
 
     @Override
-    public void isAuth(@NonNull final LoadSuccessCallback callback ,@NonNull String login,@NonNull String password, @NonNull boolean firstLoad){
+    public void isAuth(@NonNull String login,@NonNull String password, @NonNull boolean firstLoad,@NonNull final LoadSuccessCallback callback){
         Log.e("TAG", "repository isAuth");
         if(login.isEmpty() || password.isEmpty()){
             Log.e("TAG", "repository empty");
@@ -44,7 +44,7 @@ public  class Repository implements RepositoryContract {
     }
 
     @Override
-    public void getDepartments(@NonNull LoadDepartmentsCallback callback,@NonNull boolean refreshCache,  @NonNull boolean firstLoad) {
+    public void loadDepartments(boolean refreshCache, @NonNull boolean firstLoad, @NonNull final LoadDepartmentsCallback callback) {
         Log.d("TAG", "repository getListModel "+refreshCache);
         if(ListCache.getCachedList() !=null && !refreshCache){
             Log.d("TAG", "repository getListModel cachedDepartment");
@@ -59,7 +59,7 @@ public  class Repository implements RepositoryContract {
     }
 
     @Override
-    public void getItem(@NonNull LoadItemCallback callback, @NonNull String id) {
+    public void loadItem(@NonNull String id, @NonNull final LoadItemCallback callback) {
         if(ListCache.getCachedList() !=null && !ListCache.getCachedList().isEmpty()){
             MapModel recyclerModel=ListCache.getCachedList().get(id);
             callback.onItemLoaded(recyclerModel);
@@ -67,12 +67,13 @@ public  class Repository implements RepositoryContract {
     }
 
     @Override
-    public void getPhoto(@NonNull final LoadPhotoCallback callback, @NonNull final String id) {
+    public void loadPhoto(@NonNull String id, int imageWidth, int imageHeight, @NonNull final LoadPhotoCallback callback) {
         if(AvatarCache.get().getBitmapFromMemory(String.valueOf(id))!=null){
+            Log.i("TAG", "repository loadPhoto cache");
             callback.onResponse(AvatarCache.get().getBitmapFromMemory(String.valueOf(id)));
             return;
         }
-       getPhotoFromNet(callback,id);
+       getPhotoFromNet(id, imageWidth, imageHeight, callback);
     }
 
     @Override
@@ -90,7 +91,7 @@ public  class Repository implements RepositoryContract {
             callback.onSuccess(false);
         }else{
             mStorageFull=true;
-            isAuth(callback,mStorage.getLOGIN(), mStorage.getPASSWORD(),firstLoad);
+            isAuth(mStorage.getLOGIN(), mStorage.getPASSWORD(), firstLoad, callback);
         }
     }
 
@@ -110,7 +111,9 @@ public  class Repository implements RepositoryContract {
                             @Override
                             public void onResponse(String response) {
                                 Log.e("TAG", "repository onResponse");
-                                mJParser.getSuccess(new JParserContract.ParsSuccessCallback() {
+                                mJParser.parsSuccess(
+                                        response,
+                                        new JParserContract.ParsSuccessCallback() {
                                                         @Override
                                                         public void onSuccess(boolean success) {
                                                             Log.e("TAG", "repository mJParser onSuccess");
@@ -123,8 +126,8 @@ public  class Repository implements RepositoryContract {
                                                             Log.e("TAG", "repository mJParser notAvailable");
                                                             callback.logOut(errorMessage);
                                                         }
-                                                    },
-                                        response);
+                                                    }
+                                        );
                             }
 
                             @Override
@@ -165,7 +168,9 @@ public  class Repository implements RepositoryContract {
             mNet.getDepartments(new NetContract.LoadDepartmentsCallback() {
                 @Override
                 public void onResponse(String response) {
-                    mJParser.getDepartments(new JParserContract.ParsDepartmentsCallback(){
+                    mJParser.parsDepartments(
+                            response,
+                            new JParserContract.ParsDepartmentsCallback(){
                                                 @Override
                                                 public void onDepartmentsLoaded(List<DepartmentModel> departments) {
                                                     Log.e("TAG", "repository mJParser pnDepartmentsLoaded");
@@ -176,14 +181,13 @@ public  class Repository implements RepositoryContract {
                                                 public void notAvailable(String errorMessage) {
 
                                                 }
-                                            },
-                    response);
+                                            });
                 }
 
                 @Override
                 public void connectionError(String errorMessage) {
                     if(ListCache.getCachedList() !=null){
-                        getDepartments(callback,true, firstLoad);
+                        loadDepartments(true, firstLoad, callback);
                         callback.connectionError(errorMessage);
                     }else {
                         callback.notAvailable(errorMessage);
@@ -197,7 +201,8 @@ public  class Repository implements RepositoryContract {
         }
     }
 
-    private void getPhotoFromNet(@NonNull final LoadPhotoCallback callback, @NonNull final String id){
+    private void getPhotoFromNet( @NonNull final String id, int imageWeight, int imageHeight, @NonNull final LoadPhotoCallback callback){
+        Log.i("TAG", "repository getPhotoFromNet ");
         isAuth(new LoadSuccessCallback() {
                    @Override
                    public void onSuccess(boolean success) {
@@ -215,19 +220,25 @@ public  class Repository implements RepositoryContract {
                    }
                },
                 false);
-        mNet.getPhoto(new NetContract.LoadPhotoCallback() {
+        mNet.getPhoto(
+                id,
+                imageWeight,
+                imageHeight,
+                new NetContract.LoadPhotoCallback() {
                           @Override
                           public void onResponse(Bitmap response) {
-                              callback.onResponse(response);
-                              AvatarCache.get().setBitmapToMemory(id,response);
+                             Log.i("TAG", "repository getPhotoFromNet "+response.getByteCount());
+                             if(response!=null) {
+                                 callback.onResponse(response);
+                                 AvatarCache.get().setBitmapToMemory(id, response);
+                             }
                           }
 
                           @Override
                           public void connectionError(String errorMessage) {
 
                           }
-                      },
-                id);
+                      });
     }
 
 }

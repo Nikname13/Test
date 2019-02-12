@@ -168,7 +168,10 @@ public class DepartmentInteractor implements DepartmentInteractorContract {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            mRepository.getDepartments(new RepositoryContract.LoadDepartmentsCallback() {
+            mRepository.loadDepartments(
+                    mRefreshCache,
+                    false,
+                    new RepositoryContract.LoadDepartmentsCallback() {
                                            @Override
                                            public void onMapListLoaded(List<MapModel> list) {
                                                mMapList =list;
@@ -195,7 +198,7 @@ public class DepartmentInteractor implements DepartmentInteractorContract {
                                                mNotAvailable=errorMessage;
                                            }
                                        }
-                    ,mRefreshCache,false);
+                    );
             if(mMapList==null || mRefreshCache && mDepartmentModels!=null) setMapList();
             return null;
         }

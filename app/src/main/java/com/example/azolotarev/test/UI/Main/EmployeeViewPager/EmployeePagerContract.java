@@ -11,13 +11,16 @@ import java.util.List;
 public interface EmployeePagerContract {
     interface View extends BaseView<Presenter>, ProgressContract {
         void initViewPager(@NonNull List<MapModel> mapModelList, int startPosition);
+        void setTitlePage(@NonNull String name);
         void logOut();
         void showLogOutMessage();
     }
     interface Presenter extends BasePresenter,ProgressContract {
         void start(@NonNull String positionInTree,@NonNull String id, @NonNull String filterString);
+        void setTitlePage(@NonNull String name);
         void logOut();
         void showLogOutMessage();
+
     }
 
 }

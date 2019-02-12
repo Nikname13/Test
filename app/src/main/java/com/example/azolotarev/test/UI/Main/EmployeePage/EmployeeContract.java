@@ -12,7 +12,7 @@ public interface EmployeeContract {
         void setName(String name);
         void setPhone(String phone);
         void setEmail(String email);
-        void setAvatar(@NonNull Bitmap avatar);
+        void setAvatarView(@NonNull Bitmap avatarView);
         void hideTitle();
         void hideName();
         void hidePhone();
@@ -21,16 +21,14 @@ public interface EmployeeContract {
         void sendEmail(String email);
         void showLargeImage(@NonNull String id);
 
-
-
     }
 
     interface Presenter extends BasePresenter,ProgressContract {
-        void start(String id, int position);
         void callNumber(String number);
         void sendEmail(String email);
         void showLargeImage();
-
-
+        void loadPhoto(int width, int height);
+        void setPhotoId(@NonNull String id);
+        void setItemId(@NonNull String id);
     }
 }

@@ -11,6 +11,7 @@ public class LargeImagePresenter implements LargeImageContract.Presenter {
     private LargeImageContract.View mView;
     private final EmployeeInteractorContract mInteractor;
     private Bitmap mPhoto;
+    private String mPhotoId;
 
     public LargeImagePresenter(EmployeeInteractorContract interactor) {
         mInteractor = interactor;
@@ -18,32 +19,7 @@ public class LargeImagePresenter implements LargeImageContract.Presenter {
     }
 
     @Override
-    public void start(String id) {
-        if(mPhoto==null) {
-            mInteractor.loadPhoto(new EmployeeInteractorContract.PhotoCallback() {
-                                      @Override
-                                      public void onPhoto(Bitmap photo) {
-                                          mPhoto=photo;
-                                          mView.setAvatar(mPhoto);
-                                      }
-
-                                      @Override
-                                      public void logOut(String errorMessage) {
-
-                                      }
-
-                                      @Override
-                                      public void connectionError(String errorMessage) {
-
-                                      }
-                                  },
-                    id);
-        }else mView.setAvatar(mPhoto);
-    }
-
-    @Override
     public void start() {
-
     }
 
     @Override
@@ -65,5 +41,34 @@ public class LargeImagePresenter implements LargeImageContract.Presenter {
     @Override
     public void hideProgress() {
 
+    }
+
+    @Override
+    public void setPhotoId(@NonNull String id) {
+        mPhotoId=id;
+    }
+
+    @Override
+    public void loadPhoto(int width, int height) {
+        mInteractor.loadPhoto(
+                mPhotoId,
+                width,
+                height,
+                new EmployeeInteractorContract.PhotoCallback() {
+                    @Override
+                    public void onPhoto(Bitmap photo) {
+                        mView.setAvatar(photo);
+                    }
+
+                    @Override
+                    public void logOut(String errorMessage) {
+
+                    }
+
+                    @Override
+                    public void connectionError(String errorMessage) {
+
+                    }
+                });
     }
 }

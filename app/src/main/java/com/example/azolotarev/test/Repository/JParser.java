@@ -12,10 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class JParser implements JParserContract {
-
-
     @Override
-    public void getDepartments(@NonNull ParsDepartmentsCallback callback, String jsonString) {
+    public void parsDepartments(@NonNull String jsonString, @NonNull ParsDepartmentsCallback callback) {
         Log.e("TAG", "jparser getListModel");
         if(jsonString==null)
         Log.e("TAG", "jparser getListModel jsonString = null");
@@ -35,7 +33,7 @@ public class JParser implements JParserContract {
     }
 
     @Override
-    public void getSuccess(@NonNull ParsSuccessCallback callback, String jsonString) {
+    public void parsSuccess(@NonNull String jsonString, @NonNull ParsSuccessCallback callback) {
         try {
             JSONObject json=new JSONObject(jsonString);
             if(!json.getString("Message").equals("null")) callback.errorSuccess(json.getString("Message"));

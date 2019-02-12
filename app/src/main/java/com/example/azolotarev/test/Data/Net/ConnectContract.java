@@ -15,6 +15,6 @@ public interface ConnectContract {
         void onResponse(Bitmap response);
         void connectionError(String errorMessage);
     }
-    void GET(@NonNull final GETCallback callback, @NonNull String url,@NonNull NetworkInfo networkInfo);
-    void GETPhoto(@NonNull final GETPhotoCallback callback, @NonNull String url,@NonNull NetworkInfo networkInfo);
+    void GET( @NonNull String url,@NonNull NetworkInfo networkInfo, @NonNull final GETCallback callback);
+    void GETPhoto(int imageWidth, int imageHeight, @NonNull String url,@NonNull NetworkInfo networkInfo, @NonNull final GETPhotoCallback callback);
 }

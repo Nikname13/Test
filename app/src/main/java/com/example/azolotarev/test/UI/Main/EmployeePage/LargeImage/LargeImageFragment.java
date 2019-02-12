@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import com.example.azolotarev.test.R;
 import com.example.azolotarev.test.Service.PresenterManager;
@@ -35,7 +37,7 @@ public class LargeImageFragment extends Fragment implements LargeImageContract.V
     @Override
     public void onResume() {
         super.onResume();
-        mPresenter.start(getArguments().getString(ARG_EMPLOYEE));
+        mPresenter.setPhotoId(getArguments().getString(ARG_EMPLOYEE));
     }
 
     @Nullable
@@ -47,6 +49,14 @@ public class LargeImageFragment extends Fragment implements LargeImageContract.V
             @Override
             public void onClick(View v) {
                 getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
+        mImageView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                Log.i("TAG","!!onGlobalLayout  "+mImageView.getWidth()+" "+mImageView.getHeight());
+                mPresenter.loadPhoto(mImageView.getWidth(), mImageView.getHeight());
+                mImageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
         });
         mPresenter.bindView(this);

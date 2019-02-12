@@ -66,7 +66,7 @@ public class EmployeePagerFragment extends Fragment implements EmployeePagerCont
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d("TAG","onCreateView pager");
+        //Log.d("TAG","onCreateView pager");
         View v=inflater.inflate(R.layout.fragment_employee_pager,container,false);
         mToolbar=v.findViewById(R.id.employee_toolbar);
         mToolbar.setTitle("");
@@ -87,15 +87,15 @@ public class EmployeePagerFragment extends Fragment implements EmployeePagerCont
     @Override
     public void initViewPager(@NonNull final List<MapModel> mapModelList, int startPosition) {
         FragmentManager fm=getActivity().getSupportFragmentManager();
-        Log.d("TAG"," fm ");
+        //Log.d("TAG"," fm ");
         mViewPager.setAdapter(new FragmentStatePagerAdapter(fm) {
             @Override
             public Fragment getItem(int i) {
-                Log.d("TAG","initViewPager getItem "+i);
-                EmployeeFragment fragment=EmployeeFragment.newInstance(mapModelList.get(i).getId(),i);
-                Log.d("TAG","presenterManager get presenter "+fragment.getClass().getName()+mapModelList.get(i).getId());
+                //Log.d("TAG","initViewPager loadItem "+i);
+                EmployeeFragment fragment=EmployeeFragment.newInstance(mapModelList.get(i).getId(), mapModelList.get(i).getModel().getId());
+                //Log.d("TAG","presenterManager get presenter "+fragment.getClass().getName()+mapModelList.get(i).getId());
                 if(PresenterManager.getPresenter(fragment.getClass().getName()+mapModelList.get(i).getId())==null) {
-                    Log.d("TAG","initViewPager fragment.getClass().getName() "+fragment.getClass().getName());
+                   // Log.d("TAG","initViewPager fragment.getClass().getName() "+fragment.getClass().getName());
                     PresenterManager.addPresenter(new EmployeePresenter(new EmployeeInteractor(
                                     new Repository(PersistentStorage.get(),
                                             new Net(new Connect())))),
@@ -110,7 +110,7 @@ public class EmployeePagerFragment extends Fragment implements EmployeePagerCont
             }
         });
         mViewPager.setCurrentItem(startPosition);
-        mToolbar.setTitle(mapModelList.get(startPosition).getModel().getParent().getName());
+        mPresenter.setTitlePage(mapModelList.get(startPosition).getModel().getParent().getName());
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i1) {
@@ -119,7 +119,7 @@ public class EmployeePagerFragment extends Fragment implements EmployeePagerCont
 
             @Override
             public void onPageSelected(int i) {
-                mToolbar.setTitle(mapModelList.get(i).getModel().getParent().getName());
+                mPresenter.setTitlePage(mapModelList.get(i).getModel().getParent().getName());
             }
 
             @Override
@@ -127,6 +127,11 @@ public class EmployeePagerFragment extends Fragment implements EmployeePagerCont
 
             }
         });
+    }
+
+    @Override
+    public void setTitlePage(@NonNull String name) {
+        mToolbar.setTitle(name);
     }
 
 

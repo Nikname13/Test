@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import com.example.azolotarev.test.Domain.DepartmentsList.DepartmentInteractor;
-import com.example.azolotarev.test.Model.BaseModel;
 import com.example.azolotarev.test.Model.MapModel;
 import com.example.azolotarev.test.Repository.RepositoryContract;
 
@@ -51,8 +50,8 @@ public class EmployeeInteractor extends DepartmentInteractor implements Employee
     }
 
     @Override
-    public void loadPhoto(@NonNull PhotoCallback callback, @NonNull String id) {
-        new AsyncEmployeePhoto(callback).execute(id);
+    public void loadPhoto(@NonNull String id, int imageWidth, int imageHeight, @NonNull PhotoCallback callback) {
+        new AsyncEmployeePhoto(callback).execute(id, String.valueOf(imageWidth), String.valueOf(imageHeight));
     }
 
     private void onEmployeeList(@NonNull final GetListCallback callback, @NonNull List<MapModel> mapModelList, int position){
@@ -80,7 +79,11 @@ public class EmployeeInteractor extends DepartmentInteractor implements Employee
 
         @Override
         protected Void doInBackground(String... id) {
-            getRepository().getPhoto(new RepositoryContract.LoadPhotoCallback() {
+            getRepository().loadPhoto(
+                    id[0],
+                    Integer.valueOf(id[1]),
+                    Integer.valueOf(id[2]),
+                    new RepositoryContract.LoadPhotoCallback() {
 
                                      @Override
                                      public void onResponse(Bitmap photo) {
@@ -96,8 +99,7 @@ public class EmployeeInteractor extends DepartmentInteractor implements Employee
                                      public void connectionError(String errorMessage) {
                                          setConnectionError(errorMessage);
                                      }
-                                 },
-                    id[0]);
+                                 });
             return null;
         }
 
@@ -125,7 +127,9 @@ public class EmployeeInteractor extends DepartmentInteractor implements Employee
 
         @Override
         protected Void doInBackground(String... id) {
-            getRepository().getItem(new RepositoryContract.LoadItemCallback() {
+            getRepository().loadItem(
+                    id[0],
+                    new RepositoryContract.LoadItemCallback() {
                                     @Override
                                     public void onItemLoaded(@NonNull MapModel item) {
                                         mItem=item;
@@ -135,8 +139,7 @@ public class EmployeeInteractor extends DepartmentInteractor implements Employee
                                     public void notAvailable(String errorMessage) {
                                         setNotAvailable(errorMessage);
                                     }
-                                },
-                    id[0]
+                                }
             );
             return null;
         }

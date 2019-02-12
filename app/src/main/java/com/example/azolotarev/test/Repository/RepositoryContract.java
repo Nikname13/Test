@@ -20,10 +20,10 @@ public interface RepositoryContract {
     }
     interface LoadItemCallback extends BaseCallback.BaseGetItemCallback{
     }
-    void isAuth(@NonNull final LoadSuccessCallback callback, @NonNull String login,@NonNull String password, @NonNull boolean firstLoad);
-    void getDepartments(@NonNull final LoadDepartmentsCallback callback, boolean refreshCache, @NonNull boolean firstLoad);
-    void getItem(@NonNull final LoadItemCallback callback, @NonNull String id );
-    void getPhoto(@NonNull final LoadPhotoCallback callback, @NonNull String id);
+    void isAuth(@NonNull String login,@NonNull String password, @NonNull boolean firstLoad,@NonNull final LoadSuccessCallback callback);
+    void loadDepartments(boolean refreshCache, @NonNull boolean firstLoad, @NonNull final LoadDepartmentsCallback callback);
+    void loadItem(@NonNull String id, @NonNull final LoadItemCallback callback);
+    void loadPhoto(@NonNull String id, int imageWidth, int imageHeight, @NonNull final LoadPhotoCallback callback);
     void refreshCache(@NonNull List<MapModel> mapList);
     void clearCredentials();
 }
