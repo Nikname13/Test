@@ -29,7 +29,7 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
 
     @Override
     public void start() {
-        Log.e("TAG", "start department");
+      //  Log.e("TAG", "start department");
         mView.setFilterString(mFilterString);
         loadList(false || mFirstLoad);
         mFirstLoad=false;
@@ -46,8 +46,13 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
     }
 
     @Override
+    public void destroy() {
+        
+    }
+
+    @Override
     public void onFilter(@NonNull String filterString, @NonNull RecyclerItemContract.RecyclerFilterCallback callback) {
-        Log.d("TAG", "onFilter");
+      //  Log.d("TAG", "onFilter");
         if(!filterString.isEmpty()) {
             mFilteredList = new ArrayList<>();
             mInteractor.filteredList(filterString, new DepartmentInteractorContract.FilteredCallback() {
@@ -60,7 +65,7 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
             });
             callback.onResult(mFilteredList);
         }else {
-            Log.d("TAG", "onFilter else");
+          //  Log.d("TAG", "onFilter else");
             callback.onResult(getPositionList());
             mFilteredList=null;
         }
@@ -113,7 +118,7 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
             }
         }else mListOfSelected.add(item);
         for (MapModel model : mListOfSelected) {
-            Log.d("TAG", " item "+model.getModel().getName() +" lvl "+mListOfSelected.indexOf(model));
+           // Log.d("TAG", " item "+model.getModel().getName() +" lvl "+mListOfSelected.indexOf(model));
         }
     }
 
@@ -195,7 +200,7 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
         List<Integer> positionList = new ArrayList<>();
         for (MapModel model : mRecyclerModelList) {
             if (model.isVisible()){
-                Log.d("TAG", " position list "+ model.getModel().getName());
+                //Log.d("TAG", " position list "+ model.getModel().getName());
                 positionList.add(mRecyclerModelList.indexOf(model));
                 model.setSelected(false);
             }

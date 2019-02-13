@@ -1,6 +1,7 @@
 package com.example.azolotarev.test.UI.Main.EmployeePage;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -35,13 +36,12 @@ public class EmployeeFragment extends Fragment implements EmployeeContract.View 
     private ImageView mAvatarView;
     private TextView mTitle, mName, mPhone, mEmail;
     private LinearLayout mTitleContainer, mNameContainer, mPhoneContainer, mEmailContainer, mEmployeeContainer;
-
+    private boolean mTurn=false;
 
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("TAG","Employee fragment create"+savedInstanceState);
         setHasOptionsMenu(true);
         setPresenter((EmployeeContract.Presenter) PresenterManager.getPresenter(this.getClass().getName()+getArguments().getString(ARG_EMPLOYEE)));
     }
@@ -90,7 +90,6 @@ public class EmployeeFragment extends Fragment implements EmployeeContract.View 
         mAvatarView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                Log.i("TAG","!!onGlobalLayout  "+mAvatarView.getWidth()+" "+mAvatarView.getHeight());
                 mPresenter.loadPhoto(mAvatarView.getWidth(),mAvatarView.getHeight());
             }
         });
@@ -101,7 +100,7 @@ public class EmployeeFragment extends Fragment implements EmployeeContract.View 
     @Override
     public void onResume() {
         super.onResume();
-        Log.e("TAG","!!employee onResume");
+       // Log.e("TAG","!!employee onResume");
         mPresenter.setPhotoId(getArguments().getString(ARG_PHOTO));
         mPresenter.setItemId(getArguments().getString(ARG_EMPLOYEE));
         mPresenter.start();
@@ -212,32 +211,41 @@ public class EmployeeFragment extends Fragment implements EmployeeContract.View 
     @Override
     public void onPause() {
         super.onPause();
-        Log.e("TAG","employee onPause");
+        Log.e("TAG","employee onPause "+getArguments().getString(ARG_EMPLOYEE));
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Log.e("TAG","employee onStop");
-        getActivity().getSupportFragmentManager().beginTransaction().remove(this);
+        Log.e("TAG","employee onStop "+getArguments().getString(ARG_EMPLOYEE));
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.e("TAG","employee onDestroy");
-       // mPresenter.unbindView();
+        Log.e("TAG","employee onDestroy "+getArguments().getString(ARG_EMPLOYEE));
+        if(!isRemoving()) mPresenter.unbindView();
+        else mPresenter.destroy();
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        Log.e("TAG","employee onDetach");
+        Log.e("TAG","employee onDetach "+getArguments().getString(ARG_EMPLOYEE) + isRemoving());
+
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.e("TAG","employee onDestroyView");
+        Log.e("TAG","employee onDestroyView "+getArguments().getString(ARG_EMPLOYEE));
     }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.e("TAG","employee onSaveInstanceState "+getArguments().getString(ARG_EMPLOYEE));
+        mTurn=true;
+    }
+
 }

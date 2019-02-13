@@ -2,9 +2,11 @@ package com.example.azolotarev.test.UI.Main.EmployeePage;
 
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import com.example.azolotarev.test.Domain.EmployeePage.EmployeeInteractorContract;
 import com.example.azolotarev.test.Model.EmployeeModel;
 import com.example.azolotarev.test.Model.MapModel;
+import com.example.azolotarev.test.Service.PresenterManager;
 import com.example.azolotarev.test.UI.BaseView;
 
 public class EmployeePresenter implements EmployeeContract.Presenter {
@@ -58,7 +60,6 @@ public class EmployeePresenter implements EmployeeContract.Presenter {
         else mView.hidePhone();
         if(model.getEmail()!=null)mView.setEmail(model.getEmail());
         else mView.hideEmail();
-
     }
 
     @Override
@@ -69,7 +70,13 @@ public class EmployeePresenter implements EmployeeContract.Presenter {
     @Override
     public void unbindView() {
         mView=null;
+    }
 
+    @Override
+    public void destroy() {
+        Log.d("TAG","presenter employ destroy "+mIdMapModel);
+        PresenterManager.removePresenter(mView.getClass().getName()+mIdMapModel);
+        unbindView();
     }
 
     @Override
@@ -114,6 +121,7 @@ public class EmployeePresenter implements EmployeeContract.Presenter {
                 new EmployeeInteractorContract.PhotoCallback() {
                     @Override
                     public void onPhoto(Bitmap photo) {
+                        if(mView!=null)
                         mView.setAvatarView(photo);
                         mLoadPhoto=true;
                     }

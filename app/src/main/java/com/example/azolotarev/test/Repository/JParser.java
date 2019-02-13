@@ -14,13 +14,13 @@ import java.util.List;
 public class JParser implements JParserContract {
     @Override
     public void parsDepartments(@NonNull String jsonString, @NonNull ParsDepartmentsCallback callback) {
-        Log.e("TAG", "jparser getListModel");
-        if(jsonString==null)
-        Log.e("TAG", "jparser getListModel jsonString = null");
+      //  Log.e("TAG", "jparser getListModel");
+      //  Log.e("TAG", "jparser getListModel jsonString = null");
         try {
             JSONObject json=new JSONObject(jsonString);
             if(json.length()!=0) {
-                List<DepartmentModel> list= getDepartment(json).getDepartmentsList();
+               // List<DepartmentModel> list= getDepartment(json).getDepartmentsList();
+                List<DepartmentModel> list= getTestList();
                if(list!=null) callback.onDepartmentsLoaded(list);
                 else callback.notAvailable("Лист = null");
             }
@@ -96,7 +96,7 @@ public class JParser implements JParserContract {
             return employeeModel;
         } catch (JSONException e) {
             e.printStackTrace();
-            Log.e("TAG","getEmployee error");
+          //  Log.e("TAG","getEmployee error");
             return null;
         }
     }

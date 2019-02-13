@@ -48,7 +48,7 @@ public class AuthorizationPresenter implements AuthorizationContract.Presenter {
     @Override
     public void destroy() {
         PresenterManager.removePresenter(mAuthorizationView.getClass().getName());
-        mAuthorizationInteractor=null;
+        unbindView();
     }
 
     @Override

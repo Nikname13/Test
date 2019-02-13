@@ -11,9 +11,12 @@ public class ScaledBitmap {
         int inSampleSize = 1;
 
         if(height > reqH || width > reqW){
-            final int hRatio = Math.round((float) height / (float) reqH);
-            final int wRatio = Math.round((float) width / (float) reqW);
-            inSampleSize = hRatio < wRatio ? hRatio : wRatio;
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+            while ((halfHeight / inSampleSize) >= reqH
+                    && (halfWidth / inSampleSize) >= reqW) {
+                inSampleSize *= 2;
+            }
         }
         return inSampleSize;
     }

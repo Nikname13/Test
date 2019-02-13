@@ -30,7 +30,7 @@ public class PersistentStorage {
     }
 
     public static void addCredentials(String login, String password){
-        Log.e("TAG", "PersistentStorage addCredentials "+login+" "+password);
+    //    Log.e("TAG", "PersistentStorage addCredentials "+login+" "+password);
         if(sSettings==null) init();
         sEditor.putString(LOGIN, login);
         sEditor.putString(PASSWORD, password);
@@ -63,7 +63,7 @@ public class PersistentStorage {
         if (sSettings == null) init();
         String s = sSettings.getString(key, "");
         if (s.isEmpty()) {
-            Log.e("TAG", "PersistentStorage getString is empty");
+       //     Log.e("TAG", "PersistentStorage getString is empty");
             return "";
         }
         return s;

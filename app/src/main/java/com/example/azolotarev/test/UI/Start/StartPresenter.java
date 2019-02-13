@@ -98,4 +98,9 @@ public class StartPresenter implements StartContract.Presenter {
     public void unbindView() {
 
     }
+
+    @Override
+    public void destroy() {
+
+    }
 }

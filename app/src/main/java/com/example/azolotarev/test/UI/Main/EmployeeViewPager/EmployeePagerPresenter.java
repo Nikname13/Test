@@ -2,9 +2,11 @@ package com.example.azolotarev.test.UI.Main.EmployeeViewPager;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
+import com.example.azolotarev.test.Data.Local.ListCache;
 import com.example.azolotarev.test.Domain.DepartmentsList.DepartmentInteractorContract;
 import com.example.azolotarev.test.Domain.EmployeePage.EmployeeInteractorContract;
 import com.example.azolotarev.test.Model.MapModel;
+import com.example.azolotarev.test.Service.PresenterManager;
 import com.example.azolotarev.test.UI.BaseView;
 
 import java.util.List;
@@ -13,6 +15,7 @@ public class EmployeePagerPresenter implements EmployeePagerContract.Presenter {
 
     private EmployeeInteractorContract mInteractor;
     private EmployeePagerContract.View mView;
+    private List<MapModel> mMapModelList;
 
     public EmployeePagerPresenter(@NonNull EmployeeInteractorContract interactor) {
         mInteractor = interactor;
@@ -25,7 +28,8 @@ public class EmployeePagerPresenter implements EmployeePagerContract.Presenter {
             mInteractor.loadList(Integer.valueOf(positionInTree), new DepartmentInteractorContract.GetListCallback() {
                 @Override
                 public void onMapListLoaded(List<MapModel> list) {
-                    Log.e("TAG", "onMapListLoaded");
+                  //  Log.e("TAG", "onMapListLoaded");
+                    mMapModelList=list;
                    initViewPager(list,id);
                 }
 
@@ -93,6 +97,12 @@ public class EmployeePagerPresenter implements EmployeePagerContract.Presenter {
     @Override
     public void unbindView() {
         mView=null;
+    }
+
+    @Override
+    public void destroy() {
+        PresenterManager.removePresenter(mView.getClass().getName());
+        unbindView();
     }
 
     @Override

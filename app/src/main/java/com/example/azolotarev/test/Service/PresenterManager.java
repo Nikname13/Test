@@ -1,5 +1,6 @@
 package com.example.azolotarev.test.Service;
 
+import android.util.Log;
 import com.example.azolotarev.test.UI.BasePresenter;
 
 import java.util.HashMap;
@@ -21,5 +22,12 @@ public class PresenterManager {
 
     public static void removePresenter(String key){
         sPresenterMap.remove(key);
+    }
+
+    public static void print() {
+        Log.i("TAG","presenters size " +sPresenterMap.size());
+        for(Map.Entry<String,BasePresenter> map :sPresenterMap.entrySet()){
+            Log.i("TAG","-!!!- presenter" + map.getKey());
+        }
     }
 }

@@ -27,7 +27,7 @@ public class DepartmentInteractor implements DepartmentInteractorContract {
 
     @Override
     public void loadList(@NonNull final GetListCallback callback) {
-        Log.e("TAG","department interacrot loadList refreshCache= "+mRefreshCache);
+     //   Log.e("TAG","department interacrot loadList refreshCache= "+mRefreshCache);
         new AsyncLoadList(callback).execute();
     }
 
@@ -88,7 +88,7 @@ public class DepartmentInteractor implements DepartmentInteractorContract {
 
     @Override
     public void refreshList() {
-        Log.e("TAG","department interacrot refreshList");
+     //   Log.e("TAG","department interacrot refreshList");
         mRefreshCache=true;
     }
 
@@ -136,7 +136,7 @@ public class DepartmentInteractor implements DepartmentInteractorContract {
         }
         mRepository.refreshCache(mMapList);
         mRefreshCache=false;
-        Log.d("TAG","set Recycler list done!");
+       // Log.d("TAG","set Recycler list done!");
     }
 
     private void mapToRecyclerModel(DepartmentModel department, int lvl){
@@ -189,7 +189,7 @@ public class DepartmentInteractor implements DepartmentInteractorContract {
 
                                            @Override
                                            public void onDepartmentsLoaded(List<DepartmentModel> departments) {
-                                               Log.d("TAG","doInBackground");
+                                            //   Log.d("TAG","doInBackground");
                                                mDepartmentModels=departments;
                                            }
 
@@ -199,7 +199,7 @@ public class DepartmentInteractor implements DepartmentInteractorContract {
                                            }
                                        }
                     );
-            if(mMapList==null || mRefreshCache && mDepartmentModels!=null) setMapList();
+            if((mMapList==null || mRefreshCache) && mDepartmentModels!=null) setMapList();
             return null;
         }
 
@@ -215,7 +215,7 @@ public class DepartmentInteractor implements DepartmentInteractorContract {
         if(mConnectionError!=null && !mConnectionError.isEmpty()) callback.connectionError(mConnectionError);
         if(mNotAvailable!=null && !mNotAvailable.isEmpty()) callback.notAvailable(mNotAvailable);
         if(mMapList!=null) callback.onMapListLoaded(mMapList);
-        Log.d("TAG","onPostExecute");
+      //  Log.d("TAG","onPostExecute");
 
     }
 

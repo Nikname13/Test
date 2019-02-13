@@ -2,11 +2,13 @@ package com.example.azolotarev.test.UI.Main.EmployeeViewPager;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -38,7 +40,6 @@ public class EmployeePagerFragment extends Fragment implements EmployeePagerCont
     private static final String ARG_FILTER ="employee_filter";
     private Toolbar mToolbar;
 
-
     public static EmployeePagerFragment newInstance(@NonNull String position, @NonNull String id, @NonNull String filterString){
         Bundle arg=new Bundle();
         arg.putString(ARG_EMPLOYEE_POSITION,position);
@@ -52,6 +53,7 @@ public class EmployeePagerFragment extends Fragment implements EmployeePagerCont
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setHasOptionsMenu(true);
         setPresenter((EmployeePagerContract.Presenter) PresenterManager.getPresenter(this.getClass().getName()));
     }
@@ -59,7 +61,7 @@ public class EmployeePagerFragment extends Fragment implements EmployeePagerCont
     @Override
     public void onResume() {
         super.onResume();
-        Log.d("TAG","onResume pager position "+getArguments().getString(ARG_EMPLOYEE_POSITION)+" id "+getArguments().getString(ARG_EMPLOYEE_ID)+" filter "+getArguments().getString(ARG_FILTER));
+       // Log.d("TAG","onResume pager position "+getArguments().getString(ARG_EMPLOYEE_POSITION)+" id "+getArguments().getString(ARG_EMPLOYEE_ID)+" filter "+getArguments().getString(ARG_FILTER));
         mPresenter.start(getArguments().getString(ARG_EMPLOYEE_POSITION),getArguments().getString(ARG_EMPLOYEE_ID),getArguments().getString(ARG_FILTER));
     }
 
@@ -86,20 +88,23 @@ public class EmployeePagerFragment extends Fragment implements EmployeePagerCont
 
     @Override
     public void initViewPager(@NonNull final List<MapModel> mapModelList, int startPosition) {
-        FragmentManager fm=getActivity().getSupportFragmentManager();
         //Log.d("TAG"," fm ");
-        mViewPager.setAdapter(new FragmentStatePagerAdapter(fm) {
+        mViewPager.setAdapter(new FragmentStatePagerAdapter(getActivity().getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int i) {
-                //Log.d("TAG","initViewPager loadItem "+i);
+                Log.d("TAG","initViewPager loadItem "+i);
                 EmployeeFragment fragment=EmployeeFragment.newInstance(mapModelList.get(i).getId(), mapModelList.get(i).getModel().getId());
                 //Log.d("TAG","presenterManager get presenter "+fragment.getClass().getName()+mapModelList.get(i).getId());
                 if(PresenterManager.getPresenter(fragment.getClass().getName()+mapModelList.get(i).getId())==null) {
-                   // Log.d("TAG","initViewPager fragment.getClass().getName() "+fragment.getClass().getName());
+                   // Log.d("TAG","!-! initViewPager fragment.getClass().getName() "+fragment.getClass().getName());
                     PresenterManager.addPresenter(new EmployeePresenter(new EmployeeInteractor(
                                     new Repository(PersistentStorage.get(),
                                             new Net(new Connect())))),
                             fragment.getClass().getName()+mapModelList.get(i).getId());
+/*                    PresenterManager.print();
+                    for(Fragment fragment1:getActivity().getSupportFragmentManager().getFragments()){
+                        Log.d("TAG",fragment1.toString());
+                    }*/
                 }
                 return fragment;
             }
@@ -173,7 +178,6 @@ public class EmployeePagerFragment extends Fragment implements EmployeePagerCont
 
     }
 
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -191,7 +195,6 @@ public class EmployeePagerFragment extends Fragment implements EmployeePagerCont
         }
     }
 
-
     @Override
     public void setPresenter(@NonNull EmployeePagerContract.Presenter presenter) {
         mPresenter=presenter;
@@ -200,19 +203,25 @@ public class EmployeePagerFragment extends Fragment implements EmployeePagerCont
     @Override
     public void onStop() {
         super.onStop();
-        Log.e("TAG","onStop pager");
+        Log.e("TAG","pager onStop");
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.e("TAG","onDestroy pager");
+        Log.e("TAG","pager onDestroy");
+        if(!isRemoving()) mPresenter.unbindView();
+        else{
+            mPresenter.destroy();
+        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        Log.e("TAG","onDetach pager");
-        mPresenter.unbindView();
+        Log.e("TAG","pager onDetach ");
+
     }
+
+
 }

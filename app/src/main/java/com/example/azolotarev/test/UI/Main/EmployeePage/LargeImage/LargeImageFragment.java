@@ -82,5 +82,31 @@ public class LargeImageFragment extends Fragment implements LargeImageContract.V
     public void hideProgress() {
 
     }
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.e("TAG","largeImage onStop");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.e("TAG","largeImage onDestroy");
+        if(!isRemoving()) mPresenter.unbindView();
+        else mPresenter.destroy();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.e("TAG","largeImage onDetach "+isRemoving());
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.e("TAG","largeImage onDestroyView");
+    }
 
 }

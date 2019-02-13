@@ -126,7 +126,7 @@ class ItemDepartmentHolder extends RecyclerView.ViewHolder implements View.OnCli
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) mCardViewRoot.getLayoutParams();
 
         if(!filtered) {
-            Log.d("TAG","itemholder onBindView "+mDepartment.getModel().getName());
+          //  Log.d("TAG","itemholder onBindView "+mDepartment.getModel().getName());
             layoutParams.setMarginStart(mDepartment.getLevel() * sMarginStart);
         }else{
             layoutParams.setMarginStart(0);

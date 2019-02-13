@@ -25,20 +25,20 @@ public class Net implements NetContract {
 
     @Override
     public void isAuth(@NonNull final LoadSuccessCallback callback) {
-        Log.e("TAG", "Net isAuth");
+   //     Log.e("TAG", "Net isAuth");
         mConnect.GET(
                 new URLBuilder(URI_HELLO).withParam(PARAM_LOGIN, mLogin).withParam(PARAM_PASSWORD, mPassword).build(),
                 mConnectivityManager.getActiveNetworkInfo(),
                 new ConnectContract.GETCallback() {
             @Override
             public void onResponse(String response) {
-                Log.e("TAG", "Net GET onResponse");
+           //     Log.e("TAG", "Net GET onResponse");
                 callback.onResponse(response);
             }
 
             @Override
             public void connectionError(String errorMessage) {
-                Log.e("TAG", "Net GET connectionError");
+          //      Log.e("TAG", "Net GET connectionError");
                 callback.connectionError(errorMessage);
             }
         });
@@ -46,7 +46,7 @@ public class Net implements NetContract {
 
     @Override
     public void getDepartments(@NonNull final LoadDepartmentsCallback callback, boolean refreshCache) {
-        Log.e("TAG", "Net isAuth");
+      //  Log.e("TAG", "Net isAuth");
         mConnect.GET(
                 new URLBuilder(URI_GET_ALL).withParam(PARAM_LOGIN, mLogin).withParam(PARAM_PASSWORD, mPassword).build(),
                 mConnectivityManager.getActiveNetworkInfo(),
@@ -65,7 +65,7 @@ public class Net implements NetContract {
 
     @Override
     public void getPhoto(@NonNull String id, int imageWidth, int imageHeight, @NonNull final LoadPhotoCallback callback) {
-        Log.e("TAG", "Net loadPhoto");
+      //  Log.e("TAG", "Net loadPhoto");
         mConnect.GETPhoto(
                 imageWidth,
                 imageHeight,

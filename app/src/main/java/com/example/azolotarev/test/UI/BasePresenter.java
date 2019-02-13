@@ -7,4 +7,5 @@ public interface BasePresenter {
     void start();
     void bindView(@NonNull BaseView view);
     void unbindView();
+    void destroy();
 }

@@ -9,6 +9,7 @@ import com.example.azolotarev.test.Data.Net.Net;
 import com.example.azolotarev.test.Domain.Authorization.AuthorizationInteractor;
 import com.example.azolotarev.test.Domain.DepartmentsList.DepartmentInteractor;
 import com.example.azolotarev.test.Repository.Repository;
+import com.example.azolotarev.test.Service.PresenterManager;
 import com.example.azolotarev.test.UI.GenericFragmentActivity;
 
 public class StartActivity extends GenericFragmentActivity {
@@ -36,9 +37,11 @@ public class StartActivity extends GenericFragmentActivity {
         }else {
             getSupportFragmentManager().popBackStack();
         }
+        Log.d("TAG", "!!! fragment size"+getSupportFragmentManager().getFragments().size());
         for(Fragment fragment:getSupportFragmentManager().getFragments()){
-            Log.d("TAG", "!!! fragment "+fragment);
+            Log.d("TAG", "!!! fragment "+fragment+" tag "+fragment.getTag());
         }
+        PresenterManager.print();
     }
 
     @Override

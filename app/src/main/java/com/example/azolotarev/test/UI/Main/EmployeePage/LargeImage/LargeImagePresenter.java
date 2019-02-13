@@ -29,7 +29,6 @@ public class LargeImagePresenter implements LargeImageContract.Presenter {
 
     @Override
     public void unbindView() {
-        PresenterManager.removePresenter(mView.getClass().getName());
         mView=null;
     }
 
@@ -57,6 +56,7 @@ public class LargeImagePresenter implements LargeImageContract.Presenter {
                 new EmployeeInteractorContract.PhotoCallback() {
                     @Override
                     public void onPhoto(Bitmap photo) {
+                        if(photo!=null)
                         mView.setAvatar(photo);
                     }
 
@@ -70,5 +70,11 @@ public class LargeImagePresenter implements LargeImageContract.Presenter {
 
                     }
                 });
+    }
+
+    @Override
+    public void destroy() {
+        PresenterManager.removePresenter(mView.getClass().getName());
+        unbindView();
     }
 }

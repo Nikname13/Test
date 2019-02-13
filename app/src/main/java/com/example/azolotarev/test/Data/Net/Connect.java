@@ -40,10 +40,10 @@ public class Connect implements ConnectContract {
     }
 
     private void getJSONString(@NonNull GETCallback callback, HttpURLConnection connect) {
-        Log.e("TAG", "Connect getJSON");
+     //   Log.e("TAG", "Connect getJSON");
         try {
             int cod=connect.getResponseCode();
-            Log.e("TAG", "connect response cod getJSON"+connect.getResponseCode());
+          //  Log.e("TAG", "connect response cod getJSON"+connect.getResponseCode());
             if(cod==HttpURLConnection.HTTP_OK){
                 //InputStream in=new BufferedInputStream(connect.getInputStream());
                 BufferedReader br = new BufferedReader(new InputStreamReader(connect.getInputStream(), StandardCharsets.UTF_8));
@@ -53,9 +53,7 @@ public class Connect implements ConnectContract {
                     sb.append(line);
                 }
                 br.close();
-                ErrorLab.errorMessage(sb.toString());
                 connect.disconnect();
-                br.close();
                 callback.onResponse(sb.toString());
             }else{
                 Log.e("TAG", "connect ошибка подключения getJSON"+connect.getResponseCode());
@@ -68,10 +66,10 @@ public class Connect implements ConnectContract {
     }
 
     private void getPhotoBitmap(@NonNull GETPhotoCallback callback, HttpURLConnection connect, int reqW, int reqH) {
-        Log.e("TAG", "Connect getPhotoBitmap");
+      //  Log.e("TAG", "Connect getPhotoBitmap");
         try {
             int cod=connect.getResponseCode();
-            Log.e("TAG", "connect response cod getPhotoBitmap"+connect.getResponseCode());
+          //  Log.e("TAG", "connect response cod getPhotoBitmap"+connect.getResponseCode());
             if(cod==HttpURLConnection.HTTP_OK){
                 InputStream inputStream=connect.getInputStream();
                 ByteArrayOutputStream outputStream=new ByteArrayOutputStream();

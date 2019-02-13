@@ -20,7 +20,7 @@ public class AuthorizationInteractor implements AuthorizationInteractorContract{
     }
     @Override
     public void logIn(@NonNull final getSuccessCallback callback, @NonNull  String login,@NonNull String password, @NonNull boolean firstLoad) {
-        Log.e("TAG", "auth interactor login");
+      //  Log.e("TAG", "auth interactor login");
         new AsyncAuth(callback,firstLoad).execute(login,password);
     }
 
@@ -52,19 +52,19 @@ public class AuthorizationInteractor implements AuthorizationInteractorContract{
             new RepositoryContract.LoadSuccessCallback() {
                  @Override
                  public void onSuccess(boolean success) {
-                     Log.e("TAG", "auth interactor onSuccess");
+                 //    Log.e("TAG", "auth interactor onSuccess");
                      mSuccess=success;
                  }
 
                  @Override
                  public void logOut(String errorMessage) {
-                     Log.e("TAG", "auth interactor logout");
+                 //    Log.e("TAG", "auth interactor logout");
                      mSuccessError=errorMessage;
                  }
 
                  @Override
                  public void connectionError(String errorMessage) {
-                     Log.e("TAG", "auth interactor connectionError");
+                   //  Log.e("TAG", "auth interactor connectionError");
                      mConnectionError=errorMessage;
                  }
              });
@@ -73,15 +73,15 @@ public class AuthorizationInteractor implements AuthorizationInteractorContract{
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            Log.e("TAG", "auth interactor onPostExecute");
+          //  Log.e("TAG", "auth interactor onPostExecute");
             mProgressListener.hideProgress();
             mCallback.onSuccess(mSuccess);
             if(mSuccessError!=null && !mSuccessError.isEmpty()){
-                Log.e("TAG", "auth interactor mSuccessError");
+             //   Log.e("TAG", "auth interactor mSuccessError");
                 mCallback.logOut(mSuccessError);
             }
             if(mConnectionError!=null && !mConnectionError.isEmpty()) {
-                Log.e("TAG", "auth interactor mConnetctionError");
+             //   Log.e("TAG", "auth interactor mConnetctionError");
                 mCallback.connectionError(mConnectionError);
             }
             }
