@@ -13,7 +13,6 @@ public class EmployeePresenter implements EmployeeContract.Presenter {
 
     private EmployeeContract.View mView;
     private final EmployeeInteractorContract mInteractor;
-    private boolean mLoadPhoto,mLoadEmployee;
     private String mPhotoId, mIdMapModel;
 
     public EmployeePresenter(@NonNull EmployeeInteractorContract interactorContract) {
@@ -28,7 +27,6 @@ public class EmployeePresenter implements EmployeeContract.Presenter {
 
     private void loadMapEmployee() {
         if (mIdMapModel != null && !mIdMapModel.isEmpty()) {
-            mLoadEmployee=true;
             mInteractor.getItem(mIdMapModel, new EmployeeInteractorContract.GetItemCallback() {
                 @Override
                 public void logOut(String errorMessage) {
@@ -42,6 +40,7 @@ public class EmployeePresenter implements EmployeeContract.Presenter {
 
                 @Override
                 public void onItemLoaded(@NonNull MapModel item) {
+                    if(mView!=null)
                      setDataEmployee((EmployeeModel) item.getModel());
                 }
 
@@ -81,20 +80,14 @@ public class EmployeePresenter implements EmployeeContract.Presenter {
 
     @Override
     public void showProgress() {
-/*        if(mLoadEmployee)Log.d("TAG","loadEmloyee");
-        if(mLoadPhoto)Log.d("TAG","load photo");*/
+        if(mView!=null)
+        mView.showProgress();
     }
 
     @Override
     public void hideProgress() {
-/*        if(mLoadEmployee){
-            Log.d("TAG","loadEmloyee stop");
-            mLoadEmployee=false;
-        }
-        if(mLoadPhoto){
-            Log.d("TAG","load photo stop");
-            mLoadPhoto=false;
-        }*/
+        if(mView!=null)
+        mView.hideProgress();
     }
 
     @Override
@@ -114,6 +107,7 @@ public class EmployeePresenter implements EmployeeContract.Presenter {
 
     @Override
     public void loadPhoto(int width, int height) {
+        mView.showProgressImage();
         mInteractor.loadPhoto(
                 mPhotoId,
                 width,
@@ -121,9 +115,10 @@ public class EmployeePresenter implements EmployeeContract.Presenter {
                 new EmployeeInteractorContract.PhotoCallback() {
                     @Override
                     public void onPhoto(Bitmap photo) {
-                        if(mView!=null)
-                        mView.setAvatarView(photo);
-                        mLoadPhoto=true;
+                        if(mView!=null) {
+                            mView.setAvatarView(photo);
+                            mView.hideProgressImage();
+                        }
                     }
 
                     @Override
@@ -146,6 +141,11 @@ public class EmployeePresenter implements EmployeeContract.Presenter {
     @Override
     public void setItemId(@NonNull String id) {
         mIdMapModel=id;
+    }
+
+    @Override
+    public void errorIntent() {
+        mView.showError("Нет необходимого приложения");
     }
 
 }

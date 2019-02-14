@@ -24,6 +24,7 @@ import com.example.azolotarev.test.Model.MapModel;
 import com.example.azolotarev.test.R;
 import com.example.azolotarev.test.Repository.Repository;
 import com.example.azolotarev.test.Service.PresenterManager;
+import com.example.azolotarev.test.Service.Router;
 import com.example.azolotarev.test.UI.Authorization.AuthorizationFragment;
 import com.example.azolotarev.test.UI.Authorization.AuthorizationPresenter;
 import com.example.azolotarev.test.UI.Main.EmployeePage.EmployeeFragment;
@@ -142,10 +143,7 @@ public class EmployeePagerFragment extends Fragment implements EmployeePagerCont
 
     @Override
     public void logOut() {
-        AuthorizationFragment fragment=AuthorizationFragment.newInstance();
-        PresenterManager.addPresenter(new AuthorizationPresenter(new AuthorizationInteractor(new Repository(PersistentStorage.get(),new Net(new Connect())))),
-                fragment.getClass().getName());
-        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,fragment).commit();
+        Router.showLogOut(getActivity());
     }
 
     @Override

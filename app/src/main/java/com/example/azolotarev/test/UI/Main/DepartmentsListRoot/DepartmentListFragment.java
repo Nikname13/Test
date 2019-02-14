@@ -29,6 +29,7 @@ import com.example.azolotarev.test.R;
 import com.example.azolotarev.test.Repository.Repository;
 import com.example.azolotarev.test.Service.ContextManager;
 import com.example.azolotarev.test.Service.PresenterManager;
+import com.example.azolotarev.test.Service.Router;
 import com.example.azolotarev.test.UI.Authorization.AuthorizationFragment;
 import com.example.azolotarev.test.UI.Authorization.AuthorizationPresenter;
 import com.example.azolotarev.test.UI.Main.EmployeeViewPager.EmployeePagerFragment;
@@ -106,10 +107,7 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
 
     @Override
     public void logOut() {
-        AuthorizationFragment fragment=AuthorizationFragment.newInstance();
-        PresenterManager.addPresenter(new AuthorizationPresenter(new AuthorizationInteractor(new Repository(PersistentStorage.get(),new Net(new Connect())))),
-        fragment.getClass().getName());
-        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,fragment).commit();
+       Router.showLogOut(getActivity());
     }
 
     @Override
@@ -159,16 +157,7 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
 
     @Override
     public void showEmployeeDetail(@NonNull String positionInTree, @NonNull String id, String filter) {
-        EmployeePagerFragment fragment=EmployeePagerFragment.newInstance(positionInTree,id,filter);
-        if(PresenterManager.getPresenter(fragment.getClass().getName())==null) {
-            PresenterManager.addPresenter(new EmployeePagerPresenter(new EmployeeInteractor(
-                            new Repository(PersistentStorage.get(),
-                                    new Net(new Connect())))),
-                    fragment.getClass().getName());
-        }
-        FragmentTransaction transaction=getActivity().getSupportFragmentManager().beginTransaction();
-        transaction.addToBackStack(null);
-        transaction.replace(R.id.fragmentContainer, fragment).commit();
+       Router.showEmployeeDetail(getActivity(), positionInTree, id, filter);
     }
 
     @Override

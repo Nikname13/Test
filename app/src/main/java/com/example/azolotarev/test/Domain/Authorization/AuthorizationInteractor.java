@@ -79,11 +79,13 @@ public class AuthorizationInteractor implements AuthorizationInteractorContract{
             if(mSuccessError!=null && !mSuccessError.isEmpty()){
              //   Log.e("TAG", "auth interactor mSuccessError");
                 mCallback.logOut(mSuccessError);
+                mSuccessError=null;
             }
             if(mConnectionError!=null && !mConnectionError.isEmpty()) {
              //   Log.e("TAG", "auth interactor mConnetctionError");
                 mCallback.connectionError(mConnectionError);
+                mConnectionError=null;
             }
-            }
+        }
         }
     }

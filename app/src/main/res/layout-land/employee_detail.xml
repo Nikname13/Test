@@ -1,140 +1,162 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-              android:orientation="vertical"
-             android:id="@+id/employee_detail_container">
+<android.support.design.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+       android:id= "@+id/employee_detail_container">
+    <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:indeterminateOnly="true"
+            android:layout_height="wrap_content"
+            android:id="@+id/progress_detail"/>
+    <LinearLayout
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:orientation="vertical"
+                  android:id="@+id/employee_detail_layout">
 
-    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
-                  android:orientation="horizontal">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                      android:orientation="horizontal">
 
+            <FrameLayout android:layout_width="match_parent"
+                         android:layout_height="match_parent"
+                         android:layout_weight="1">
                 <ImageView
                         android:id="@+id/employee_avatar"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="centerCrop"
-                        tools:srcCompat="@tools:sample/avatars"
-                        android:layout_weight="1"/>
-        <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_weight="1">
+                        tools:srcCompat="@tools:sample/avatars"/>
+                <ProgressBar
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="match_parent"
+                        android:indeterminateOnly="true"
+                        android:layout_gravity="bottom"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/progress_photo"/>
+            </FrameLayout>
             <LinearLayout
-                    android:id="@+id/employee_title"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:layout_weight="1"
-                    android:background="@color/cardview_light_background">
-
-                <TextView
-                        android:id="@+id/employee_title_label"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/list_item_padding"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical"
-                        android:text="@string/employee_title" />
-
-                <TextView
-                        android:id="@+id/employee_title_textView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/list_item_padding"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="TextView" />
-            </LinearLayout>
-            <!--employee name-->
-
-            <LinearLayout
-                    android:id="@+id/employee_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:layout_weight="1"
-                    android:background="@color/cardview_light_background">
-
-                <TextView
-                        android:id="@+id/employee_name_label"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/list_item_padding"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical"
-                        android:text="@string/employee_name" />
-
-                <TextView
-                        android:id="@+id/employee_name_textView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/list_item_padding"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="TextView" />
-            </LinearLayout>
-            <!--employee phone-->
-
-            <LinearLayout
-                    android:id="@+id/employee_phone"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:background="@drawable/ripple_list"
-                    android:clickable="true"
                     android:layout_weight="1">
-
-                <TextView
-                        android:id="@+id/employee_phone_label"
+                <LinearLayout
+                        android:id="@+id/employee_title"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/list_item_padding"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
                         android:layout_weight="1"
-                        android:gravity="center_vertical"
-                        android:text="@string/employee_phone" />
+                        android:background="@color/cardview_light_background">
 
-                <TextView
-                        android:id="@+id/employee_phone_textView"
+                    <TextView
+                            android:id="@+id/employee_title_label"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/list_item_padding"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:text="@string/employee_title" />
+
+                    <TextView
+                            android:id="@+id/employee_title_textView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/list_item_padding"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="TextView" />
+                </LinearLayout>
+                <!--employee name-->
+
+                <LinearLayout
+                        android:id="@+id/employee_name"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/list_item_padding"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
                         android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="TextView" />
+                        android:background="@color/cardview_light_background">
+
+                    <TextView
+                            android:id="@+id/employee_name_label"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/list_item_padding"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:text="@string/employee_name" />
+
+                    <TextView
+                            android:id="@+id/employee_name_textView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/list_item_padding"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="TextView" />
+                </LinearLayout>
+                <!--employee phone-->
+
+                <LinearLayout
+                        android:id="@+id/employee_phone"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:background="@drawable/ripple_list"
+                        android:clickable="true"
+                        android:layout_weight="1">
+
+                    <TextView
+                            android:id="@+id/employee_phone_label"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/list_item_padding"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:text="@string/employee_phone" />
+
+                    <TextView
+                            android:id="@+id/employee_phone_textView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/list_item_padding"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="TextView" />
+                </LinearLayout>
+
+                <!--employee email-->
+
+                <LinearLayout
+                        android:id="@+id/employee_email"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:background="@drawable/ripple_list"
+                        android:clickable="true"
+                        android:layout_weight="1">
+
+                    <TextView
+                            android:id="@+id/employee_email_label"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/list_item_padding"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:text="@string/employee_email" />
+
+                    <TextView
+                            android:id="@+id/employee_email_textView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/list_item_padding"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="TextView" />
+                </LinearLayout>
             </LinearLayout>
-
-            <!--employee email-->
-
-            <LinearLayout
-                    android:id="@+id/employee_email"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:background="@drawable/ripple_list"
-                    android:clickable="true"
-                    android:layout_weight="1">
-
-                <TextView
-                        android:id="@+id/employee_email_label"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/list_item_padding"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical"
-                        android:text="@string/employee_email" />
-
-                <TextView
-                        android:id="@+id/employee_email_textView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/list_item_padding"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="TextView" />
-            </LinearLayout>
+            <!--employee title-->
         </LinearLayout>
-        <!--employee title-->
     </LinearLayout>
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

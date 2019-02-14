@@ -72,10 +72,6 @@ public class EmployeeInteractor extends DepartmentInteractor implements Employee
             this.callback = callback;
         }
 
-        @Override
-        protected void onPreExecute() {
-            getProgress().showProgress();
-        }
 
         @Override
         protected Void doInBackground(String... id) {
@@ -105,7 +101,6 @@ public class EmployeeInteractor extends DepartmentInteractor implements Employee
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            getProgress().hideProgress();
             if(mPhoto!=null) callback.onPhoto(mPhoto);
             if(getConnectionError()!=null) callback.connectionError(getConnectionError());
             if(getSuccessError()!=null) callback.logOut(getSuccessError());

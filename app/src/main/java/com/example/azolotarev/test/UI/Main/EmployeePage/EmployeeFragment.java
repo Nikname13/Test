@@ -1,15 +1,14 @@
 package com.example.azolotarev.test.UI.Main.EmployeePage;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,16 +16,11 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
-import com.example.azolotarev.test.Data.Local.PersistentStorage;
-import com.example.azolotarev.test.Data.Net.Connect;
-import com.example.azolotarev.test.Data.Net.Net;
-import com.example.azolotarev.test.Domain.EmployeePage.EmployeeInteractor;
 import com.example.azolotarev.test.R;
-import com.example.azolotarev.test.Repository.Repository;
 import com.example.azolotarev.test.Service.PresenterManager;
-import com.example.azolotarev.test.UI.Main.EmployeePage.LargeImage.LargeImageFragment;
-import com.example.azolotarev.test.UI.Main.EmployeePage.LargeImage.LargeImagePresenter;
+import com.example.azolotarev.test.Service.Router;
 
 public class EmployeeFragment extends Fragment implements EmployeeContract.View {
 
@@ -35,8 +29,10 @@ public class EmployeeFragment extends Fragment implements EmployeeContract.View 
     public static final String ARG_PHOTO ="photo_id";
     private ImageView mAvatarView;
     private TextView mTitle, mName, mPhone, mEmail;
+    private CoordinatorLayout mDetailContainer;
     private LinearLayout mTitleContainer, mNameContainer, mPhoneContainer, mEmailContainer, mEmployeeContainer;
-    private boolean mTurn=false;
+    private ProgressBar mProgressDetail, mProgressImage;
+    private boolean mLoadImage=false;
 
 
     @Override
@@ -59,7 +55,10 @@ public class EmployeeFragment extends Fragment implements EmployeeContract.View 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v=inflater.inflate(R.layout.employee_detail,container,false);
-        mEmployeeContainer =v.findViewById(R.id.employee_detail_container);
+        mDetailContainer=v.findViewById(R.id.employee_detail_container);
+        mProgressDetail=v.findViewById(R.id.progress_detail);
+        mProgressImage=v.findViewById(R.id.progress_photo);
+        mEmployeeContainer =v.findViewById(R.id.employee_detail_layout);
         mTitle=v.findViewById(R.id.employee_title_textView);
         mTitleContainer=v.findViewById(R.id.employee_title);
         mName=v.findViewById(R.id.employee_name_textView);
@@ -84,13 +83,17 @@ public class EmployeeFragment extends Fragment implements EmployeeContract.View 
         mAvatarView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPresenter.showLargeImage();
+                if(mLoadImage)mPresenter.showLargeImage();
             }
         });
         mAvatarView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                mPresenter.loadPhoto(mAvatarView.getWidth(),mAvatarView.getHeight());
+                if(!mLoadImage) {
+                    mPresenter.loadPhoto(mAvatarView.getWidth(), mAvatarView.getHeight());
+                    mLoadImage=true;
+                }
+
             }
         });
         mPresenter.bindView(this);
@@ -109,16 +112,6 @@ public class EmployeeFragment extends Fragment implements EmployeeContract.View 
     @Override
     public void setPresenter(@NonNull EmployeeContract.Presenter presenter) {
         mPresenter=presenter;
-    }
-
-    @Override
-    public void showProgress() {
-
-    }
-
-    @Override
-    public void hideProgress() {
-
     }
 
     @Override
@@ -176,8 +169,7 @@ public class EmployeeFragment extends Fragment implements EmployeeContract.View 
         if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
             startActivity(intent);
         }else{
-            Snackbar snackbar=Snackbar.make(mEmployeeContainer,"Нет необходимого приложения",Snackbar.LENGTH_SHORT);
-            snackbar.show();
+            mPresenter.errorIntent();
         }
     }
 
@@ -189,23 +181,42 @@ public class EmployeeFragment extends Fragment implements EmployeeContract.View 
         if (sendIntent.resolveActivity(getActivity().getPackageManager()) != null) {
             startActivity(sendIntent);
         }else{
-            Snackbar snackbar=Snackbar.make(mEmployeeContainer,"Нет необходимого приложения",Snackbar.LENGTH_SHORT);
-            snackbar.show();
+            mPresenter.errorIntent();
         }
     }
 
     @Override
     public void showLargeImage(@NonNull String id) {
-        LargeImageFragment fragment=LargeImageFragment.newInstance(id);
-        if(PresenterManager.getPresenter(fragment.getClass().getName())==null) {
-            PresenterManager.addPresenter(new LargeImagePresenter(new EmployeeInteractor(
-                            new Repository(PersistentStorage.get(),
-                                    new Net(new Connect())))),
-                    fragment.getClass().getName());
-        }
-        FragmentTransaction transaction=getActivity().getSupportFragmentManager().beginTransaction();
-        transaction.addToBackStack(null);
-        transaction.add(R.id.fragmentContainer, fragment).commit();
+        Router.showLargeImage(getActivity(), id);
+    }
+
+    @Override
+    public void showError(@NonNull String errorMessage) {
+        Snackbar snackbar=Snackbar.make(mDetailContainer,errorMessage,Snackbar.LENGTH_SHORT);
+        snackbar.show();
+    }
+
+
+    @Override
+    public void showProgress() {
+        mProgressDetail.setVisibility(View.VISIBLE);
+
+    }
+
+    @Override
+    public void hideProgress() {
+        mProgressDetail.setVisibility(View.GONE);
+
+    }
+
+    @Override
+    public void showProgressImage() {
+        mProgressImage.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgressImage() {
+        mProgressImage.setVisibility(View.GONE);
     }
 
     @Override
@@ -239,13 +250,6 @@ public class EmployeeFragment extends Fragment implements EmployeeContract.View 
     public void onDestroyView() {
         super.onDestroyView();
         Log.e("TAG","employee onDestroyView "+getArguments().getString(ARG_EMPLOYEE));
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        Log.e("TAG","employee onSaveInstanceState "+getArguments().getString(ARG_EMPLOYEE));
-        mTurn=true;
     }
 
 }
