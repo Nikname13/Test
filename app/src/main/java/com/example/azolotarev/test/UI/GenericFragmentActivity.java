@@ -19,10 +19,10 @@ public abstract class GenericFragmentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Context context =getApplicationContext();
         ContextManager.init(context);
-        Log.d("TAG","onCreate start ");
+     //   Log.d("TAG","onCreate start ");
         setContentView(R.layout.fragment_container);
         FragmentManager fm = getSupportFragmentManager();
-        Log.d("TAG","start size "+fm.getFragments().size());
+    //    Log.d("TAG","start size "+fm.getFragments().size());
         Fragment fragment = fm.findFragmentById(R.id.fragmentContainer);
         if (fragment == null) {
             fragment = createFragment();

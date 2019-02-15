@@ -8,7 +8,8 @@
     <string name="auth_text_login">Логин</string>
     <string name="auth_text_password">Пароль</string>
     <string name="auth_button_log_in">Вход</string>
-    <string name="auth_error_message">Логин/пароль неверный</string>
+    <string name="auth_error_message_incorrect">Логин/пароль неверный</string>
+    <string name="auth_error_message_empty">Обязательное поле</string>
     <string name="title_activity_login">Sign in</string>
 
     <string name="employee_title">Должность</string>

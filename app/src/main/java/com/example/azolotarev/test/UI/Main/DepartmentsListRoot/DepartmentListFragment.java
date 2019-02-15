@@ -1,6 +1,6 @@
 package com.example.azolotarev.test.UI.Main.DepartmentsListRoot;
 
-import android.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -9,8 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,21 +17,11 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.*;
-import com.example.azolotarev.test.Data.Local.PersistentStorage;
-import com.example.azolotarev.test.Data.Net.Connect;
-import com.example.azolotarev.test.Data.Net.Net;
-import com.example.azolotarev.test.Domain.Authorization.AuthorizationInteractor;
-import com.example.azolotarev.test.Domain.EmployeePage.EmployeeInteractor;
 import com.example.azolotarev.test.Model.MapModel;
 import com.example.azolotarev.test.R;
-import com.example.azolotarev.test.Repository.Repository;
 import com.example.azolotarev.test.Service.ContextManager;
 import com.example.azolotarev.test.Service.PresenterManager;
 import com.example.azolotarev.test.Service.Router;
-import com.example.azolotarev.test.UI.Authorization.AuthorizationFragment;
-import com.example.azolotarev.test.UI.Authorization.AuthorizationPresenter;
-import com.example.azolotarev.test.UI.Main.EmployeeViewPager.EmployeePagerFragment;
-import com.example.azolotarev.test.UI.Main.EmployeeViewPager.EmployeePagerPresenter;
 import com.example.azolotarev.test.UI.Main.RecyclerListAdapter;
 
 import java.util.List;
@@ -271,6 +259,13 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
             @Override
             public boolean onQueryTextChange(String s) {
                 mPresenter.applyFilter(s);
+                return false;
+            }
+        });
+        mSearchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                mPresenter.toClearFilter();
                 return false;
             }
         });

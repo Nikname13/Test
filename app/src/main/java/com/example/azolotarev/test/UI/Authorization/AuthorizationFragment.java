@@ -6,18 +6,18 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.design.button.MaterialButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.CardView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ProgressBar;
+import android.widget.*;
 import com.example.azolotarev.test.R;
 import com.example.azolotarev.test.Service.PresenterManager;
 import com.example.azolotarev.test.Service.Router;
@@ -27,11 +27,12 @@ public class AuthorizationFragment extends Fragment implements AuthorizationCont
 
     private AuthorizationContract.Presenter mPresenter;
 
-    private Button mLogInButton;
+    private MaterialButton mLogInButton;
     private EditText mLoginField, mPasswordField;
+    private TextInputLayout mLoginInput, mPasswordInput;
     private FrameLayout mFrameLayout;
     private ProgressBar mProgress;
-    private CardView mCardAuth;
+    private LinearLayout mContainerAuth;
 
     public static AuthorizationFragment newInstance() {
         return new AuthorizationFragment();
@@ -45,16 +46,52 @@ public class AuthorizationFragment extends Fragment implements AuthorizationCont
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         setRetainInstance(false);
         Log.d("TAG","onCreateView auth ragment");
         View v=inflater.inflate(R.layout.fragment_authorization, container, false);
+        mLoginInput=v.findViewById(R.id.login_input_layout);
+        //mLoginInput.setError(getText(R.string.auth_error_message_empty));
         mLoginField=v.findViewById(R.id.login_field);
+        mLoginField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(count>0) mLoginInput.setErrorEnabled(false);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        mPasswordInput=v.findViewById(R.id.password_input_layout);
+        //mPasswordInput.setError(getText(R.string.auth_error_message_empty));
         mPasswordField=v.findViewById(R.id.password_field);
+        mPasswordField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(count>0) mPasswordInput.setErrorEnabled(false);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
         mFrameLayout=v.findViewById(R.id.frameLayout);
         mProgress=v.findViewById(R.id.progress_bar);
-        mCardAuth=v.findViewById(R.id.cardView_log_in);
+        mContainerAuth =v.findViewById(R.id.container_log_in);
         initLogInButton(v);
         mPresenter.bindView(this);
         return v;
@@ -67,6 +104,14 @@ public class AuthorizationFragment extends Fragment implements AuthorizationCont
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
+                if(mLoginField.getText().toString().trim().isEmpty()){
+                    mLoginInput.setErrorEnabled(true);
+                    mLoginInput.setError(getText(R.string.auth_error_message_empty));
+                }
+                if(mPasswordField.getText().toString().trim().isEmpty()){
+                    mPasswordInput.setErrorEnabled(true);
+                    mPasswordInput.setError(getText(R.string.auth_error_message_empty));
+                }
                if(!mLoginField.getText().toString().trim().isEmpty() && !mPasswordField.getText().toString().trim().isEmpty()){
                    mPresenter.logIn(mLoginField.getText().toString(), mPasswordField.getText().toString());
                        Log.d("TAG","closeKeyboard");
@@ -80,7 +125,7 @@ public class AuthorizationFragment extends Fragment implements AuthorizationCont
     @Override
     public void showProgress() {
         mProgress.setVisibility(View.VISIBLE);
-        mCardAuth.setVisibility(View.GONE);
+        mContainerAuth.setVisibility(View.GONE);
     }
 
     @Override
@@ -101,7 +146,7 @@ public class AuthorizationFragment extends Fragment implements AuthorizationCont
 
     @Override
     public void showAuthField() {
-        mCardAuth.setVisibility(View.VISIBLE);
+        mContainerAuth.setVisibility(View.VISIBLE);
     }
 
     @Override

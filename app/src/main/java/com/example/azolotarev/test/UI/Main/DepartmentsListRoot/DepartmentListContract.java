@@ -32,6 +32,7 @@ public interface DepartmentListContract {
             void onResult(List<Integer> filteredList);
         }
         void onFilter(@NonNull String filterString, @NonNull final RecyclerItemContract.RecyclerFilterCallback callback);
+        void toClearFilter();
         void itemInPosition(@NonNull final RecyclerItemContract.ItemInPositionCallback callback, int position);
         void loadList(@NonNull boolean freshUpdate);
         void openElementDetail(@NonNull MapModel model);

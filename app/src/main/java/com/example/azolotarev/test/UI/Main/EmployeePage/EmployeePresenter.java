@@ -53,7 +53,7 @@ public class EmployeePresenter implements EmployeeContract.Presenter {
     }
 
     private void setDataEmployee(@NonNull EmployeeModel model){
-        if (model.getTitle() != null) mView.setTitle(model.getTitle() + model.getParent().getName());
+        if (model.getTitle() != null) mView.setTitle(model.getTitle());
         if (model.getName() != null) mView.setName(model.getName());
         if (model.getPhone() != null) mView.setPhone(model.getPhone());
         else mView.hidePhone();

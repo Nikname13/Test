@@ -14,10 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.widget.*;
 import com.example.azolotarev.test.R;
 import com.example.azolotarev.test.Service.PresenterManager;
 import com.example.azolotarev.test.Service.Router;
@@ -29,7 +26,7 @@ public class EmployeeFragment extends Fragment implements EmployeeContract.View 
     public static final String ARG_PHOTO ="photo_id";
     private ImageView mAvatarView;
     private TextView mTitle, mName, mPhone, mEmail;
-    private CoordinatorLayout mDetailContainer;
+    private RelativeLayout mDetailContainer;
     private LinearLayout mTitleContainer, mNameContainer, mPhoneContainer, mEmailContainer, mEmployeeContainer;
     private ProgressBar mProgressDetail, mProgressImage;
     private boolean mLoadImage=false;
@@ -55,6 +52,7 @@ public class EmployeeFragment extends Fragment implements EmployeeContract.View 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v=inflater.inflate(R.layout.employee_detail,container,false);
+        mPresenter.bindView(this);
         mDetailContainer=v.findViewById(R.id.employee_detail_container);
         mProgressDetail=v.findViewById(R.id.progress_detail);
         mProgressImage=v.findViewById(R.id.progress_photo);
@@ -96,7 +94,6 @@ public class EmployeeFragment extends Fragment implements EmployeeContract.View 
 
             }
         });
-        mPresenter.bindView(this);
         return v;
     }
 

@@ -67,13 +67,18 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
         }else {
           //  Log.d("TAG", "onFilter else");
             callback.onResult(getPositionList());
-            mFilteredList=null;
+            toClearFilter();
         }
     }
+
+    @Override
+    public void toClearFilter() {
+        mFilteredList=null;
+    }
+
     @Override
     public void itemInPosition(@NonNull RecyclerItemContract.ItemInPositionCallback callback, @NonNull int position) {
         callback.onItem(mRecyclerModelList.get(position));
-
     }
 
     @Override
