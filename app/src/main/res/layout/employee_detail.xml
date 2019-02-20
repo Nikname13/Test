@@ -29,7 +29,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:scaleType="centerCrop"
-                            tools:srcCompat="@tools:sample/avatars"/>
+                            tools:srcCompat="@tools:sample/avatars"
+                            android:transitionName="@string/shared_avatar_name"/>
                     <ProgressBar
                             style="?android:attr/progressBarStyleHorizontal"
                             android:layout_width="match_parent"

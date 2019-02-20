@@ -17,8 +17,8 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
     private final DepartmentInteractorContract mInteractor;
     private boolean mFirstLoad=true;
     private List<MapModel> mRecyclerModelList;
-    private List<MapModel> mListOfSelected;
     private List<Integer> mFilteredList;
+    private MapModel mLastSelectedElement;
     private String mFilterString;
 
     public DepartmentListPresenter(@NonNull DepartmentInteractorContract interactor) {
@@ -30,7 +30,6 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
     @Override
     public void start() {
       //  Log.e("TAG", "start department");
-        mView.setFilterString(mFilterString);
         loadList(false || mFirstLoad);
         mFirstLoad=false;
     }
@@ -73,7 +72,9 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
 
     @Override
     public void toClearFilter() {
+        Log.d("TAG","---toClearFilter");
         mFilteredList=null;
+        mFilterString=null;
     }
 
     @Override
@@ -83,9 +84,10 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
 
     @Override
     public void loadList(@NonNull final boolean freshUpdate) {
+        mView.setFilterString(mFilterString);
         if(freshUpdate) {
             mInteractor.refreshList();
-            mListOfSelected=null;
+            mLastSelectedElement=null;
         }
         mInteractor.loadList(new DepartmentInteractorContract.GetListCallback() {
             @Override
@@ -112,36 +114,33 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
     }
 
     private void setSelectedItem(@NonNull MapModel item){
-        if(mListOfSelected==null)mListOfSelected=new ArrayList<>();
-        if(mListOfSelected.contains(item)) {
-            for (MapModel model : mListOfSelected) {
-                if (model.getModel().getId() != model.getModel().getId()) mListOfSelected.remove(model);
-                else {
-                    mListOfSelected.remove(model);
-                    break;
-                }
-            }
-        }else mListOfSelected.add(item);
-        for (MapModel model : mListOfSelected) {
-           // Log.d("TAG", " item "+model.getModel().getName() +" lvl "+mListOfSelected.indexOf(model));
+        if(mLastSelectedElement!=null) mRecyclerModelList.get(mRecyclerModelList.indexOf(mLastSelectedElement)).setSelected(false);
+        if(item.getModel() instanceof EmployeeModel){
+            mRecyclerModelList.get(mRecyclerModelList.indexOf(item)).setSelected(true);
+            mLastSelectedElement=item;
+        }else{
+            mLastSelectedElement=null;
         }
+
     }
 
     @Override
     public void openElementDetail(@NonNull MapModel selectedElement) {
+        setSelectedItem(selectedElement);
+        int indexElement=mRecyclerModelList.indexOf(selectedElement);
         if(selectedElement.getModel() instanceof EmployeeModel){
-            mView.showEmployeeDetail(String.valueOf(mRecyclerModelList.indexOf(selectedElement)),selectedElement.getId(),mFilterString);
-        }else if(mRecyclerModelList.size()-1>mRecyclerModelList.indexOf(selectedElement) &&
-                mRecyclerModelList.get(mRecyclerModelList.indexOf(selectedElement)).getLevel()!=mRecyclerModelList.get(mRecyclerModelList.indexOf(selectedElement)+1).getLevel()){
+            mView.showEmployeeDetail(String.valueOf(indexElement),selectedElement.getId(),mFilterString);
+        }else if(mRecyclerModelList.size()-1>indexElement &&
+                mRecyclerModelList.get(indexElement).getLevel()<mRecyclerModelList.get(indexElement+1).getLevel()){
+            Log.i("TAG","selected LVL "+mRecyclerModelList.get(indexElement).getLevel()+" next lvl "+mRecyclerModelList.get(indexElement+1).getLevel());
                 openElement(
-                        mRecyclerModelList.indexOf(selectedElement),
+                        indexElement,
                         selectedElement.getLevel(),
-                        !mRecyclerModelList.get(mRecyclerModelList.indexOf(selectedElement) + 1).isVisible());
+                        !mRecyclerModelList.get(indexElement + 1).isVisible());
                 mView.updateList(getPositionList());
         }else{
             mView.showMessage("Пустой список");
         }
-        setSelectedItem(selectedElement);
     }
 
     @Override
@@ -182,11 +181,6 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
     }
 
     private void showList(boolean freshUpdate) {
-        if(mListOfSelected!=null){
-            for(MapModel model:mListOfSelected){
-               openElement(mRecyclerModelList.indexOf(model),mRecyclerModelList.get(mRecyclerModelList.indexOf(model)).getLevel(),true);
-            }
-        }
         if(mFilteredList!=null){
             if(freshUpdate){
                 onFilter(mFilterString, new RecyclerItemContract.RecyclerFilterCallback() {
@@ -207,11 +201,10 @@ public class DepartmentListPresenter implements DepartmentListContract.Presenter
             if (model.isVisible()){
                 //Log.d("TAG", " position list "+ model.getModel().getName());
                 positionList.add(mRecyclerModelList.indexOf(model));
-                model.setSelected(false);
+                //model.setSelected(false);
             }
         }
-        if(mListOfSelected!=null && mListOfSelected.size()>=1 && mListOfSelected.get(mListOfSelected.size()-1).getModel() instanceof EmployeeModel)
-            mRecyclerModelList.get(mRecyclerModelList.indexOf(mListOfSelected.get(mListOfSelected.size()-1))).setSelected(true);
+
         return positionList;
     }
 }

@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.example.azolotarev.test.UI.Main.DepartmentsListRoot.ScrollChildSwipeRefreshLayout
+
+<android.support.design.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/refresh_layout">
-<android.support.design.widget.CoordinatorLayout android:layout_width="match_parent"
-                                                 android:layout_height="match_parent"
-                                                 android:id="@+id/department_layout">
+        android:id="@+id/department_layout">
+
         <android.support.design.widget.AppBarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -16,12 +15,19 @@
                         android:layout_height="match_parent"
                         android:layout_width="match_parent"/>
         </android.support.design.widget.AppBarLayout>
-        <android.support.v7.widget.RecyclerView
-                android:id="@+id/departments_recycler_view"
+        <com.example.azolotarev.test.UI.Main.DepartmentsListRoot.ScrollChildSwipeRefreshLayout
+                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+                android:id="@+id/swipe_refresh_layout"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                <android.support.v7.widget.RecyclerView
+                        android:id="@+id/departments_recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scrollbars="vertical"
+                        android:scrollbarThumbVertical="@color/colorAccent"/>
+        </com.example.azolotarev.test.UI.Main.DepartmentsListRoot.ScrollChildSwipeRefreshLayout>
 
 </android.support.design.widget.CoordinatorLayout>
 
-</com.example.azolotarev.test.UI.Main.DepartmentsListRoot.ScrollChildSwipeRefreshLayout>

@@ -26,4 +26,6 @@
     <string name="positive_button">выход</string>
     <string name="negative_button">отмена</string>
 
+    <string name="shared_avatar_name">avatar</string>
+
 </resources>

@@ -184,7 +184,7 @@ public class EmployeeFragment extends Fragment implements EmployeeContract.View 
 
     @Override
     public void showLargeImage(@NonNull String id) {
-        Router.showLargeImage(getActivity(), id);
+        Router.showLargeImage(getActivity(), id, this, mAvatarView);
     }
 
     @Override

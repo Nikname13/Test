@@ -44,7 +44,7 @@ public class LargeImageFragment extends Fragment implements LargeImageContract.V
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v=inflater.inflate(R.layout.fragment_large_image,container,false);
-        mImageView=v.findViewById(R.id.large_image);
+        mImageView=v.findViewById(R.id.employee_avatar);
         mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

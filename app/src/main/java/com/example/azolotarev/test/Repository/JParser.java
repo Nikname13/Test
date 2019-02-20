@@ -19,8 +19,8 @@ public class JParser implements JParserContract {
         try {
             JSONObject json=new JSONObject(jsonString);
             if(json.length()!=0) {
-                List<DepartmentModel> list= getDepartment(json).getDepartmentsList();
-               // List<DepartmentModel> list= getTestList();
+               // List<DepartmentModel> list= getDepartment(json).getDepartmentsList();
+                List<DepartmentModel> list= getTestList();
                if(list!=null) callback.onDepartmentsLoaded(list);
                 else callback.notAvailable("Лист = null");
             }

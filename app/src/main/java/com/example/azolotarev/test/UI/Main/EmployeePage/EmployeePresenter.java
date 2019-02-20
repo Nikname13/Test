@@ -80,8 +80,8 @@ public class EmployeePresenter implements EmployeeContract.Presenter {
 
     @Override
     public void showProgress() {
-        if(mView!=null)
-        mView.showProgress();
+/*        if(mView!=null)
+        mView.showProgress();*/
     }
 
     @Override
@@ -107,7 +107,8 @@ public class EmployeePresenter implements EmployeeContract.Presenter {
 
     @Override
     public void loadPhoto(int width, int height) {
-        mView.showProgressImage();
+/*        if(mView!=null)
+        mView.showProgressImage();*/
         mInteractor.loadPhoto(
                 mPhotoId,
                 width,

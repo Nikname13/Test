@@ -6,13 +6,11 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.example.azolotarev.test.Model.MapModel;
 import com.example.azolotarev.test.R;
@@ -99,8 +97,9 @@ class ItemDepartmentHolder extends RecyclerView.ViewHolder implements View.OnCli
 
     private TextView mTextView;
     private RecyclerItemContract mClickListener;
-    private MapModel mDepartment;
+    private MapModel mItem;
     private CardView mCardViewRoot;
+    private Context mContext;
     private static final int sMarginStart=50;
 
     public ItemDepartmentHolder(@NonNull View itemView, @NonNull RecyclerItemContract listener, Context context) {
@@ -108,36 +107,39 @@ class ItemDepartmentHolder extends RecyclerView.ViewHolder implements View.OnCli
         mClickListener=listener;
         mTextView=itemView.findViewById(R.id.title_text_view);
         mCardViewRoot =itemView.findViewById(R.id.root_card_view);
+        mContext=context;
         itemView.setOnClickListener(this);
-        mCardViewRoot.setBackground(ContextCompat.getDrawable(context,R.drawable.ripple_list));
+
     }
 
-    @SuppressLint("ResourceAsColor")
     public void onBindViewHolder(int position, @NonNull boolean filtered){
         mClickListener.itemInPosition(new RecyclerItemContract.ItemInPositionCallback() {
             @Override
             public void onItem(@NonNull MapModel model) {
-                mDepartment=model;
+                mItem =model;
             }
         },
         position);
 
-        mTextView.setText(mDepartment.getModel().getName());
+        mTextView.setText(mItem.getModel().getName());
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) mCardViewRoot.getLayoutParams();
 
         if(!filtered) {
-          //  Log.d("TAG","itemholder onBindView "+mDepartment.getModel().getName());
-            layoutParams.setMarginStart(mDepartment.getLevel() * sMarginStart);
+          //  Log.d("TAG","itemholder onBindView "+mItem.getModel().getName());
+            layoutParams.setMarginStart(mItem.getLevel() * sMarginStart);
         }else{
             layoutParams.setMarginStart(0);
         }
         //mCardViewRoot.requestLayout();
-        if(mDepartment.isSelected()) mCardViewRoot.setCardBackgroundColor(R.color.cardview_dark_background);
+        if(mItem.isSelected()) mCardViewRoot.setBackgroundColor(ContextCompat.getColor(mContext,R.color.colorAccent));
+        else{
+            mCardViewRoot.setBackground(ContextCompat.getDrawable(mContext,R.drawable.ripple_list));
+        }
     }
 
     @Override
     public void onClick(View v) {
-        mClickListener.onClickItem(mDepartment);
+        mClickListener.onClickItem(mItem);
     }
 }
 

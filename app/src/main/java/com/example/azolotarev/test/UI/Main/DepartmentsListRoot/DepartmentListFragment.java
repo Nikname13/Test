@@ -1,5 +1,6 @@
 package com.example.azolotarev.test.UI.Main.DepartmentsListRoot;
 
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.DialogInterface;
@@ -26,7 +27,7 @@ import com.example.azolotarev.test.UI.Main.RecyclerListAdapter;
 
 import java.util.List;
 
-public class DepartmentListFragment extends Fragment implements DepartmentListContract.View {
+public class DepartmentListFragment extends Fragment implements DepartmentListContract.View{
 
     private DepartmentListContract.Presenter mPresenter;
     private RecyclerView mRecyclerViewRoot;
@@ -37,7 +38,6 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     private SearchView mSearchView;
     private MenuItem mSearchItem;
     private String mFilteredString;
-    private static final String SEARCH_KEY="search_key";
 
     public static DepartmentListFragment newInstance() {
         return new DepartmentListFragment();
@@ -62,7 +62,7 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
         mRecyclerViewRoot =v.findViewById(R.id.departments_recycler_view);
         mRecyclerViewRoot.setLayoutManager(new LinearLayoutManager(getActivity()));
         mCoordinatorLayout =v.findViewById(R.id.department_layout);
-        mSwipeRefreshLayout=v.findViewById(R.id.refresh_layout);
+        mSwipeRefreshLayout=v.findViewById(R.id.swipe_refresh_layout);
         mSwipeRefreshLayout.setScrollUpChild(mRecyclerViewRoot);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -81,6 +81,7 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
         super.onResume();
       //  Log.e("TAG","onResume rootdepartment "+getActivity().toString());
         mPresenter.start();
+
     }
 
     @Override
@@ -146,6 +147,7 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     @Override
     public void showEmployeeDetail(@NonNull String positionInTree, @NonNull String id, String filter) {
        Router.showEmployeeDetail(getActivity(), positionInTree, id, filter);
+
     }
 
     @Override
@@ -155,7 +157,7 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
     }
 
     @Override
-    public void setFilterString(@NonNull String filterString) {
+    public void setFilterString(String filterString) {
         mFilteredString=filterString;
     }
 
