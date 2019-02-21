@@ -23,7 +23,7 @@ public interface RepositoryContract {
     void isAuth(@NonNull String login,@NonNull String password, @NonNull boolean firstLoad,@NonNull final LoadSuccessCallback callback);
     void loadDepartments(boolean refreshCache, @NonNull boolean firstLoad, @NonNull final LoadDepartmentsCallback callback);
     void loadItem(@NonNull String id, @NonNull final LoadItemCallback callback);
-    void loadPhoto(@NonNull String id, int imageWidth, int imageHeight, @NonNull final LoadPhotoCallback callback);
+    void loadPhoto(@NonNull String id, int imageWidth, int imageHeight, boolean large, @NonNull final LoadPhotoCallback callback);
     void refreshCache(@NonNull List<MapModel> mapList);
     void clearCredentials();
 }

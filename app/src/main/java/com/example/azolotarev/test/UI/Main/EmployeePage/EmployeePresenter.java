@@ -113,6 +113,7 @@ public class EmployeePresenter implements EmployeeContract.Presenter {
                 mPhotoId,
                 width,
                 height,
+                false,
                 new EmployeeInteractorContract.PhotoCallback() {
                     @Override
                     public void onPhoto(Bitmap photo) {

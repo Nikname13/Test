@@ -50,8 +50,8 @@ public class EmployeeInteractor extends DepartmentInteractor implements Employee
     }
 
     @Override
-    public void loadPhoto(@NonNull String id, int imageWidth, int imageHeight, @NonNull PhotoCallback callback) {
-        new AsyncEmployeePhoto(callback).execute(id, String.valueOf(imageWidth), String.valueOf(imageHeight));
+    public void loadPhoto(@NonNull String id, int imageWidth, int imageHeight, boolean large, @NonNull PhotoCallback callback) {
+        new AsyncEmployeePhoto(callback, large).execute(id, String.valueOf(imageWidth), String.valueOf(imageHeight));
     }
 
     private void onEmployeeList(@NonNull final GetListCallback callback, @NonNull List<MapModel> mapModelList, int position){
@@ -67,9 +67,11 @@ public class EmployeeInteractor extends DepartmentInteractor implements Employee
 
     private class AsyncEmployeePhoto extends AsyncTask<String,Void, Void> {
         private PhotoCallback callback;
+        private boolean large;
 
-        public AsyncEmployeePhoto(PhotoCallback callback) {
+        public AsyncEmployeePhoto(PhotoCallback callback, boolean large) {
             this.callback = callback;
+            this.large=large;
         }
 
 
@@ -79,6 +81,7 @@ public class EmployeeInteractor extends DepartmentInteractor implements Employee
                     id[0],
                     Integer.valueOf(id[1]),
                     Integer.valueOf(id[2]),
+                    large,
                     new RepositoryContract.LoadPhotoCallback() {
 
                                      @Override

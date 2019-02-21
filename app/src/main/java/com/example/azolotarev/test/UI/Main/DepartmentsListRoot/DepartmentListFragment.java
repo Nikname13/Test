@@ -18,6 +18,7 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.*;
+import android.widget.ImageView;
 import com.example.azolotarev.test.Model.MapModel;
 import com.example.azolotarev.test.R;
 import com.example.azolotarev.test.Service.ContextManager;
@@ -30,6 +31,7 @@ import java.util.List;
 public class DepartmentListFragment extends Fragment implements DepartmentListContract.View{
 
     private DepartmentListContract.Presenter mPresenter;
+    private ImageView mSharedImage;
     private RecyclerView mRecyclerViewRoot;
     private RecyclerListAdapter mDepartmentsAdapter;
     private CoordinatorLayout mCoordinatorLayout;
@@ -57,8 +59,8 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
        // Log.d("TAG","onCreate rootdepartment");
         View v=inflater.inflate(R.layout.fragment_list,container,false);
         mToolbar=v.findViewById(R.id.main_toolbar);
-        mToolbar.setTitle("");
         ((AppCompatActivity)getActivity()).setSupportActionBar(mToolbar);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
         mRecyclerViewRoot =v.findViewById(R.id.departments_recycler_view);
         mRecyclerViewRoot.setLayoutManager(new LinearLayoutManager(getActivity()));
         mCoordinatorLayout =v.findViewById(R.id.department_layout);
@@ -71,6 +73,7 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
                 mPresenter.loadList(true);
             }
         });
+        mSharedImage=v.findViewById(R.id.shared_view);
         mPresenter.bindView(this);
         return v;
     }
@@ -96,7 +99,7 @@ public class DepartmentListFragment extends Fragment implements DepartmentListCo
 
     @Override
     public void logOut() {
-       Router.showLogOut(getActivity());
+       Router.showLogOut(getActivity(), mSharedImage);
     }
 
     @Override

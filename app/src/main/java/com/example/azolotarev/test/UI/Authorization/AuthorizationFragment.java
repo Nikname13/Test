@@ -10,6 +10,7 @@ import android.support.design.button.MaterialButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -32,7 +33,8 @@ public class AuthorizationFragment extends Fragment implements AuthorizationCont
     private TextInputLayout mLoginInput, mPasswordInput;
     private FrameLayout mFrameLayout;
     private ProgressBar mProgress;
-    private LinearLayout mContainerAuth;
+    private CardView mContainerAuth;
+    private ImageView mSharedImage;
 
     public static AuthorizationFragment newInstance() {
         return new AuthorizationFragment();
@@ -89,10 +91,11 @@ public class AuthorizationFragment extends Fragment implements AuthorizationCont
 
             }
         });
-        mFrameLayout=v.findViewById(R.id.frameLayout);
+        mFrameLayout=v.findViewById(R.id.auth_layout);
         mProgress=v.findViewById(R.id.progress_bar);
         mContainerAuth =v.findViewById(R.id.container_log_in);
         initLogInButton(v);
+        mSharedImage=v.findViewById(R.id.shared_view);
         mPresenter.bindView(this);
         return v;
     }
@@ -141,7 +144,7 @@ public class AuthorizationFragment extends Fragment implements AuthorizationCont
 
     @Override
     public void showDepartmentsList() {
-        Router.showDepartmentsList(getActivity());
+        Router.showDepartmentsList(getActivity(), mSharedImage);
     }
 
     @Override

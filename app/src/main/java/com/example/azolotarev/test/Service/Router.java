@@ -1,6 +1,7 @@
 package com.example.azolotarev.test.Service;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.os.Build;
 
 import android.support.v4.app.Fragment;
@@ -9,9 +10,12 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewCompat;
 
 import android.transition.Fade;
+import android.transition.Transition;
 import android.transition.TransitionInflater;
 import android.transition.TransitionSet;
 import android.util.Log;
+import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import com.example.azolotarev.test.Data.Local.PersistentStorage;
 import com.example.azolotarev.test.Data.Net.Connect;
@@ -32,15 +36,20 @@ import com.example.azolotarev.test.UI.Main.EmployeeViewPager.EmployeePagerPresen
 
 public class Router {
 
-    private static final long MOVE_DEFAULT_TIME = 1000;
-    private static final long FADE_DEFAULT_TIME = 300;
 
-    public static void showDepartmentsList(FragmentActivity activity) {
+    public static void showDepartmentsList(FragmentActivity activity, View sharedView) {
         DepartmentListFragment fragment=DepartmentListFragment.newInstance();
         PresenterManager.addPresenter(new DepartmentListPresenter(new DepartmentInteractor(
                         new Repository(PersistentStorage.get(),new Net(new Connect())))),
                 fragment.getClass().getName());
         FragmentTransaction transaction=activity.getSupportFragmentManager().beginTransaction();
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && sharedView!=null) {
+            Transition changeTransform = TransitionInflater.from(ContextManager.getContext()).
+                    inflateTransition(R.transition.change_image_transform);
+            fragment.setSharedElementEnterTransition(changeTransform);
+            transaction.addSharedElement(sharedView,ViewCompat.getTransitionName(sharedView));
+        }
+       // transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         transaction.replace(R.id.fragmentContainer,fragment).commit();
     }
 
@@ -53,18 +62,29 @@ public class Router {
                     fragment.getClass().getName());
         }
         FragmentTransaction transaction=activity.getSupportFragmentManager().beginTransaction();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         transaction.addToBackStack(null);
         transaction.replace(R.id.fragmentContainer, fragment).commit();
     }
 
-    public static void showLogOut(FragmentActivity activity) {
+    public static void showLogOut(FragmentActivity activity, View sharedView) {
         AuthorizationFragment fragment=AuthorizationFragment.newInstance();
         PresenterManager.addPresenter(new AuthorizationPresenter(new AuthorizationInteractor(new Repository(PersistentStorage.get(),new Net(new Connect())))),
                 fragment.getClass().getName());
         activity.getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,fragment).commit();
+        FragmentTransaction transaction=activity.getSupportFragmentManager().beginTransaction();
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && sharedView!=null) {
+            Transition changeTransform = TransitionInflater.from(ContextManager.getContext()).
+                    inflateTransition(R.transition.change_image_transform);
+            fragment.setSharedElementEnterTransition(changeTransform);
+            transaction.addSharedElement(sharedView,ViewCompat.getTransitionName(sharedView));
+        }
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        transaction.replace(R.id.fragmentContainer,fragment).commit();
+
     }
 
-    public static void showLargeImage(FragmentActivity activity, String id, Fragment previousFragment, ImageView avatarView) {
+    public static void showLargeImage(FragmentActivity activity, String id) {
         LargeImageFragment fragment=LargeImageFragment.newInstance(id);
         if(PresenterManager.getPresenter(fragment.getClass().getName())==null) {
             PresenterManager.addPresenter(new LargeImagePresenter(new EmployeeInteractor(
@@ -72,34 +92,8 @@ public class Router {
                                     new Net(new Connect())))),
                     fragment.getClass().getName());
         }
-/*        Fade exitFade=new Fade();
-        exitFade.setDuration(FADE_DEFAULT_TIME);
-        previousFragment.setExitTransition(exitFade);
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            TransitionSet enterTransitionSet = new TransitionSet();
-            enterTransitionSet.addTransition(TransitionInflater.from(ContextManager.getContext()).inflateTransition(android.R.transition.move));
-            enterTransitionSet.setDuration(MOVE_DEFAULT_TIME);
-            enterTransitionSet.setStartDelay(FADE_DEFAULT_TIME);
-            fragment.setSharedElementEnterTransition(enterTransitionSet);
-
-            Fade enterFade = new Fade();
-            enterFade.setStartDelay(MOVE_DEFAULT_TIME + FADE_DEFAULT_TIME);
-            enterFade.setDuration(FADE_DEFAULT_TIME);
-            fragment.setSharedElementEnterTransition(enterFade);
-*//*
-            Log.i("TAG", "shared "+ViewCompat.getTransitionName(avatarView));
-            Transition changeTransform=TransitionInflater.from(ContextManager.getContext()).inflateTransition(R.transition.change_image_transform);
-            Transition explodeTransform=TransitionInflater.from(ContextManager.getContext()).inflateTransition(android.R.transition.explode);
-
-            previousFragment.setSharedElementReturnTransition(changeTransform);
-            previousFragment.setExitTransition(explodeTransform);
-
-            fragment.setSharedElementEnterTransition(changeTransform);
-            fragment.setExitTransition(explodeTransform);
-        *//*
-        }*/
         FragmentTransaction transaction=activity.getSupportFragmentManager().beginTransaction();
-        transaction.addSharedElement(avatarView, ViewCompat.getTransitionName(avatarView));
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
         transaction.addToBackStack(null);
         transaction.add(R.id.fragmentContainer, fragment).commitAllowingStateLoss();
     }

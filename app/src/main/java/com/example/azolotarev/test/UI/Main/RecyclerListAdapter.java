@@ -1,7 +1,10 @@
 package com.example.azolotarev.test.UI.Main;
 
+import android.animation.AnimatorInflater;
+import android.animation.StateListAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
@@ -12,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
+import com.example.azolotarev.test.Model.EmployeeModel;
 import com.example.azolotarev.test.Model.MapModel;
 import com.example.azolotarev.test.R;
 
@@ -123,7 +127,6 @@ class ItemDepartmentHolder extends RecyclerView.ViewHolder implements View.OnCli
 
         mTextView.setText(mItem.getModel().getName());
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) mCardViewRoot.getLayoutParams();
-
         if(!filtered) {
           //  Log.d("TAG","itemholder onBindView "+mItem.getModel().getName());
             layoutParams.setMarginStart(mItem.getLevel() * sMarginStart);

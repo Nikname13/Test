@@ -11,6 +11,7 @@
             android:layout_height="50dp"
             android:id="@+id/root_card_view"
             android:background="@color/colorAccent"
+            android:stateListAnimator="@animator/card_press"
             >
         <TextView
                 android:id="@+id/title_text_view"

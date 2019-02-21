@@ -14,5 +14,5 @@ public interface EmployeeInteractorContract extends DepartmentInteractorContract
     interface GetItemCallback extends BaseCallback.BaseGetItemCallback, BaseCallback.BaseErrorCallback{}
     void loadList(int position, @NonNull final DepartmentInteractorContract.GetListCallback callback);
     void getItem(@NonNull String id,@NonNull final GetItemCallback callback );
-    void loadPhoto( @NonNull String id, int imageWidth, int imageHeight, @NonNull final PhotoCallback callback);
+    void loadPhoto( @NonNull String id, int imageWidth, int imageHeight, boolean large, @NonNull final PhotoCallback callback);
 }

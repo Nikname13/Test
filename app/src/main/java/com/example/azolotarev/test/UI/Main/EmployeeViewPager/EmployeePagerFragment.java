@@ -1,14 +1,11 @@
 package com.example.azolotarev.test.UI.Main.EmployeeViewPager;
 
-import android.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -18,15 +15,12 @@ import android.view.*;
 import com.example.azolotarev.test.Data.Local.PersistentStorage;
 import com.example.azolotarev.test.Data.Net.Connect;
 import com.example.azolotarev.test.Data.Net.Net;
-import com.example.azolotarev.test.Domain.Authorization.AuthorizationInteractor;
 import com.example.azolotarev.test.Domain.EmployeePage.EmployeeInteractor;
 import com.example.azolotarev.test.Model.MapModel;
 import com.example.azolotarev.test.R;
 import com.example.azolotarev.test.Repository.Repository;
 import com.example.azolotarev.test.Service.PresenterManager;
 import com.example.azolotarev.test.Service.Router;
-import com.example.azolotarev.test.UI.Authorization.AuthorizationFragment;
-import com.example.azolotarev.test.UI.Authorization.AuthorizationPresenter;
 import com.example.azolotarev.test.UI.Main.EmployeePage.EmployeeFragment;
 import com.example.azolotarev.test.UI.Main.EmployeePage.EmployeePresenter;
 
@@ -143,7 +137,7 @@ public class EmployeePagerFragment extends Fragment implements EmployeePagerCont
 
     @Override
     public void logOut() {
-        Router.showLogOut(getActivity());
+        Router.showLogOut(getActivity(),null);
     }
 
     @Override

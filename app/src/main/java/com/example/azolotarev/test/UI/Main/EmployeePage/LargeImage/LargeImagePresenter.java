@@ -53,6 +53,7 @@ public class LargeImagePresenter implements LargeImageContract.Presenter {
                 mPhotoId,
                 width,
                 height,
+                true,
                 new EmployeeInteractorContract.PhotoCallback() {
                     @Override
                     public void onPhoto(Bitmap photo) {

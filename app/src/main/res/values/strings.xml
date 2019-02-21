@@ -27,5 +27,6 @@
     <string name="negative_button">отмена</string>
 
     <string name="shared_avatar_name">avatar</string>
+    <string name="shared_star_layout_name">sharedStarLayout</string>
 
 </resources>

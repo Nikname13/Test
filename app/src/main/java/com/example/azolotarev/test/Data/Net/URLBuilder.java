@@ -25,6 +25,11 @@ public class URLBuilder {
     }
 
     public String build(){
-        return URL+mUrl+"?"+String.join("&",mParams);
+        String url=URL+mUrl+"?";
+        for(String param:mParams){
+           url=url.concat(param);
+            if(mParams.indexOf(param)<mParams.size()-1)url=url.concat("&");
+        }
+        return url;
     }
 }

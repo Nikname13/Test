@@ -67,13 +67,13 @@ public  class Repository implements RepositoryContract {
     }
 
     @Override
-    public void loadPhoto(@NonNull String id, int imageWidth, int imageHeight, @NonNull final LoadPhotoCallback callback) {
-        if(AvatarCache.get().getBitmapFromMemory(String.valueOf(id))!=null){
+    public void loadPhoto(@NonNull String id, int imageWidth, int imageHeight, boolean large, @NonNull final LoadPhotoCallback callback) {
+        if(AvatarCache.get().getBitmapFromMemory(String.valueOf(id))!=null && !large){
       //      Log.i("TAG", "repository loadPhoto cache");
             callback.onResponse(AvatarCache.get().getBitmapFromMemory(String.valueOf(id)));
             return;
         }
-       getPhotoFromNet(id, imageWidth, imageHeight, callback);
+       getPhotoFromNet(id, imageWidth, imageHeight, large, callback);
     }
 
     @Override
@@ -201,22 +201,19 @@ public  class Repository implements RepositoryContract {
         }
     }
 
-    private void getPhotoFromNet( @NonNull final String id, int imageWeight, int imageHeight, @NonNull final LoadPhotoCallback callback){
+    private void getPhotoFromNet(@NonNull final String id, int imageWeight, int imageHeight, final boolean large, @NonNull final LoadPhotoCallback callback){
      //   Log.i("TAG", "repository getPhotoFromNet ");
         isAuth(new LoadSuccessCallback() {
                    @Override
                    public void onSuccess(boolean success) {
-
                    }
 
                    @Override
                    public void logOut(String errorMessage) {
-
                    }
 
                    @Override
                    public void connectionError(String errorMessage) {
-
                    }
                },
                 false);
@@ -230,7 +227,7 @@ public  class Repository implements RepositoryContract {
                         //     Log.i("TAG", "repository getPhotoFromNet "+response.getByteCount());
                              if(response!=null) {
                                  callback.onResponse(response);
-                                 AvatarCache.get().setBitmapToMemory(id, response);
+                                 if(!large) AvatarCache.get().setBitmapToMemory(id, response);
                              }
                           }
 

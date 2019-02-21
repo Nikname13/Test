@@ -13,7 +13,16 @@
                         android:id="@+id/main_toolbar"
                         app:layout_scrollFlags="scroll|enterAlways"
                         android:layout_height="match_parent"
-                        android:layout_width="match_parent"/>
+                        android:layout_width="match_parent">
+                        <ImageView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="match_parent"
+                                        android:src="@mipmap/ico_emblem"
+                                        android:layout_gravity="center"
+                                        android:scaleType="centerCrop"
+                                        android:id="@+id/shared_view"
+                                        android:transitionName="@string/shared_star_layout_name"/>
+                </android.support.v7.widget.Toolbar>
         </android.support.design.widget.AppBarLayout>
         <com.example.azolotarev.test.UI.Main.DepartmentsListRoot.ScrollChildSwipeRefreshLayout
                 android:layout_height="wrap_content"
@@ -26,7 +35,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scrollbars="vertical"
-                        android:scrollbarThumbVertical="@color/colorAccent"/>
+                        android:scrollbarThumbVertical="@color/colorAccent"
+                        android:transitionGroup="false"
+                        android:clipChildren="false"/>
         </com.example.azolotarev.test.UI.Main.DepartmentsListRoot.ScrollChildSwipeRefreshLayout>
 
 </android.support.design.widget.CoordinatorLayout>
